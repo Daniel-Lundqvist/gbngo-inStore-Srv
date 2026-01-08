@@ -9,6 +9,7 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import GamesPage from './pages/GamesPage';
+import GameModeSelectionPage from './pages/GameModeSelectionPage';
 import ValidatedGamePlayPage from './pages/ValidatedGamePlayPage';
 import MyPage from './pages/MyPage';
 import ProductsPage from './pages/ProductsPage';
@@ -93,8 +94,18 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* Game mode selection screen */}
         <Route
           path="/games/:gameSlug"
+          element={
+            <ProtectedRoute>
+              <GameModeSelectionPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* Actual game play with mode */}
+        <Route
+          path="/games/:gameSlug/play"
           element={
             <ProtectedRoute>
               <ValidatedGamePlayPage />

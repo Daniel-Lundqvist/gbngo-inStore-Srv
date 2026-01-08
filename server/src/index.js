@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { initDatabase } from './database/init.js';
@@ -15,7 +17,11 @@ import ideaResponseRoutes from './routes/ideaResponses.js';
 import advertisementRoutes from './routes/advertisements.js';
 import adminRoutes from './routes/admin.js';
 import settingsRoutes from './routes/settings.js';
+import uploadRoutes from './routes/upload.js';
 import { setupWebSocket } from './websocket/controller.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const httpServer = createServer(app);
@@ -53,6 +59,9 @@ async function startServer() {
       }
     }));
 
+    // Serve uploaded files
+    app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
     // Health check
     app.get('/api/health', (req, res) => {
       res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -70,6 +79,7 @@ async function startServer() {
     app.use('/api/advertisements', advertisementRoutes);
     app.use('/api/admin', adminRoutes);
     app.use('/api/settings', settingsRoutes);
+    app.use('/api/upload', uploadRoutes);
 
     // WebSocket setup
     setupWebSocket(io);

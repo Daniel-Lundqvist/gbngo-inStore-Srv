@@ -1,35 +1,126 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import GameCube from '../components/GameCube';
+import { motion, AnimatePresence } from 'framer-motion';
+import { IdleGameCube, IdleIdeaBox, IdleAds } from '../components/IdleViews';
 import styles from './IdlePage.module.css';
+
+// View types
+const VIEW_TYPES = {
+  CUBE: 'cube',
+  IDEAS: 'ideas',
+  ADS: 'ads'
+};
 
 export default function IdlePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [cubeSize, setCubeSize] = useState(200);
+  const [currentView, setCurrentView] = useState(VIEW_TYPES.CUBE);
+  const [idleSettings, setIdleSettings] = useState(null);
 
-  // Responsive cube size
+  // Fetch idle settings on mount
   useEffect(() => {
-    const updateSize = () => {
-      const width = window.innerWidth;
-      if (width < 480) {
-        setCubeSize(150);
-      } else if (width < 768) {
-        setCubeSize(180);
-      } else {
-        setCubeSize(220);
+    const fetchIdleSettings = async () => {
+      try {
+        const response = await fetch('/api/settings/idle');
+        if (response.ok) {
+          const data = await response.json();
+          setIdleSettings(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch idle settings:', error);
       }
     };
 
-    updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    fetchIdleSettings();
   }, []);
+
+  // Build list of enabled views with their weights
+  const enabledViews = useMemo(() => {
+    if (!idleSettings) {
+      // Default: only show cube
+      return [{ type: VIEW_TYPES.CUBE, weight: 100 }];
+    }
+
+    const views = [];
+
+    // Check each view type
+    if (idleSettings.idle_view_cube_enabled !== 'false') {
+      views.push({
+        type: VIEW_TYPES.CUBE,
+        weight: parseInt(idleSettings.idle_view_cube_percent) || 40
+      });
+    }
+
+    if (idleSettings.idle_view_ideas_enabled === 'true') {
+      views.push({
+        type: VIEW_TYPES.IDEAS,
+        weight: parseInt(idleSettings.idle_view_ideas_percent) || 20
+      });
+    }
+
+    if (idleSettings.idle_view_ads_enabled === 'true') {
+      views.push({
+        type: VIEW_TYPES.ADS,
+        weight: parseInt(idleSettings.idle_view_ads_percent) || 20
+      });
+    }
+
+    // If no views enabled, default to cube
+    if (views.length === 0) {
+      views.push({ type: VIEW_TYPES.CUBE, weight: 100 });
+    }
+
+    return views;
+  }, [idleSettings]);
+
+  // Select next view based on weights
+  const selectNextView = useCallback(() => {
+    if (enabledViews.length <= 1) return;
+
+    const totalWeight = enabledViews.reduce((sum, v) => sum + v.weight, 0);
+    const random = Math.random() * totalWeight;
+
+    let cumulative = 0;
+    for (const view of enabledViews) {
+      cumulative += view.weight;
+      if (random < cumulative) {
+        setCurrentView(view.type);
+        return;
+      }
+    }
+
+    // Fallback
+    setCurrentView(enabledViews[0].type);
+  }, [enabledViews]);
+
+  // Rotate views periodically
+  useEffect(() => {
+    if (enabledViews.length <= 1) return;
+
+    // Rotate every 15-20 seconds
+    const interval = setInterval(() => {
+      selectNextView();
+    }, 15000 + Math.random() * 5000);
+
+    return () => clearInterval(interval);
+  }, [enabledViews.length, selectNextView]);
 
   const handleTouch = () => {
     navigate('/start');
+  };
+
+  // Render current view component
+  const renderCurrentView = () => {
+    switch (currentView) {
+      case VIEW_TYPES.IDEAS:
+        return <IdleIdeaBox />;
+      case VIEW_TYPES.ADS:
+        return <IdleAds />;
+      case VIEW_TYPES.CUBE:
+      default:
+        return <IdleGameCube />;
+    }
   };
 
   return (
@@ -46,17 +137,20 @@ export default function IdlePage() {
           <p>QuickGames</p>
         </div>
 
-        <div className={styles.cubeContainer}>
-          <GameCube size={cubeSize} />
+        <div className={styles.viewContainer}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentView}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className={styles.viewWrapper}
+            >
+              {renderCurrentView()}
+            </motion.div>
+          </AnimatePresence>
         </div>
-
-        <motion.div
-          className={styles.message}
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <p className={styles.cta}>{t('idle.scanReceipt')}</p>
-        </motion.div>
 
         <p className={styles.touchPrompt}>{t('idle.touchToStart')}</p>
       </div>

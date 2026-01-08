@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useNavigate } from 'react-router-dom';
 import styles from './AdminSection.module.css';
 
 export default function AdminSettings() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { changeTheme, theme: currentTheme } = useTheme();
   const [settings, setSettings] = useState({
     kroner_per_ticket: 20,
@@ -16,11 +18,59 @@ export default function AdminSettings() {
     sound_enabled: true,
     sound_volume: 70,
     default_language: 'sv',
-    theme: 'default'
+    theme: 'default',
+    // Idle view settings
+    idle_view_cube_enabled: 'true',
+    idle_view_ideas_enabled: 'false',
+    idle_view_ads_enabled: 'false',
+    idle_view_cube_percent: '40',
+    idle_view_ideas_percent: '30',
+    idle_view_ads_percent: '30'
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [isDirty, setIsDirty] = useState(false);
+  const [showBlocker, setShowBlocker] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
+  const originalSettingsRef = useRef(null);
+
+  // Handle browser beforeunload event
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
+
+  // Intercept link clicks when form is dirty
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (!isDirty) return;
+
+      // Find closest anchor tag
+      const link = e.target.closest('a');
+      if (!link) return;
+
+      // Check if it's an internal link
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('http') || href.startsWith('//')) return;
+
+      // Block navigation and show dialog
+      e.preventDefault();
+      e.stopPropagation();
+      setPendingNavigation(href);
+      setShowBlocker(true);
+    };
+
+    document.addEventListener('click', handleClick, true);
+    return () => document.removeEventListener('click', handleClick, true);
+  }, [isDirty]);
 
   useEffect(() => {
     fetchSettings();
@@ -33,7 +83,9 @@ export default function AdminSettings() {
       });
       if (response.ok) {
         const data = await response.json();
-        setSettings(prev => ({ ...prev, ...data }));
+        const newSettings = { ...settings, ...data };
+        setSettings(newSettings);
+        originalSettingsRef.current = JSON.stringify(newSettings);
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error);
@@ -43,7 +95,14 @@ export default function AdminSettings() {
   };
 
   const handleChange = (key, value) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    const newSettings = { ...settings, [key]: value };
+    setSettings(newSettings);
+
+    // Check if form is dirty
+    if (originalSettingsRef.current) {
+      setIsDirty(JSON.stringify(newSettings) !== originalSettingsRef.current);
+    }
+
     // Apply theme change immediately
     if (key === 'theme') {
       changeTheme(value);
@@ -62,6 +121,8 @@ export default function AdminSettings() {
       });
       if (response.ok) {
         setMessage('Installningar sparade!');
+        originalSettingsRef.current = JSON.stringify(settings);
+        setIsDirty(false);
       } else {
         setMessage('Kunde inte spara installningar');
       }
@@ -73,13 +134,68 @@ export default function AdminSettings() {
     }
   };
 
+  const handleStay = () => {
+    setShowBlocker(false);
+    setPendingNavigation(null);
+  };
+
+  const handleLeave = () => {
+    setShowBlocker(false);
+    setIsDirty(false);
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+    }
+    setPendingNavigation(null);
+  };
+
+  // Calculate total percentage for idle views
+  const getTotalIdlePercent = () => {
+    let total = 0;
+    if (settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true) {
+      total += parseInt(settings.idle_view_cube_percent) || 0;
+    }
+    if (settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true) {
+      total += parseInt(settings.idle_view_ideas_percent) || 0;
+    }
+    if (settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true) {
+      total += parseInt(settings.idle_view_ads_percent) || 0;
+    }
+    return total;
+  };
+
   if (loading) {
     return <div className={styles.loading}>Laddar installningar...</div>;
   }
 
+  const totalPercent = getTotalIdlePercent();
+
   return (
     <div className={styles.section}>
       <h2>{t('admin.settings')}</h2>
+
+      {/* Navigation blocker dialog */}
+      {showBlocker && (
+        <div className={styles.blockerOverlay}>
+          <div className={styles.blockerDialog}>
+            <h3>Osparade andringar</h3>
+            <p>Du har osparade andringar. Vill du lamna sidan anda?</p>
+            <div className={styles.blockerButtons}>
+              <button
+                className={styles.btnSecondary}
+                onClick={handleStay}
+              >
+                Stanna kvar
+              </button>
+              <button
+                className={styles.btnDanger}
+                onClick={handleLeave}
+              >
+                Lamna sidan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className={styles.settingsGroup}>
         <h3>Ticket-installningar</h3>
@@ -149,12 +265,94 @@ export default function AdminSettings() {
       </div>
 
       <div className={styles.settingsGroup}>
+        <h3>Vilolage (Idle Mode)</h3>
+        <p className={styles.hint} style={{ marginBottom: 'var(--spacing-md)' }}>
+          Valj vilka vyer som ska roteras i vilolaget. Procent anger hur mycket tid varje vy far.
+        </p>
+
+        <div className={styles.field}>
+          <label className={styles.checkbox}>
+            <input
+              type="checkbox"
+              checked={settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true}
+              onChange={e => handleChange('idle_view_cube_enabled', e.target.checked ? 'true' : 'false')}
+            />
+            Spelkub (3D-animering)
+          </label>
+          {(settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true) && (
+            <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
+              <label>Tidsprocent: {settings.idle_view_cube_percent}%</label>
+              <input
+                type="range"
+                value={settings.idle_view_cube_percent}
+                onChange={e => handleChange('idle_view_cube_percent', e.target.value)}
+                min="10"
+                max="100"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.checkbox}>
+            <input
+              type="checkbox"
+              checked={settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true}
+              onChange={e => handleChange('idle_view_ideas_enabled', e.target.checked ? 'true' : 'false')}
+            />
+            Idelada (fragor och svar)
+          </label>
+          {(settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true) && (
+            <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
+              <label>Tidsprocent: {settings.idle_view_ideas_percent}%</label>
+              <input
+                type="range"
+                value={settings.idle_view_ideas_percent}
+                onChange={e => handleChange('idle_view_ideas_percent', e.target.value)}
+                min="10"
+                max="100"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.checkbox}>
+            <input
+              type="checkbox"
+              checked={settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true}
+              onChange={e => handleChange('idle_view_ads_enabled', e.target.checked ? 'true' : 'false')}
+            />
+            Annonser
+          </label>
+          {(settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true) && (
+            <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
+              <label>Tidsprocent: {settings.idle_view_ads_percent}%</label>
+              <input
+                type="range"
+                value={settings.idle_view_ads_percent}
+                onChange={e => handleChange('idle_view_ads_percent', e.target.value)}
+                min="10"
+                max="100"
+              />
+            </div>
+          )}
+        </div>
+
+        {totalPercent > 0 && (
+          <p className={styles.hint}>
+            Totalt: {totalPercent}% (relativ fordelning)
+          </p>
+        )}
+      </div>
+
+      <div className={styles.settingsGroup}>
         <h3>Ljud-installningar</h3>
         <div className={styles.field}>
           <label className={styles.checkbox}>
             <input
               type="checkbox"
-              checked={settings.sound_enabled}
+              checked={settings.sound_enabled === true || settings.sound_enabled === 'true'}
               onChange={e => handleChange('sound_enabled', e.target.checked)}
             />
             Ljud aktiverat
@@ -218,6 +416,7 @@ export default function AdminSettings() {
         disabled={saving}
       >
         {saving ? 'Sparar...' : 'Spara installningar'}
+        {isDirty && ' *'}
       </button>
     </div>
   );

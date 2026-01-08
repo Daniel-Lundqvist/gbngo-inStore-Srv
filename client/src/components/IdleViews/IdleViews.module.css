@@ -1,0 +1,207 @@
+/* Shared styles for Idle View components */
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  box-sizing: border-box;
+}
+
+.empty {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+/* Idea Box styles */
+.ideaBox {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 800px;
+  width: 100%;
+  backdrop-filter: blur(10px);
+}
+
+.ideaTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  color: white;
+}
+
+.ideaContent {
+  text-align: left;
+}
+
+.question,
+.answer {
+  margin-bottom: var(--spacing-lg);
+}
+
+.label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.question p,
+.answer p {
+  font-size: 1.4rem;
+  color: white;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.3s ease;
+}
+
+.dot.active {
+  background: white;
+}
+
+/* Advertisement styles */
+.adContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.adContent {
+  max-width: 900px;
+  width: 100%;
+  text-align: center;
+}
+
+.adImage {
+  max-width: 100%;
+  max-height: 60vh;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  object-fit: contain;
+}
+
+.adTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.adDescription {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+}
+
+.adTextOnly {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xxl);
+  backdrop-filter: blur(10px);
+}
+
+.adTextOnly .adTitle {
+  margin-top: 0;
+}
+
+/* Game Cube wrapper styles */
+.cubeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.cubeContainer {
+  margin-bottom: var(--spacing-xl);
+}
+
+.cubeMessage {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-xl) var(--spacing-xxl);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.cubeMessage p {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ideaBox {
+    padding: var(--spacing-lg);
+  }
+
+  .ideaTitle {
+    font-size: 1.5rem;
+  }
+
+  .question p,
+  .answer p {
+    font-size: 1.2rem;
+  }
+
+  .adTitle {
+    font-size: 1.8rem;
+  }
+
+  .adDescription {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ideaBox {
+    padding: var(--spacing-md);
+  }
+
+  .ideaTitle {
+    font-size: 1.25rem;
+  }
+
+  .question p,
+  .answer p {
+    font-size: 1rem;
+  }
+
+  .adTitle {
+    font-size: 1.4rem;
+  }
+
+  .adDescription {
+    font-size: 1rem;
+  }
+}
