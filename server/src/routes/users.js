@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getDatabase } from '../database/init.js';
+import { getOne, runQuery, saveDatabase } from '../database/init.js';
 import { requireAuth, requireReturningGuest } from '../middleware/auth.js';
 
 const router = Router();
@@ -10,8 +10,7 @@ router.get('/me', requireAuth, (req, res) => {
 
   // For returning guests, get fresh data from database
   if (user.is_returning_guest && typeof user.id === 'number') {
-    const db = getDatabase();
-    const freshUser = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
+    const freshUser = getOne('SELECT * FROM users WHERE id = ?', [user.id]);
     if (freshUser) {
       return res.json({
         id: freshUser.id,
@@ -38,15 +37,14 @@ router.get('/me', requireAuth, (req, res) => {
 // Update user profile
 router.put('/me', requireReturningGuest, (req, res) => {
   const { face_image_path } = req.body;
-  const db = getDatabase();
 
   if (face_image_path !== undefined) {
-    db.prepare('UPDATE users SET face_image_path = ? WHERE id = ?')
-      .run(face_image_path, req.session.user.id);
+    runQuery('UPDATE users SET face_image_path = ? WHERE id = ?',
+      [face_image_path, req.session.user.id]);
   }
 
-  const updatedUser = db.prepare('SELECT * FROM users WHERE id = ?')
-    .get(req.session.user.id);
+  const updatedUser = getOne('SELECT * FROM users WHERE id = ?', [req.session.user.id]);
+  saveDatabase();
 
   req.session.user = updatedUser;
 
@@ -63,10 +61,9 @@ router.put('/me', requireReturningGuest, (req, res) => {
 // Upload face image (placeholder for Face ID)
 router.post('/me/face-image', requireReturningGuest, (req, res) => {
   // In MVP, we just store a reference - actual image upload would use multer
-  const db = getDatabase();
-
-  db.prepare('UPDATE users SET face_image_path = ? WHERE id = ?')
-    .run(`/uploads/faces/${req.session.user.id}.jpg`, req.session.user.id);
+  runQuery('UPDATE users SET face_image_path = ? WHERE id = ?',
+    [`/uploads/faces/${req.session.user.id}.jpg`, req.session.user.id]);
+  saveDatabase();
 
   res.json({
     success: true,
@@ -76,9 +73,7 @@ router.post('/me/face-image', requireReturningGuest, (req, res) => {
 
 // Get personal QR code
 router.get('/me/qr-code', requireReturningGuest, (req, res) => {
-  const db = getDatabase();
-  const user = db.prepare('SELECT personal_qr_code FROM users WHERE id = ?')
-    .get(req.session.user.id);
+  const user = getOne('SELECT personal_qr_code FROM users WHERE id = ?', [req.session.user.id]);
 
   if (!user || !user.personal_qr_code) {
     return res.status(404).json({ error: 'QR code not found' });

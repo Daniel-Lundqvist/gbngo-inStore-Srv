@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getDatabase } from '../database/init.js';
+import { getOne, runQuery, saveDatabase } from '../database/init.js';
 import { requireAuth } from '../middleware/auth.js';
 
 const router = Router();
@@ -9,9 +9,7 @@ router.get('/balance', requireAuth, (req, res) => {
   const user = req.session.user;
 
   if (user.is_returning_guest && typeof user.id === 'number') {
-    const db = getDatabase();
-    const freshUser = db.prepare('SELECT tickets_count, tickets_expires_at FROM users WHERE id = ?')
-      .get(user.id);
+    const freshUser = getOne('SELECT tickets_count, tickets_expires_at FROM users WHERE id = ?', [user.id]);
 
     if (freshUser) {
       // Check if tickets have expired
@@ -19,8 +17,8 @@ router.get('/balance', requireAuth, (req, res) => {
         const expiresAt = new Date(freshUser.tickets_expires_at);
         if (expiresAt < new Date()) {
           // Tickets expired, reset
-          db.prepare('UPDATE users SET tickets_count = 0, tickets_expires_at = NULL WHERE id = ?')
-            .run(user.id);
+          runQuery('UPDATE users SET tickets_count = 0, tickets_expires_at = NULL WHERE id = ?', [user.id]);
+          saveDatabase();
           return res.json({ tickets: 0, expires_at: null });
         }
       }
@@ -41,13 +39,12 @@ router.get('/balance', requireAuth, (req, res) => {
 // Scan receipt (MVP: mock implementation)
 router.post('/scan', requireAuth, (req, res) => {
   const { receipt_id, amount } = req.body;
-  const db = getDatabase();
 
   // Get settings
-  const ticketPriceSetting = db.prepare("SELECT value FROM settings WHERE key = 'ticket_price_kronor'").get();
-  const receiptValiditySetting = db.prepare("SELECT value FROM settings WHERE key = 'receipt_validity_minutes'").get();
-  const ticketValiditySetting = db.prepare("SELECT value FROM settings WHERE key = 'ticket_validity_hours'").get();
-  const maxTicketsSetting = db.prepare("SELECT value FROM settings WHERE key = 'max_tickets_per_account'").get();
+  const ticketPriceSetting = getOne("SELECT value FROM settings WHERE key = 'ticket_price_kronor'", []);
+  const receiptValiditySetting = getOne("SELECT value FROM settings WHERE key = 'receipt_validity_minutes'", []);
+  const ticketValiditySetting = getOne("SELECT value FROM settings WHERE key = 'ticket_validity_hours'", []);
+  const maxTicketsSetting = getOne("SELECT value FROM settings WHERE key = 'max_tickets_per_account'", []);
 
   const ticketPrice = parseInt(ticketPriceSetting?.value || '20');
   const receiptValidityMinutes = parseInt(receiptValiditySetting?.value || '15');
@@ -55,8 +52,7 @@ router.post('/scan', requireAuth, (req, res) => {
   const maxTickets = parseInt(maxTicketsSetting?.value || '50');
 
   // Check if receipt already used
-  const usedReceipt = db.prepare('SELECT id FROM used_receipts WHERE receipt_identifier = ?')
-    .get(receipt_id);
+  const usedReceipt = getOne('SELECT id FROM used_receipts WHERE receipt_identifier = ?', [receipt_id]);
 
   if (usedReceipt) {
     return res.status(400).json({ error: 'Receipt already used' });
@@ -77,18 +73,17 @@ router.post('/scan', requireAuth, (req, res) => {
   if (user.is_returning_guest && typeof user.id === 'number') {
     // Returning guest - save to database
     userId = user.id;
-    const currentUser = db.prepare('SELECT tickets_count FROM users WHERE id = ?').get(userId);
+    const currentUser = getOne('SELECT tickets_count FROM users WHERE id = ?', [userId]);
     newTicketCount = Math.min((currentUser?.tickets_count || 0) + ticketsToAdd, maxTickets);
 
     // Calculate new expiry
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + ticketValidityHours);
 
-    db.prepare(`
-      UPDATE users
-      SET tickets_count = ?, tickets_expires_at = ?
-      WHERE id = ?
-    `).run(newTicketCount, expiresAt.toISOString(), userId);
+    runQuery(
+      `UPDATE users SET tickets_count = ?, tickets_expires_at = ? WHERE id = ?`,
+      [newTicketCount, expiresAt.toISOString(), userId]
+    );
 
     // Update session
     req.session.user.tickets_count = newTicketCount;
@@ -99,10 +94,11 @@ router.post('/scan', requireAuth, (req, res) => {
   }
 
   // Mark receipt as used
-  db.prepare(`
-    INSERT INTO used_receipts (receipt_identifier, user_id, tickets_granted)
-    VALUES (?, ?, ?)
-  `).run(receipt_id, userId, ticketsToAdd);
+  runQuery(
+    `INSERT INTO used_receipts (receipt_identifier, user_id, tickets_granted) VALUES (?, ?, ?)`,
+    [receipt_id, userId, ticketsToAdd]
+  );
+  saveDatabase();
 
   res.json({
     success: true,

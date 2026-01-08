@@ -1,17 +1,15 @@
 import { Router } from 'express';
-import { getDatabase } from '../database/init.js';
+import { getOne } from '../database/init.js';
 
 const router = Router();
 
 // Get public settings (theme, language, etc.)
 router.get('/public', (req, res) => {
-  const db = getDatabase();
-
   const publicKeys = ['theme', 'language', 'sound_enabled', 'sound_volume'];
   const settings = {};
 
   for (const key of publicKeys) {
-    const row = db.prepare('SELECT value FROM settings WHERE key = ?').get(key);
+    const row = getOne('SELECT value FROM settings WHERE key = ?', [key]);
     settings[key] = row?.value;
   }
 
@@ -20,8 +18,6 @@ router.get('/public', (req, res) => {
 
 // Get idle mode settings
 router.get('/idle', (req, res) => {
-  const db = getDatabase();
-
   const idleKeys = [
     'idle_view_cube_enabled',
     'idle_view_demos_enabled',
@@ -36,7 +32,7 @@ router.get('/idle', (req, res) => {
   const settings = {};
 
   for (const key of idleKeys) {
-    const row = db.prepare('SELECT value FROM settings WHERE key = ?').get(key);
+    const row = getOne('SELECT value FROM settings WHERE key = ?', [key]);
     settings[key] = row?.value;
   }
 

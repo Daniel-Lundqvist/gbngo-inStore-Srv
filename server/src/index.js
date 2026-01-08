@@ -28,66 +28,78 @@ const io = new Server(httpServer, {
 
 const PORT = process.env.PORT || 3001;
 
-// Initialize database
-initDatabase();
+// Main startup function
+async function startServer() {
+  try {
+    // Initialize database (async)
+    await initDatabase();
+    console.log('Database initialized');
 
-// Middleware
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
-  credentials: true
-}));
-app.use(express.json());
-app.use(session({
-  secret: 'gbngo-quickgames-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false, // Set to true in production with HTTPS
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
+    // Middleware
+    app.use(cors({
+      origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+      credentials: true
+    }));
+    app.use(express.json());
+    app.use(session({
+      secret: 'gbngo-quickgames-secret-key-change-in-production',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: false, // Set to true in production with HTTPS
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      }
+    }));
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+    // Health check
+    app.get('/api/health', (req, res) => {
+      res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    });
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/tickets', ticketRoutes);
-app.use('/api/games', gameRoutes);
-app.use('/api/highscores', highscoreRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/idea-responses', ideaResponseRoutes);
-app.use('/api/advertisements', advertisementRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/settings', settingsRoutes);
+    // API Routes
+    app.use('/api/auth', authRoutes);
+    app.use('/api/users', userRoutes);
+    app.use('/api/tickets', ticketRoutes);
+    app.use('/api/games', gameRoutes);
+    app.use('/api/highscores', highscoreRoutes);
+    app.use('/api/products', productRoutes);
+    app.use('/api/idea-responses', ideaResponseRoutes);
+    app.use('/api/advertisements', advertisementRoutes);
+    app.use('/api/admin', adminRoutes);
+    app.use('/api/settings', settingsRoutes);
 
-// WebSocket setup
-setupWebSocket(io);
+    // WebSocket setup
+    setupWebSocket(io);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err.message);
-  res.status(err.status || 500).json({
-    error: err.message || 'Internal server error'
-  });
-});
+    // Error handling middleware
+    app.use((err, req, res, next) => {
+      console.error('Error:', err.message);
+      res.status(err.status || 500).json({
+        error: err.message || 'Internal server error'
+      });
+    });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Not found' });
-});
+    // 404 handler
+    app.use((req, res) => {
+      res.status(404).json({ error: 'Not found' });
+    });
 
-httpServer.listen(PORT, () => {
-  console.log(`
+    httpServer.listen(PORT, () => {
+      console.log(`
 ╔═══════════════════════════════════════════════╗
 ║     Grab'n GO QuickGames Server               ║
 ╠═══════════════════════════════════════════════╣
 ║  Server running on http://localhost:${PORT}      ║
 ║  WebSocket ready for connections              ║
 ╚═══════════════════════════════════════════════╝
-  `);
-});
+      `);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+// Start the server
+startServer();

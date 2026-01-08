@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getDatabase } from '../database/init.js';
+import { getOne, runQuery, getLastInsertRowId, saveDatabase } from '../database/init.js';
 import { ADMIN_CODE } from '../middleware/auth.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -32,8 +32,6 @@ router.post('/guest', (req, res) => {
     return res.status(400).json({ error: 'Please choose appropriate initials' });
   }
 
-  const db = getDatabase();
-
   // Create temporary guest user (not saved to database for regular guests)
   const guestUser = {
     id: `guest_${Date.now()}`,
@@ -44,6 +42,7 @@ router.post('/guest', (req, res) => {
 
   req.session.user = guestUser;
   req.session.isGuest = true;
+  req.session.isAdmin = false;
 
   res.json({
     success: true,
@@ -72,12 +71,11 @@ router.post('/register', (req, res) => {
     return res.status(400).json({ error: 'Please choose appropriate initials' });
   }
 
-  const db = getDatabase();
-
   // Check if initials + pin combo exists
-  const existing = db.prepare(
-    'SELECT id FROM users WHERE initials = ? AND pin_code = ?'
-  ).get(initials.toUpperCase(), pin_code);
+  const existing = getOne(
+    'SELECT id FROM users WHERE initials = ? AND pin_code = ?',
+    [initials.toUpperCase(), pin_code]
+  );
 
   if (existing) {
     return res.status(400).json({ error: 'An account with these credentials already exists' });
@@ -87,15 +85,19 @@ router.post('/register', (req, res) => {
   const personalQrCode = uuidv4();
 
   // Create user
-  const result = db.prepare(`
-    INSERT INTO users (initials, pin_code, personal_qr_code, is_returning_guest)
-    VALUES (?, ?, ?, 1)
-  `).run(initials.toUpperCase(), pin_code, personalQrCode);
+  runQuery(
+    `INSERT INTO users (initials, pin_code, personal_qr_code, is_returning_guest)
+     VALUES (?, ?, ?, 1)`,
+    [initials.toUpperCase(), pin_code, personalQrCode]
+  );
 
-  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
+  const lastId = getLastInsertRowId();
+  const user = getOne('SELECT * FROM users WHERE id = ?', [lastId]);
+  saveDatabase();
 
   req.session.user = user;
   req.session.isGuest = false;
+  req.session.isAdmin = false;
 
   res.json({
     success: true,
@@ -117,20 +119,22 @@ router.post('/login', (req, res) => {
     return res.status(400).json({ error: 'Initials and PIN required' });
   }
 
-  const db = getDatabase();
-  const user = db.prepare(
-    'SELECT * FROM users WHERE initials = ? AND pin_code = ? AND is_returning_guest = 1'
-  ).get(initials.toUpperCase(), pin_code);
+  const user = getOne(
+    'SELECT * FROM users WHERE initials = ? AND pin_code = ? AND is_returning_guest = 1',
+    [initials.toUpperCase(), pin_code]
+  );
 
   if (!user) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 
   // Update last active
-  db.prepare('UPDATE users SET last_active_at = CURRENT_TIMESTAMP WHERE id = ?').run(user.id);
+  runQuery('UPDATE users SET last_active_at = CURRENT_TIMESTAMP WHERE id = ?', [user.id]);
+  saveDatabase();
 
   req.session.user = user;
   req.session.isGuest = false;
+  req.session.isAdmin = false;
 
   res.json({
     success: true,
@@ -152,20 +156,22 @@ router.post('/login-qr', (req, res) => {
     return res.status(400).json({ error: 'QR code required' });
   }
 
-  const db = getDatabase();
-  const user = db.prepare(
-    'SELECT * FROM users WHERE personal_qr_code = ?'
-  ).get(qr_code);
+  const user = getOne(
+    'SELECT * FROM users WHERE personal_qr_code = ?',
+    [qr_code]
+  );
 
   if (!user) {
     return res.status(401).json({ error: 'Invalid QR code' });
   }
 
   // Update last active
-  db.prepare('UPDATE users SET last_active_at = CURRENT_TIMESTAMP WHERE id = ?').run(user.id);
+  runQuery('UPDATE users SET last_active_at = CURRENT_TIMESTAMP WHERE id = ?', [user.id]);
+  saveDatabase();
 
   req.session.user = user;
   req.session.isGuest = false;
+  req.session.isAdmin = false;
 
   res.json({
     success: true,

@@ -1,27 +1,152 @@
-import Database from 'better-sqlite3';
+import initSqlJs from 'sql.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const dbPath = join(__dirname, '..', '..', 'data', 'gbngo.db');
+const dataDir = join(__dirname, '..', '..', 'data');
 
-let db;
+let db = null;
+let SQL = null;
+let autoSaveInterval = null;
+let isDirty = false;
 
-export function getDatabase() {
+// Ensure data directory exists
+function ensureDataDir() {
+  if (!existsSync(dataDir)) {
+    mkdirSync(dataDir, { recursive: true });
+  }
+}
+
+// Save database to disk
+export function saveDatabase() {
+  if (db && isDirty) {
+    ensureDataDir();
+    const data = db.export();
+    const buffer = Buffer.from(data);
+    writeFileSync(dbPath, buffer);
+    isDirty = false;
+    console.log('Database saved to disk');
+  }
+}
+
+// Start auto-save interval
+function startAutoSave() {
+  if (!autoSaveInterval) {
+    autoSaveInterval = setInterval(() => {
+      saveDatabase();
+    }, 5000); // Save every 5 seconds
+  }
+}
+
+// Stop auto-save interval
+function stopAutoSave() {
+  if (autoSaveInterval) {
+    clearInterval(autoSaveInterval);
+    autoSaveInterval = null;
+  }
+}
+
+// Get the database instance (async)
+export async function getDatabase() {
   if (!db) {
-    db = new Database(dbPath);
-    db.pragma('journal_mode = WAL');
+    if (!SQL) {
+      SQL = await initSqlJs();
+    }
+
+    ensureDataDir();
+
+    // Try to load existing database from disk
+    if (existsSync(dbPath)) {
+      const fileBuffer = readFileSync(dbPath);
+      db = new SQL.Database(fileBuffer);
+    } else {
+      db = new SQL.Database();
+    }
+
+    // Enable foreign keys
+    db.run('PRAGMA foreign_keys = ON');
+
+    startAutoSave();
   }
   return db;
 }
 
-export function initDatabase() {
-  const db = getDatabase();
+// Close the database
+export function closeDatabase() {
+  if (db) {
+    saveDatabase(); // Save before closing
+    stopAutoSave();
+    db.close();
+    db = null;
+    console.log('Database closed');
+  }
+}
+
+// Helper function to run a query with parameters
+export function runQuery(sql, params = []) {
+  if (!db) {
+    throw new Error('Database not initialized. Call initDatabase() first.');
+  }
+  db.run(sql, params);
+  isDirty = true;
+}
+
+// Helper function to get a single row
+export function getOne(sql, params = []) {
+  if (!db) {
+    throw new Error('Database not initialized. Call initDatabase() first.');
+  }
+  const stmt = db.prepare(sql);
+  stmt.bind(params);
+
+  if (stmt.step()) {
+    const row = stmt.getAsObject();
+    stmt.free();
+    return row;
+  }
+
+  stmt.free();
+  return null;
+}
+
+// Helper function to get all rows
+export function getAll(sql, params = []) {
+  if (!db) {
+    throw new Error('Database not initialized. Call initDatabase() first.');
+  }
+  const stmt = db.prepare(sql);
+  stmt.bind(params);
+
+  const results = [];
+  while (stmt.step()) {
+    results.push(stmt.getAsObject());
+  }
+
+  stmt.free();
+  return results;
+}
+
+// Helper function to get last insert row id
+export function getLastInsertRowId() {
+  if (!db) {
+    throw new Error('Database not initialized. Call initDatabase() first.');
+  }
+  const result = db.exec('SELECT last_insert_rowid() as id');
+  if (result.length > 0 && result[0].values.length > 0) {
+    return result[0].values[0][0];
+  }
+  return null;
+}
+
+export async function initDatabase() {
+  const db = await getDatabase();
 
   // Users table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       initials TEXT NOT NULL,
@@ -38,7 +163,7 @@ export function initDatabase() {
   `);
 
   // Games table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS games (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -51,7 +176,7 @@ export function initDatabase() {
   `);
 
   // Highscores table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS highscores (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
@@ -64,7 +189,7 @@ export function initDatabase() {
   `);
 
   // Used receipts table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS used_receipts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       receipt_identifier TEXT UNIQUE NOT NULL,
@@ -76,7 +201,7 @@ export function initDatabase() {
   `);
 
   // Categories table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL UNIQUE,
@@ -86,7 +211,7 @@ export function initDatabase() {
   `);
 
   // Products table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS products (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -99,7 +224,7 @@ export function initDatabase() {
   `);
 
   // Idea responses table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS idea_responses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       question TEXT NOT NULL,
@@ -110,7 +235,7 @@ export function initDatabase() {
   `);
 
   // Advertisements table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS advertisements (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       image_path TEXT,
@@ -122,7 +247,7 @@ export function initDatabase() {
   `);
 
   // Settings table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
@@ -130,7 +255,7 @@ export function initDatabase() {
   `);
 
   // Game sessions table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS game_sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
@@ -144,7 +269,7 @@ export function initDatabase() {
   `);
 
   // Tournaments table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS tournaments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -156,7 +281,7 @@ export function initDatabase() {
   `);
 
   // Tournament players table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS tournament_players (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       tournament_id INTEGER NOT NULL,
@@ -190,12 +315,8 @@ export function initDatabase() {
     ['idle_view_ads_percent', '25']
   ];
 
-  const insertSetting = db.prepare(`
-    INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)
-  `);
-
   for (const [key, value] of defaultSettings) {
-    insertSetting.run(key, value);
+    db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)`, [key, value]);
   }
 
   // Insert default games if not exist
@@ -205,12 +326,8 @@ export function initDatabase() {
     ['Pong', 'pong', 'Classic Pong game', 2]
   ];
 
-  const insertGame = db.prepare(`
-    INSERT OR IGNORE INTO games (name, slug, description, max_players) VALUES (?, ?, ?, ?)
-  `);
-
   for (const [name, slug, description, maxPlayers] of defaultGames) {
-    insertGame.run(name, slug, description, maxPlayers);
+    db.run(`INSERT OR IGNORE INTO games (name, slug, description, max_players) VALUES (?, ?, ?, ?)`, [name, slug, description, maxPlayers]);
   }
 
   // Insert default categories if not exist
@@ -222,13 +339,12 @@ export function initDatabase() {
     ['Ovrigt', 5]
   ];
 
-  const insertCategory = db.prepare(`
-    INSERT OR IGNORE INTO categories (name, sort_order) VALUES (?, ?)
-  `);
-
   for (const [name, sortOrder] of defaultCategories) {
-    insertCategory.run(name, sortOrder);
+    db.run(`INSERT OR IGNORE INTO categories (name, sort_order) VALUES (?, ?)`, [name, sortOrder]);
   }
+
+  isDirty = true;
+  saveDatabase(); // Save initial state
 
   console.log('Database initialized successfully');
   return db;
@@ -236,5 +352,5 @@ export function initDatabase() {
 
 // Run init if called directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  initDatabase();
+  initDatabase().catch(console.error);
 }
