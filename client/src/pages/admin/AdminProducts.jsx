@@ -196,12 +196,13 @@ export default function AdminProducts() {
                 />
               </div>
               <div className={styles.field}>
-                <label>Kategori</label>
+                <label>Kategori *</label>
                 <select
                   value={form.category_id}
                   onChange={e => setForm({ ...form, category_id: e.target.value })}
+                  required
                 >
-                  <option value="">Ingen kategori</option>
+                  <option value="">Valj kategori...</option>
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
