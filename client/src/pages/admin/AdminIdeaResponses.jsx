@@ -137,7 +137,11 @@ export default function AdminIdeaResponses() {
                 </div>
               </div>
               <div className={styles.toggle}>
-                <div
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={response.is_active}
+                  aria-label={`Aktivera/inaktivera svar: ${response.question.substring(0, 30)}${response.question.length > 30 ? '...' : ''}`}
                   className={`${styles.toggleSwitch} ${response.is_active ? styles.active : ''}`}
                   onClick={() => toggleActive(response)}
                 />

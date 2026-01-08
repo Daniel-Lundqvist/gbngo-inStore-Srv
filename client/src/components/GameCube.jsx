@@ -115,6 +115,8 @@ export default function GameCube({ size = 200 }) {
   return (
     <div
       ref={containerRef}
+      role="img"
+      aria-label="Rotating 3D game cube with colorful faces"
       style={{
         width: size,
         height: size,

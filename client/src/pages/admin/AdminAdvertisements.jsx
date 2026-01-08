@@ -136,7 +136,11 @@ export default function AdminAdvertisements() {
                 </div>
               </div>
               <div className={styles.toggle}>
-                <div
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={ad.is_active}
+                  aria-label={`Aktivera/inaktivera annons: ${ad.message || 'annons'}`}
                   className={`${styles.toggleSwitch} ${ad.is_active ? styles.active : ''}`}
                   onClick={() => toggleActive(ad)}
                 />

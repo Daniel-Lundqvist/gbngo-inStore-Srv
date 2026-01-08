@@ -105,7 +105,11 @@ export default function AdminMaintenance() {
       <h2>{t('admin.maintenance')}</h2>
 
       {message && (
-        <div className={`${styles.message} ${message.includes('fel') ? styles.error : styles.success}`}>
+        <div
+          className={`${styles.message} ${message.includes('fel') ? styles.error : styles.success}`}
+          role={message.includes('fel') ? 'alert' : 'status'}
+          aria-live="polite"
+        >
           {message}
         </div>
       )}

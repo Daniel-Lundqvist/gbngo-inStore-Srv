@@ -203,7 +203,11 @@ export default function AdminSettings() {
       </div>
 
       {message && (
-        <div className={`${styles.message} ${message.includes('sparade') ? styles.success : styles.error}`}>
+        <div
+          className={`${styles.message} ${message.includes('sparade') ? styles.success : styles.error}`}
+          role={message.includes('sparade') ? 'status' : 'alert'}
+          aria-live="polite"
+        >
           {message}
         </div>
       )}

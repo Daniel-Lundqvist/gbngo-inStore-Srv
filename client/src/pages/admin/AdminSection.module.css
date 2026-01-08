@@ -190,12 +190,17 @@
 
 .itemInfo {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .itemName {
   font-weight: 600;
   color: var(--color-text);
   margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .itemMeta {
@@ -370,6 +375,8 @@
   border-radius: 12px;
   cursor: pointer;
   transition: background 0.2s;
+  border: none;
+  padding: 0;
 }
 
 .toggleSwitch.active {
