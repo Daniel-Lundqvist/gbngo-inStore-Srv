@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './AdminSection.module.css';
 
@@ -11,6 +11,9 @@ export default function AdminProducts() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [form, setForm] = useState({ name: '', category_id: '', tags: '' });
   const [saving, setSaving] = useState(false);
+  const [deletingIds, setDeletingIds] = useState(new Set());
+  // Use ref for synchronous check to prevent rapid clicks
+  const deletingIdsRef = useRef(new Set());
 
   useEffect(() => {
     fetchData();
@@ -52,17 +55,45 @@ export default function AdminProducts() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Vill du verkligen ta bort denna produkt?')) return;
+    // Use ref for synchronous check - prevents rapid clicks from passing through
+    if (deletingIdsRef.current.has(id)) return;
+
+    // Mark as deleting IMMEDIATELY in ref (synchronous)
+    deletingIdsRef.current.add(id);
+    // Also update state for UI
+    setDeletingIds(prev => new Set([...prev, id]));
+
+    if (!confirm('Vill du verkligen ta bort denna produkt?')) {
+      // User cancelled - remove from deleting
+      deletingIdsRef.current.delete(id);
+      setDeletingIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+      return;
+    }
+
     try {
       const response = await fetch(`/api/admin/products/${id}`, {
         method: 'DELETE',
         credentials: 'include'
       });
-      if (response.ok) {
+
+      // Remove from list on success OR if already deleted (404)
+      if (response.ok || response.status === 404) {
         setProducts(prev => prev.filter(p => p.id !== id));
       }
     } catch (error) {
       console.error('Failed to delete:', error);
+    } finally {
+      // Remove from deleting set
+      deletingIdsRef.current.delete(id);
+      setDeletingIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
     }
   };
 
@@ -130,11 +161,19 @@ export default function AdminProducts() {
                 </div>
               </div>
               <div className={styles.itemActions}>
-                <button className={styles.editBtn} onClick={() => handleEdit(product)}>
+                <button
+                  className={styles.editBtn}
+                  onClick={() => handleEdit(product)}
+                  disabled={deletingIds.has(product.id)}
+                >
                   Redigera
                 </button>
-                <button className={styles.deleteBtn} onClick={() => handleDelete(product.id)}>
-                  Ta bort
+                <button
+                  className={styles.deleteBtn}
+                  onClick={() => handleDelete(product.id)}
+                  disabled={deletingIds.has(product.id)}
+                >
+                  {deletingIds.has(product.id) ? 'Tar bort...' : 'Ta bort'}
                 </button>
               </div>
             </div>
