@@ -94,6 +94,7 @@
     "tickets": "Dina tickets",
     "expiresAt": "Giltig till",
     "qrCode": "Din personliga QR-kod",
+    "saveQR": "Spara QR-kod",
     "gameHistory": "Spelhistorik",
     "faceId": "Face ID",
     "enableFaceId": "Aktivera Face ID"
@@ -125,6 +126,9 @@
     "noTickets": "Du har inga tickets",
     "receiptUsed": "Kvittot har redan anvants",
     "receiptExpired": "Kvittot har gatt ut",
-    "networkError": "Natverksfel - forsok igen"
+    "networkError": "Natverksfel - forsok igen",
+    "timeout": "Forfragan tog for lang tid. Kontrollera din anslutning.",
+    "generic": "Nagot gick fel.",
+    "retry": "Forsok igen"
   }
 }

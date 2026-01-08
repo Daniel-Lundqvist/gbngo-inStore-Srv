@@ -19,6 +19,7 @@ import ControllerPage from './pages/ControllerPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TournamentPage from './pages/TournamentPage';
+import TimeoutTestPage from './pages/TimeoutTestPage';
 
 // Admin pages
 import {
@@ -161,6 +162,16 @@ function App() {
           element={
             <ProtectedRoute>
               <TournamentPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Timeout test page */}
+        <Route
+          path="/timeout-test"
+          element={
+            <ProtectedRoute>
+              <TimeoutTestPage />
             </ProtectedRoute>
           }
         />

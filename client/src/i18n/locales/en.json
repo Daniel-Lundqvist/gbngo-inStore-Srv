@@ -94,6 +94,7 @@
     "tickets": "Your tickets",
     "expiresAt": "Valid until",
     "qrCode": "Your personal QR code",
+    "saveQR": "Save QR code",
     "gameHistory": "Game history",
     "faceId": "Face ID",
     "enableFaceId": "Enable Face ID"
@@ -125,6 +126,9 @@
     "noTickets": "You have no tickets",
     "receiptUsed": "Receipt has already been used",
     "receiptExpired": "Receipt has expired",
-    "networkError": "Network error - please try again"
+    "networkError": "Network error - please try again",
+    "timeout": "Request timed out. Please check your connection.",
+    "generic": "Something went wrong.",
+    "retry": "Try again"
   }
 }
