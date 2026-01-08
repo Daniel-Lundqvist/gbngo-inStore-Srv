@@ -1,0 +1,722 @@
+<project_specification>
+  <project_name>Grab'n GO's QuickGames</project_name>
+
+  <overview>
+    En interaktiv spelportal för kunder i den obemannade butiken Grab'n GO. Kunder skannar sitt kvitto efter köp för att få "tickets" som ger tillgång till minispel. Appen körs på en iPad/skärm i butiken, och kundens egen mobil används som spelkontroller via WebSocket-koppling. Systemet stödjer highscores, turneringar, användarkonton, och har ett attraktläge för att locka kunder.
+  </overview>
+
+  <technology_stack>
+    <frontend>
+      <framework>React</framework>
+      <styling>CSS Modules + CSS Variables (för tema-system)</styling>
+      <state_management>React Context</state_management>
+      <animations>Framer Motion</animations>
+      <3d_graphics>Three.js (för roterande spelkub)</3d_graphics>
+      <i18n>react-i18next (flerspråksstöd)</i18n>
+    </frontend>
+    <backend>
+      <runtime>Node.js</runtime>
+      <framework>Express</framework>
+      <database>SQLite</database>
+      <realtime>Socket.io (WebSocket för mobil-kontroller)</realtime>
+    </backend>
+    <communication>
+      <api>REST API</api>
+      <realtime>WebSocket</realtime>
+    </communication>
+  </technology_stack>
+
+  <prerequisites>
+    <environment_setup>
+      Node.js 18+, npm, modern webbläsare med kamerastöd
+    </environment_setup>
+  </prerequisites>
+
+  <feature_count>205</feature_count>
+
+  <languages>
+    <language code="sv" name="Svenska" default="true"/>
+    <language code="en" name="English"/>
+    <language code="da" name="Dansk"/>
+    <language code="de" name="Deutsch"/>
+  </languages>
+
+  <themes>
+    <theme id="default" name="Standard">Grab'n GO röd/vit - huvudtema</theme>
+    <theme id="winter" name="Vinter">Snö, is, blåa toner</theme>
+    <theme id="easter" name="Påsk">Pasteller, ägg, vårfärger</theme>
+    <theme id="western" name="Western">Öken, brunt, country-stil</theme>
+    <theme id="summer" name="Sommar">Sol, strand, ljusa färger</theme>
+    <theme id="retro" name="Retro GameBoy">Grönt LCD, pixelkänsla, nostalgi</theme>
+  </themes>
+
+  <security_and_access_control>
+    <user_roles>
+      <role name="guest">
+        <description>Tillfällig spelare utan konto</description>
+        <permissions>
+          - Kan spela spel med aktiva tickets
+          - Tickets gäller endast inom sessionen
+          - Kan ange 5 initialer för highscore
+          - Kan inte spara tickets eller historik
+        </permissions>
+      </role>
+      <role name="returning_guest">
+        <description>Återkommande spelare med konto</description>
+        <permissions>
+          - Allt som gäst kan göra
+          - Tickets sparas på kontot (giltighetstid konfigurerbar)
+          - Personlig QR-kod för snabb inloggning
+          - Personlig mini-dashboard med prestationer
+          - Kan lägga till ansiktsbild (förbered Face ID)
+          - Kan se sin spelhistorik och highscores
+        </permissions>
+      </role>
+      <role name="admin">
+        <description>Administratör med full åtkomst</description>
+        <permissions>
+          - Tillgång via hemlig kod 5250
+          - Konfigurera alla systeminställningar
+          - Hantera produkter och kategorier
+          - Hantera idélåda-svar
+          - Hantera reklam
+          - Se statistik
+          - Rensa highscores
+          - Konfigurera viloläge
+        </permissions>
+        <protected_routes>
+          - /admin/* (endast med kod 5250)
+        </protected_routes>
+      </role>
+    </user_roles>
+    <authentication>
+      <guest_method>5 initialer (filtreras för fula ord)</guest_method>
+      <returning_guest_method>5 initialer + 4-siffrig PIN-kod</returning_guest_method>
+      <quick_login_methods>
+        - Personlig QR-kod (genereras vid kontoskapande)
+        - Face ID (dummy-funktion i MVP, förberett för framtiden)
+      </quick_login_methods>
+      <admin_method>Hemlig kod 5250</admin_method>
+      <session_timeout>Konfigurerbart i admin</session_timeout>
+    </authentication>
+    <profanity_filter>
+      <description>Filtrerar fula ord i användarnamn</description>
+      <languages>Svenska, Engelska, Arabiska</languages>
+      <examples_blocked>kuk, fitta, pussy, etc.</examples_blocked>
+    </profanity_filter>
+  </security_and_access_control>
+
+  <core_features>
+    <idle_mode_attract_screen>
+      <description>Viloläge med 4 roterande vyer när ingen spelar</description>
+      <views>
+        <view id="cube">
+          <name>Spelkuben</name>
+          <description>3D-roterande kub med minispelen, "Skanna kvitto för att spela!"</description>
+        </view>
+        <view id="demos">
+          <name>Speldemos</name>
+          <description>15 sekunders flashig preview/animation per spel</description>
+        </view>
+        <view id="idea_box">
+          <name>Idélåda-svar</name>
+          <description>"Er Fråga" / "Vårt Svar" - kommunikation med kunder</description>
+        </view>
+        <view id="ads">
+          <name>Reklam</name>
+          <description>Bild + budskap + pris för butikens produkter</description>
+        </view>
+      </views>
+      <admin_controls>
+        - På/av för varje vy
+        - Procentuell fördelning av visningstid
+      </admin_controls>
+    </idle_mode_attract_screen>
+
+    <dashboard>
+      <description>Huvudskärm efter viloläge/inloggning</description>
+      <elements>
+        - Roterande 3D-spelkub (klickbar för mer info)
+        - Futuristisk karusell med highscores (dagens, veckans, förra månadens vinnare)
+        - "Skanna kvitto - Börja spela" knapp (höger sida)
+        - Statistik synlig för alla (inspiration)
+        - Grab'n GO-logga prominent
+      </elements>
+    </dashboard>
+
+    <receipt_scanning>
+      <description>Kvittoverifiering för att få tickets</description>
+      <mvp_implementation>
+        - Dummy-knappar längst ner: (1kv, 2kv, 3kv, 4kv) för testning
+        - Manuell ID-inmatning som alternativ
+      </mvp_implementation>
+      <future_implementation>
+        - OCR för att läsa kvittotext
+        - QR-kod på kvitto (när tillgängligt)
+      </future_implementation>
+      <validation_rules>
+        - Kvitto max 15 minuter gammalt (konfigurerbart)
+        - Samma kvitto kan INTE återanvändas
+        - Köpbelopp = antal tickets (t.ex. 20kr = 1 ticket, konfigurerbart)
+      </validation_rules>
+    </receipt_scanning>
+
+    <ticket_system>
+      <description>Tickets ger rätt att spela</description>
+      <rules>
+        - Gäst: Tickets gäller inom sessionen
+        - Återkommande gäst: Tickets sparas på kontot
+        - Default giltighetstid: 30 timmar
+        - Förnyas vid nytt köp (nya tickets = ny tidräkning)
+        - Max tickets per konto (konfigurerbart i admin)
+        - 1 ticket = 1 spel (5 min max per spel)
+      </rules>
+    </ticket_system>
+
+    <user_accounts>
+      <guest_flow>
+        - Ange 5 initialer (filtreras för fula ord)
+        - Spela direkt
+        - Tickets försvinner när sessionen slutar
+      </guest_flow>
+      <returning_guest_flow>
+        - Skapa konto: 5 initialer + 4-siffrig PIN
+        - Valfritt: Ta bild för Face ID (dummy nu)
+        - Får personlig QR-kod för snabb inloggning
+        - Egen mini-dashboard med prestationer
+        - Tickets sparas mellan besök
+      </returning_guest_flow>
+      <account_expiry>
+        - Konton nollställs efter ~1 månad inaktivitet (konfigurerbart)
+      </account_expiry>
+    </user_accounts>
+
+    <personal_qr_code>
+      <description>Snabb inloggning för återkommande gäster</description>
+      <features>
+        - Genereras automatiskt vid kontoskapande
+        - Kan sparas som bild på mobilen
+        - Visa upp för kameran = inloggad direkt
+        - Alternativ till PIN-kod
+      </features>
+    </personal_qr_code>
+
+    <face_id_preparation>
+      <description>Förberett för ansiktsigenkänning (dummy i MVP)</description>
+      <mvp_features>
+        - "Ta bild av dig" knapp på kontosidan
+        - Sparar bilden
+        - Visar "Face ID aktiverat!"
+      </mvp_features>
+      <future_features>
+        - Riktig ansiktsigenkänning med face-api.js
+        - Snabb inloggning genom att visa ansiktet
+      </future_features>
+    </face_id_preparation>
+
+    <highscore_system>
+      <description>Topplistor per spel</description>
+      <lists>
+        - Dagens highscore
+        - Veckans highscore
+        - Förra månadens vinnare
+      </lists>
+      <display>
+        - Futuristisk karusell på dashboard
+        - Visas med spelarens 5 initialer
+        - Förra månadens vinnare kan markeras med krona/stjärna
+      </display>
+    </highscore_system>
+
+    <game_modes>
+      <single_player>
+        - Spela ensam, jaga highscore
+        - Max 5 min per spel
+      </single_player>
+      <two_players>
+        <together>
+          - Spela mot varandra (t.ex. Pong)
+          - Båda spelar samtidigt
+        </together>
+        <take_turns>
+          - Turas om att spela
+          - Spelare 1 spelar sina spel, sen Spelare 2
+          - Jaga highscore individuellt
+        </take_turns>
+      </two_players>
+      <tournament>
+        <trigger>Vid 3-4 skannade kvitton visas turneringsval</trigger>
+        <format>
+          - 4 spelare: A vs B, C vs D, vinnarna möts i final
+          - 3 spelare: En får bye till final
+        </format>
+        <features>
+          - Automatisk lottning
+          - Turneringsvy med bracket
+          - Alla ser samma iPad
+          - Två spelar åt gången (2 sittplatser)
+          - Turnering motsvarar 3 singelspel i tickets
+          - Val: Turnering ELLER singelspel för highscore
+        </features>
+      </tournament>
+    </game_modes>
+
+    <mobile_controller>
+      <description>Kundens mobil blir spelkontroller via WebSocket</description>
+      <connection_flow>
+        - QR-kod visas på iPad/skärm
+        - Kund skannar med mobilen
+        - Mobilen blir GameBoy-style kontroller
+        - Ingen app behövs, körs i webbläsare
+      </connection_flow>
+      <controller_layout>
+        - D-pad (UPP, NER, VÄNSTER, HÖGER)
+        - A-knapp (Enter/bekräfta)
+        - B-knapp (Tillbaka, framtida spelspecifikt)
+        - START-knapp (Pausa spel)
+        - SELECT-knapp (Avbryt/extra funktion)
+        - Grab'n GO-logga på kontrollen
+      </controller_layout>
+      <test_mode>
+        - Testknapp i menyn för att koppla kontroller
+        - Funkar utan att starta spel (för att verifiera funktionalitet)
+      </test_mode>
+    </mobile_controller>
+
+    <games>
+      <description>3 spel vid lansering (dummy-sidor i MVP)</description>
+      <game id="future_snake">
+        <name>Future Snake</name>
+        <description>Klassiskt Snake-spel (byggs separat)</description>
+        <players>1-2</players>
+      </game>
+      <game id="tic_tac_toe">
+        <name>Tic-Tac-Toe</name>
+        <description>Tre-i-rad</description>
+        <players>2</players>
+      </game>
+      <game id="pong">
+        <name>Pong</name>
+        <description>Klassiskt Pong</description>
+        <players>2</players>
+      </game>
+      <mvp_note>
+        - Spelen leder till dummy-sida med "Gå tillbaka"-knapp
+        - Riktiga spel integreras senare
+      </mvp_note>
+    </games>
+
+    <product_search>
+      <description>Sök i butikens sortiment</description>
+      <features>
+        - Sökbar på produktnamn och #tags
+        - Kategorier för enkel navigering
+        - Admin kan lägga upp/redigera produkter
+      </features>
+      <admin_management>
+        - Lägg upp kategori
+        - Lägg upp produkt (namn, kategori, #tags)
+        - Redigera/ta bort produkter
+      </admin_management>
+      <future>
+        - Synk med kassasystem
+      </future>
+    </product_search>
+
+    <idea_box_responses>
+      <description>Kommunikation tillbaka till kunder</description>
+      <display>
+        - Visas i viloläge (roterande vy)
+        - Egen sektion tillgänglig från meny
+        - "Er Fråga" / "Vårt Svar" format
+      </display>
+      <admin_management>
+        - Lägg till fråga + svar
+        - Redigera befintliga
+        - Ta bort gamla
+        - Markera som aktiv/inaktiv
+      </admin_management>
+    </idea_box_responses>
+
+    <advertisement_system>
+      <description>Visa butikens reklam/erbjudanden</description>
+      <display>
+        - Visas i viloläge (roterande vy)
+        - Bild + budskap + pris (alla fält valfria)
+      </display>
+      <admin_management>
+        - Ladda upp bild
+        - Ange budskap (valfritt)
+        - Ange pris (valfritt)
+        - Aktivera/inaktivera
+        - Flera reklamplatser möjliga
+      </admin_management>
+    </advertisement_system>
+
+    <admin_panel>
+      <access>Hemlig kod 5250</access>
+      <settings>
+        <ticket_settings>
+          - Kronor per ticket (t.ex. 20kr = 1 ticket)
+          - Ticket giltighetstid (default 30h)
+          - Max tickets per konto
+        </ticket_settings>
+        <receipt_settings>
+          - Kvittots giltighetstid (default 15 min)
+        </receipt_settings>
+        <session_settings>
+          - Session-timeout (tid till viloläge)
+          - Speltid per spel (default 5 min)
+        </session_settings>
+        <idle_mode_settings>
+          - På/av för varje vy (kub, demos, idélåda, reklam)
+          - Procentuell fördelning
+        </idle_mode_settings>
+        <sound_settings>
+          - Ljud på/av
+          - Volym
+        </sound_settings>
+        <theme_settings>
+          - Välj aktivt tema
+          - Schemalägg teman (framtida)
+        </theme_settings>
+        <language_settings>
+          - Default språk
+        </language_settings>
+        <content_management>
+          - Hantera produkter/kategorier
+          - Hantera idélåda-svar
+          - Hantera reklam
+        </content_management>
+        <maintenance>
+          - Rensa highscores
+          - Se statistik (spelare idag/veckan)
+          - Nollställ konton
+        </maintenance>
+      </settings>
+    </admin_panel>
+
+    <sound_system>
+      <description>Ljudeffekter i meny och spel</description>
+      <features>
+        - Hover-ljud, klick-ljud
+        - Fanfarer vid highscore
+        - "Lagom" nivå - inte för mycket
+        - På/av och volym konfigurerbart i admin
+        - Respektive spel har egna ljud
+      </features>
+    </sound_system>
+
+    <animations>
+      <description>Smidiga övergångar och effekter</description>
+      <features>
+        - Smooth övergångar mellan skärmar
+        - 3D-roterande spelkub
+        - Futuristisk karusell för highscores
+        - Flashiga speldemos i viloläge
+        - "TURNERING SKAPAD!" animation
+      </features>
+    </animations>
+
+    <responsive_design>
+      <description>Funkar på olika skärmstorlekar</description>
+      <targets>
+        - Stor skärm (huvudsaklig)
+        - iPad
+        - iPhone (för kontroller)
+      </targets>
+    </responsive_design>
+  </core_features>
+
+  <database_schema>
+    <tables>
+      <users>
+        - id, initials (5 tecken), pin_code (4 siffror, nullable för gäster)
+        - personal_qr_code, face_image_path (nullable)
+        - tickets_count, tickets_expires_at
+        - created_at, last_active_at
+        - is_returning_guest (boolean)
+      </users>
+      <highscores>
+        - id, user_id, game_id, score, achieved_at
+      </highscores>
+      <used_receipts>
+        - id, receipt_identifier, used_at, user_id
+      </used_receipts>
+      <games>
+        - id, name, slug, description, max_players, is_active
+      </games>
+      <products>
+        - id, name, category_id, tags, is_active
+      </products>
+      <categories>
+        - id, name, sort_order
+      </categories>
+      <idea_responses>
+        - id, question, answer, is_active, created_at
+      </idea_responses>
+      <advertisements>
+        - id, image_path, message (nullable), price (nullable), is_active
+      </advertisements>
+      <settings>
+        - key, value (JSON för komplexa värden)
+      </settings>
+      <game_sessions>
+        - id, user_id, game_id, started_at, ended_at, score
+      </game_sessions>
+      <tournaments>
+        - id, created_at, status, current_round
+      </tournaments>
+      <tournament_players>
+        - id, tournament_id, user_id, position, eliminated_at
+      </tournament_players>
+      <translations>
+        - key, sv, en, da, de
+      </translations>
+    </tables>
+  </database_schema>
+
+  <api_endpoints_summary>
+    <auth>
+      - POST /api/auth/guest (skapa gäst)
+      - POST /api/auth/register (skapa återkommande gäst)
+      - POST /api/auth/login (logga in med initialer + PIN)
+      - POST /api/auth/login-qr (logga in med QR-kod)
+      - POST /api/auth/admin (admin-inloggning med kod)
+      - POST /api/auth/logout
+    </auth>
+    <users>
+      - GET /api/users/me (hämta egen profil)
+      - PUT /api/users/me (uppdatera profil)
+      - POST /api/users/me/face-image (ladda upp ansiktsbild)
+      - GET /api/users/me/qr-code (hämta personlig QR-kod)
+    </users>
+    <tickets>
+      - POST /api/tickets/scan (skanna kvitto, MVP: mock)
+      - GET /api/tickets/balance (hämta antal tickets)
+    </tickets>
+    <games>
+      - GET /api/games (lista alla spel)
+      - GET /api/games/:id (hämta spelinfo)
+      - POST /api/games/:id/start (starta spel)
+      - POST /api/games/:id/end (avsluta spel, rapportera score)
+    </games>
+    <highscores>
+      - GET /api/highscores/today
+      - GET /api/highscores/week
+      - GET /api/highscores/last-month
+      - GET /api/highscores/game/:gameId
+    </highscores>
+    <tournaments>
+      - POST /api/tournaments (skapa turnering)
+      - GET /api/tournaments/:id (hämta turneringsinfo)
+      - POST /api/tournaments/:id/result (rapportera matchresultat)
+    </tournaments>
+    <products>
+      - GET /api/products (lista produkter)
+      - GET /api/products/search?q=... (sök produkter)
+      - GET /api/categories (lista kategorier)
+    </products>
+    <idea_responses>
+      - GET /api/idea-responses (lista aktiva frågor/svar)
+    </idea_responses>
+    <advertisements>
+      - GET /api/advertisements (lista aktiva annonser)
+    </advertisements>
+    <admin>
+      - GET /api/admin/settings
+      - PUT /api/admin/settings
+      - GET /api/admin/stats
+      - POST /api/admin/products
+      - PUT /api/admin/products/:id
+      - DELETE /api/admin/products/:id
+      - POST /api/admin/categories
+      - PUT /api/admin/categories/:id
+      - DELETE /api/admin/categories/:id
+      - POST /api/admin/idea-responses
+      - PUT /api/admin/idea-responses/:id
+      - DELETE /api/admin/idea-responses/:id
+      - POST /api/admin/advertisements
+      - PUT /api/admin/advertisements/:id
+      - DELETE /api/admin/advertisements/:id
+      - DELETE /api/admin/highscores (rensa highscores)
+    </admin>
+    <websocket>
+      - /ws/controller (mobil-kontroller WebSocket)
+      - /ws/game (spel-synkronisering)
+    </websocket>
+  </api_endpoints_summary>
+
+  <ui_layout>
+    <main_structure>
+      Dashboard-centrerad layout med spelkub i centrum,
+      highscore-karusell, och sidopanel för kvittoscanning/användarval.
+      Grab'n GO-logga alltid synlig.
+    </main_structure>
+    <screens>
+      - Viloläge/Attraktläge (4 roterande vyer)
+      - Dashboard (huvudskärm)
+      - Kvittoscanning
+      - Gäst/Konto-val
+      - Skapa konto
+      - Logga in
+      - Min sida (personlig dashboard)
+      - Spelval
+      - Spellägesval (tillsammans/turas om/turnering)
+      - Turneringsvy (bracket)
+      - Spel (dummy-sidor i MVP)
+      - Produktsök
+      - Idélåda-svar
+      - Mobil-kontroller (separat vy för telefon)
+      - Kontroller-test
+      - Admin-panel
+    </screens>
+  </ui_layout>
+
+  <design_system>
+    <color_palette>
+      <primary>Grab'n GO röd (#E31E24 eller liknande)</primary>
+      <secondary>Vit (#FFFFFF)</secondary>
+      <accent>Mörkröd för hover/active</accent>
+      <background>Ljusgrå eller vit</background>
+      <text>Mörk för läsbarhet</text>
+      <theme_specific>Varje tema har egen palett</theme_specific>
+    </color_palette>
+    <typography>
+      <primary>Modern sans-serif (t.ex. Inter, Poppins)</primary>
+      <gaming>Pixelfonts för retro-tema</gaming>
+    </typography>
+    <style>
+      Gaming/arkad-känsla, futuristiska element,
+      smooth animationer, 3D-effekter på kuben
+    </style>
+  </design_system>
+
+  <implementation_steps>
+    <step number="1">
+      <title>Projektstruktur och grundläggande setup</title>
+      <tasks>
+        - Sätt upp React frontend med Vite
+        - Sätt upp Node.js/Express backend
+        - Konfigurera SQLite databas
+        - Implementera tema-system med CSS Variables
+        - Sätt upp i18n med react-i18next
+        - Skapa alla 6 teman (grundstruktur)
+      </tasks>
+    </step>
+    <step number="2">
+      <title>Autentisering och användarsystem</title>
+      <tasks>
+        - Gäst-flöde (5 initialer med profanity filter)
+        - Återkommande gäst (initialer + PIN)
+        - Personlig QR-kod generering
+        - Face ID placeholder
+        - Admin-inloggning (kod 5250)
+      </tasks>
+    </step>
+    <step number="3">
+      <title>Dashboard och viloläge</title>
+      <tasks>
+        - 3D roterande spelkub med Three.js
+        - Highscore-karusell
+        - Viloläge med 4 vyer
+        - Procentuell fördelning av vyer
+        - Animationer och övergångar
+      </tasks>
+    </step>
+    <step number="4">
+      <title>Ticket-system och kvittoscanning</title>
+      <tasks>
+        - MVP mock-knappar (1kv, 2kv, 3kv, 4kv)
+        - Ticket-hantering och lagring
+        - Kvittovalidering (tidsgräns, unikhet)
+        - Köpbelopp till tickets-konvertering
+      </tasks>
+    </step>
+    <step number="5">
+      <title>Mobil-kontroller</title>
+      <tasks>
+        - WebSocket-server med Socket.io
+        - QR-kod för anslutning
+        - GameBoy-style kontroller-UI
+        - Testläge i menyn
+        - Realtids-kommunikation
+      </tasks>
+    </step>
+    <step number="6">
+      <title>Spellägen och turnering</title>
+      <tasks>
+        - Spelval-skärm
+        - Tillsammans/Turas om-lägen
+        - Turneringssystem med bracket
+        - Automatisk lottning
+        - Turneringsvy
+      </tasks>
+    </step>
+    <step number="7">
+      <title>Spel-integration (dummy)</title>
+      <tasks>
+        - Dummy-sidor för Future Snake, Tic-Tac-Toe, Pong
+        - "Gå tillbaka"-funktionalitet
+        - Förberedd integration för riktiga spel
+      </tasks>
+    </step>
+    <step number="8">
+      <title>Produktsök och idélåda</title>
+      <tasks>
+        - Produktsök med kategorier och tags
+        - Idélåda-svar visning
+        - Reklam-system
+      </tasks>
+    </step>
+    <step number="9">
+      <title>Admin-panel</title>
+      <tasks>
+        - Alla inställningar
+        - Produkt/kategori-hantering
+        - Idélåda-hantering
+        - Reklam-hantering
+        - Statistik
+      </tasks>
+    </step>
+    <step number="10">
+      <title>Ljud, animationer och polish</title>
+      <tasks>
+        - Ljudeffekter
+        - Finjustera animationer
+        - Responsiv design
+        - Testa alla teman
+        - Flerspråksstöd komplett
+      </tasks>
+    </step>
+  </implementation_steps>
+
+  <success_criteria>
+    <functionality>
+      - Kunder kan skanna kvitto och få tickets (mock i MVP)
+      - Användare kan skapa konto och logga in på flera sätt
+      - Mobil-kontroller fungerar i realtid
+      - Highscores sparas och visas korrekt
+      - Turneringssystem fungerar för 3-4 spelare
+      - Admin kan konfigurera alla inställningar
+    </functionality>
+    <user_experience>
+      - Attraktivt viloläge som lockar kunder
+      - Smooth animationer och övergångar
+      - Intuitivt flöde utan förvirring
+      - Snabb respons på input
+    </user_experience>
+    <technical_quality>
+      - Inga mock-data i produktion
+      - All data persisteras i databas
+      - WebSocket-anslutning stabil
+      - Fungerar på iPad och mobil
+    </technical_quality>
+    <design_polish>
+      - Grab'n GO-branding genomgående
+      - Alla 6 teman fungerar
+      - 4 språk fungerar
+      - Gaming/arkad-känsla
+    </design_polish>
+  </success_criteria>
+</project_specification>
