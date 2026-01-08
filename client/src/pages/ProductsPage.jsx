@@ -25,13 +25,22 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = !search ||
-      product.name.toLowerCase().includes(search.toLowerCase()) ||
-      (product.tags && product.tags.toLowerCase().includes(search.toLowerCase()));
+    const searchTerm = search.trim();
+    const matchesSearch = !searchTerm ||
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (product.tags && product.tags.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = !selectedCategory ||
       product.category_id === parseInt(selectedCategory);
     return matchesSearch && matchesCategory;
   });
+
+  const clearFilters = () => {
+    setSearch('');
+    setSelectedCategory('');
+  };
+
+  // Check if there are actual filters applied (trimmed search or category)
+  const hasActiveFilters = search.trim() || selectedCategory;
 
   if (loading) {
     return <div className="page center loading">{t('common.loading')}</div>;
@@ -46,7 +55,7 @@ export default function ProductsPage() {
         <h1 style={{ marginTop: '1rem' }}>{t('products.title')}</h1>
       </header>
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
         <input
           type="text"
           placeholder={t('products.search')}
@@ -64,6 +73,20 @@ export default function ProductsPage() {
             <option key={cat.id} value={cat.id}>{cat.name}</option>
           ))}
         </select>
+        {hasActiveFilters && (
+          <button
+            onClick={clearFilters}
+            style={{
+              background: 'var(--color-bg-light)',
+              border: '1px solid var(--color-border)',
+              padding: '0.5rem 1rem',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            {t('products.clearFilters')}
+          </button>
+        )}
       </div>
 
       {filteredProducts.length === 0 ? (

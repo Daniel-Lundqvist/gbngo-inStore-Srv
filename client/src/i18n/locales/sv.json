@@ -81,7 +81,8 @@
     "title": "Produkter",
     "search": "Sok produkter...",
     "allCategories": "Alla kategorier",
-    "noResults": "Inga produkter hittades"
+    "noResults": "Inga produkter hittades",
+    "clearFilters": "Rensa filter"
   },
   "ideaBox": {
     "title": "Idelada",

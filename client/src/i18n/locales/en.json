@@ -81,7 +81,8 @@
     "title": "Products",
     "search": "Search products...",
     "allCategories": "All categories",
-    "noResults": "No products found"
+    "noResults": "No products found",
+    "clearFilters": "Clear filters"
   },
   "ideaBox": {
     "title": "Idea Box",

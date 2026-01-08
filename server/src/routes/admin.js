@@ -340,6 +340,44 @@ router.delete('/advertisements/:id', (req, res) => {
   res.json({ success: true });
 });
 
+// === GAMES ===
+
+// Get all games (admin view includes inactive)
+router.get('/games', (req, res) => {
+  const games = getAll('SELECT * FROM games ORDER BY name', []);
+  res.json(games);
+});
+
+// Update game (toggle active status)
+router.put('/games/:id', (req, res) => {
+  try {
+    const { is_active, name, description } = req.body;
+
+    const existing = getOne('SELECT id FROM games WHERE id = ?', [req.params.id]);
+    if (!existing) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+
+    // Handle is_active specially since 0 is a valid value
+    const activeValue = is_active !== undefined ? (is_active ? 1 : 0) : null;
+
+    runQuery(`
+      UPDATE games
+      SET name = COALESCE(?, name),
+          description = COALESCE(?, description),
+          is_active = COALESCE(?, is_active)
+      WHERE id = ?
+    `, [name || null, description || null, activeValue, req.params.id]);
+
+    const game = getOne('SELECT * FROM games WHERE id = ?', [req.params.id]);
+    saveDatabase();
+    res.json(game);
+  } catch (err) {
+    console.error('Error updating game:', err);
+    res.status(500).json({ error: 'Failed to update game' });
+  }
+});
+
 // === MAINTENANCE ===
 
 // Clear all highscores
@@ -362,6 +400,70 @@ router.delete('/inactive-accounts', (req, res) => {
     DELETE FROM users
     WHERE last_active_at < datetime('now', '-30 days')
       AND is_returning_guest = 1
+  `, []);
+  saveDatabase();
+
+  res.json({
+    success: true,
+    deleted: countBefore.count
+  });
+});
+
+// Alias for inactive accounts (frontend uses this path)
+router.delete('/users/inactive', (req, res) => {
+  const countBefore = getOne(`
+    SELECT COUNT(*) as count FROM users
+    WHERE last_active_at < datetime('now', '-30 days')
+      AND is_returning_guest = 1
+  `, []);
+
+  runQuery(`
+    DELETE FROM users
+    WHERE last_active_at < datetime('now', '-30 days')
+      AND is_returning_guest = 1
+  `, []);
+  saveDatabase();
+
+  res.json({
+    success: true,
+    deleted: countBefore.count
+  });
+});
+
+// Clear expired tickets
+router.delete('/tickets/expired', (req, res) => {
+  const countBefore = getOne(`
+    SELECT COUNT(*) as count FROM users
+    WHERE tickets_count > 0
+      AND tickets_expires_at IS NOT NULL
+      AND tickets_expires_at < datetime('now')
+  `, []);
+
+  runQuery(`
+    UPDATE users
+    SET tickets_count = 0, tickets_expires_at = NULL
+    WHERE tickets_count > 0
+      AND tickets_expires_at IS NOT NULL
+      AND tickets_expires_at < datetime('now')
+  `, []);
+  saveDatabase();
+
+  res.json({
+    success: true,
+    cleared: countBefore.count
+  });
+});
+
+// Clear old receipts (older than 7 days)
+router.delete('/receipts/old', (req, res) => {
+  const countBefore = getOne(`
+    SELECT COUNT(*) as count FROM used_receipts
+    WHERE used_at < datetime('now', '-7 days')
+  `, []);
+
+  runQuery(`
+    DELETE FROM used_receipts
+    WHERE used_at < datetime('now', '-7 days')
   `, []);
   saveDatabase();
 
