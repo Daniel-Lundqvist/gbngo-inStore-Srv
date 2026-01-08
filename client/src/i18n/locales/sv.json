@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Laddar...",
+    "error": "Ett fel uppstod",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "delete": "Ta bort",
+    "edit": "Redigera",
+    "back": "Tillbaka",
+    "confirm": "Bekrafta",
+    "yes": "Ja",
+    "no": "Nej"
+  },
+  "nav": {
+    "home": "Hem",
+    "games": "Spel",
+    "products": "Produkter",
+    "ideaBox": "Idelada",
+    "myPage": "Min Sida",
+    "admin": "Admin",
+    "logout": "Logga ut"
+  },
+  "idle": {
+    "scanReceipt": "Skanna kvitto for att spela!",
+    "touchToStart": "Tryck for att borja"
+  },
+  "start": {
+    "title": "Valj hur du vill spela",
+    "playAsGuest": "Spela som gast",
+    "createAccount": "Skapa konto",
+    "login": "Logga in",
+    "loginWithQR": "Logga in med QR-kod"
+  },
+  "guest": {
+    "title": "Spela som gast",
+    "initialsLabel": "Dina initialer (5 tecken)",
+    "initialsPlaceholder": "ABCDE",
+    "submit": "Borja spela",
+    "note": "Som gast sparas inte dina tickets mellan besok"
+  },
+  "register": {
+    "title": "Skapa konto",
+    "initialsLabel": "Dina initialer (5 tecken)",
+    "pinLabel": "PIN-kod (4 siffror)",
+    "pinConfirmLabel": "Bekrafta PIN-kod",
+    "submit": "Skapa konto",
+    "benefits": [
+      "Spara tickets mellan besok",
+      "Personlig QR-kod for snabb inloggning",
+      "Se din spelhistorik"
+    ]
+  },
+  "login": {
+    "title": "Logga in",
+    "initialsLabel": "Dina initialer",
+    "pinLabel": "PIN-kod",
+    "submit": "Logga in",
+    "forgotPin": "Glomt PIN-kod?"
+  },
+  "dashboard": {
+    "welcome": "Valkommen",
+    "tickets": "Tickets",
+    "scanReceipt": "Skanna kvitto",
+    "playNow": "Spela nu",
+    "highscores": "Topplistor",
+    "today": "Idag",
+    "thisWeek": "Denna vecka",
+    "lastMonth": "Forra manaden"
+  },
+  "games": {
+    "title": "Valj spel",
+    "singlePlayer": "En spelare",
+    "twoPlayers": "Tva spelare",
+    "together": "Tillsammans",
+    "takeTurns": "Turas om",
+    "tournament": "Turnering",
+    "startGame": "Starta spel",
+    "needTickets": "Du behover minst 1 ticket for att spela"
+  },
+  "products": {
+    "title": "Produkter",
+    "search": "Sok produkter...",
+    "allCategories": "Alla kategorier",
+    "noResults": "Inga produkter hittades"
+  },
+  "ideaBox": {
+    "title": "Idelada",
+    "yourQuestion": "Er fraga",
+    "ourAnswer": "Vart svar"
+  },
+  "myPage": {
+    "title": "Min Sida",
+    "tickets": "Dina tickets",
+    "expiresAt": "Giltig till",
+    "qrCode": "Din personliga QR-kod",
+    "gameHistory": "Spelhistorik",
+    "faceId": "Face ID",
+    "enableFaceId": "Aktivera Face ID"
+  },
+  "admin": {
+    "title": "Admin",
+    "settings": "Installningar",
+    "products": "Produkter",
+    "categories": "Kategorier",
+    "ideaResponses": "Idelada-svar",
+    "advertisements": "Reklam",
+    "statistics": "Statistik",
+    "maintenance": "Underhall",
+    "clearHighscores": "Rensa highscores",
+    "enterCode": "Ange adminkod"
+  },
+  "controller": {
+    "title": "Spelkontroll",
+    "connecting": "Ansluter...",
+    "connected": "Ansluten!",
+    "waitingForGame": "Vantar pa spel..."
+  },
+  "errors": {
+    "invalidInitials": "Initialer maste vara exakt 5 tecken",
+    "invalidPin": "PIN-kod maste vara exakt 4 siffror",
+    "pinMismatch": "PIN-koderna matchar inte",
+    "inappropriateInitials": "Valj lamligare initialer",
+    "invalidCredentials": "Felaktiga uppgifter",
+    "noTickets": "Du har inga tickets",
+    "receiptUsed": "Kvittot har redan anvants",
+    "receiptExpired": "Kvittot har gatt ut",
+    "networkError": "Natverksfel - forsok igen"
+  }
+}

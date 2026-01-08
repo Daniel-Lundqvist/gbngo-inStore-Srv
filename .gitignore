@@ -40,8 +40,12 @@ server/uploads/*
 !server/uploads/.gitkeep
 
 # Database (keep features.db for tracking)
-*.db
+server/data/*.db
 !features.db
+
+# Server data directory (database will be created here)
+server/data/*
+!server/data/.gitkeep
 
 # Temporary files
 *.tmp

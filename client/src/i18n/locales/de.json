@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Loschen",
+    "edit": "Bearbeiten",
+    "back": "Zuruck",
+    "confirm": "Bestatigen",
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "nav": {
+    "home": "Startseite",
+    "games": "Spiele",
+    "products": "Produkte",
+    "ideaBox": "Ideenbox",
+    "myPage": "Meine Seite",
+    "admin": "Admin",
+    "logout": "Abmelden"
+  },
+  "idle": {
+    "scanReceipt": "Quittung scannen zum Spielen!",
+    "touchToStart": "Beruhren zum Starten"
+  },
+  "start": {
+    "title": "Wahle wie du spielen mochtest",
+    "playAsGuest": "Als Gast spielen",
+    "createAccount": "Konto erstellen",
+    "login": "Anmelden",
+    "loginWithQR": "Mit QR-Code anmelden"
+  },
+  "guest": {
+    "title": "Als Gast spielen",
+    "initialsLabel": "Deine Initialen (5 Zeichen)",
+    "initialsPlaceholder": "ABCDE",
+    "submit": "Spielen beginnen",
+    "note": "Als Gast werden deine Tickets nicht zwischen Besuchen gespeichert"
+  },
+  "register": {
+    "title": "Konto erstellen",
+    "initialsLabel": "Deine Initialen (5 Zeichen)",
+    "pinLabel": "PIN-Code (4 Ziffern)",
+    "pinConfirmLabel": "PIN-Code bestatigen",
+    "submit": "Konto erstellen",
+    "benefits": [
+      "Tickets zwischen Besuchen speichern",
+      "Personlicher QR-Code fur schnelle Anmeldung",
+      "Deine Spielhistorie anzeigen"
+    ]
+  },
+  "login": {
+    "title": "Anmelden",
+    "initialsLabel": "Deine Initialen",
+    "pinLabel": "PIN-Code",
+    "submit": "Anmelden",
+    "forgotPin": "PIN vergessen?"
+  },
+  "dashboard": {
+    "welcome": "Willkommen",
+    "tickets": "Tickets",
+    "scanReceipt": "Quittung scannen",
+    "playNow": "Jetzt spielen",
+    "highscores": "Bestenlisten",
+    "today": "Heute",
+    "thisWeek": "Diese Woche",
+    "lastMonth": "Letzter Monat"
+  },
+  "games": {
+    "title": "Spiel wahlen",
+    "singlePlayer": "Einzelspieler",
+    "twoPlayers": "Zwei Spieler",
+    "together": "Zusammen",
+    "takeTurns": "Abwechselnd",
+    "tournament": "Turnier",
+    "startGame": "Spiel starten",
+    "needTickets": "Du brauchst mindestens 1 Ticket zum Spielen"
+  },
+  "products": {
+    "title": "Produkte",
+    "search": "Produkte suchen...",
+    "allCategories": "Alle Kategorien",
+    "noResults": "Keine Produkte gefunden"
+  },
+  "ideaBox": {
+    "title": "Ideenbox",
+    "yourQuestion": "Eure Frage",
+    "ourAnswer": "Unsere Antwort"
+  },
+  "myPage": {
+    "title": "Meine Seite",
+    "tickets": "Deine Tickets",
+    "expiresAt": "Gultig bis",
+    "qrCode": "Dein personlicher QR-Code",
+    "gameHistory": "Spielhistorie",
+    "faceId": "Face ID",
+    "enableFaceId": "Face ID aktivieren"
+  },
+  "admin": {
+    "title": "Admin",
+    "settings": "Einstellungen",
+    "products": "Produkte",
+    "categories": "Kategorien",
+    "ideaResponses": "Ideenbox-Antworten",
+    "advertisements": "Werbung",
+    "statistics": "Statistiken",
+    "maintenance": "Wartung",
+    "clearHighscores": "Bestenlisten loschen",
+    "enterCode": "Admin-Code eingeben"
+  },
+  "controller": {
+    "title": "Spielcontroller",
+    "connecting": "Verbinden...",
+    "connected": "Verbunden!",
+    "waitingForGame": "Warte auf Spiel..."
+  },
+  "errors": {
+    "invalidInitials": "Initialen mussen genau 5 Zeichen lang sein",
+    "invalidPin": "PIN muss genau 4 Ziffern haben",
+    "pinMismatch": "PIN-Codes stimmen nicht uberein",
+    "inappropriateInitials": "Bitte wahle passende Initialen",
+    "invalidCredentials": "Ungultige Anmeldedaten",
+    "noTickets": "Du hast keine Tickets",
+    "receiptUsed": "Quittung wurde bereits verwendet",
+    "receiptExpired": "Quittung ist abgelaufen",
+    "networkError": "Netzwerkfehler - bitte erneut versuchen"
+  }
+}

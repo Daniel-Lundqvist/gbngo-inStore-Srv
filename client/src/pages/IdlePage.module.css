@@ -1,0 +1,50 @@
+.idlePage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.content {
+  text-align: center;
+  color: white;
+}
+
+.logo h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs);
+}
+
+.logo p {
+  font-size: 2rem;
+  opacity: 0.9;
+  margin-bottom: var(--spacing-xxl);
+}
+
+.message {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-xl) var(--spacing-xxl);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-xxl);
+}
+
+.cta {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.touchPrompt {
+  font-size: 1.25rem;
+  opacity: 0.8;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+}

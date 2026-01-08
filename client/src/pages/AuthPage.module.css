@@ -1,0 +1,72 @@
+.authPage {
+  background-color: var(--color-background);
+  min-height: 100vh;
+}
+
+.card {
+  max-width: 450px;
+  width: 100%;
+  padding: var(--spacing-xl);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  color: var(--color-primary);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.form input {
+  text-align: center;
+  font-size: 1.5rem;
+  letter-spacing: 0.5rem;
+  text-transform: uppercase;
+}
+
+.form button {
+  margin-top: var(--spacing-md);
+}
+
+.note {
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+  margin-top: var(--spacing-lg);
+}
+
+.backLink {
+  display: block;
+  text-align: center;
+  margin-top: var(--spacing-lg);
+  color: var(--color-text-light);
+}
+
+.backLink:hover {
+  color: var(--color-primary);
+}
+
+.benefits {
+  list-style: none;
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-md);
+  background-color: var(--color-background);
+  border-radius: var(--radius-md);
+}
+
+.benefits li {
+  padding: var(--spacing-sm) 0;
+  padding-left: var(--spacing-lg);
+  position: relative;
+}
+
+.benefits li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--color-success);
+}

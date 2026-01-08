@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "home": "Home",
+    "games": "Games",
+    "products": "Products",
+    "ideaBox": "Idea Box",
+    "myPage": "My Page",
+    "admin": "Admin",
+    "logout": "Logout"
+  },
+  "idle": {
+    "scanReceipt": "Scan receipt to play!",
+    "touchToStart": "Touch to start"
+  },
+  "start": {
+    "title": "Choose how to play",
+    "playAsGuest": "Play as guest",
+    "createAccount": "Create account",
+    "login": "Login",
+    "loginWithQR": "Login with QR code"
+  },
+  "guest": {
+    "title": "Play as guest",
+    "initialsLabel": "Your initials (5 characters)",
+    "initialsPlaceholder": "ABCDE",
+    "submit": "Start playing",
+    "note": "As a guest, your tickets are not saved between visits"
+  },
+  "register": {
+    "title": "Create account",
+    "initialsLabel": "Your initials (5 characters)",
+    "pinLabel": "PIN code (4 digits)",
+    "pinConfirmLabel": "Confirm PIN code",
+    "submit": "Create account",
+    "benefits": [
+      "Save tickets between visits",
+      "Personal QR code for quick login",
+      "View your game history"
+    ]
+  },
+  "login": {
+    "title": "Login",
+    "initialsLabel": "Your initials",
+    "pinLabel": "PIN code",
+    "submit": "Login",
+    "forgotPin": "Forgot PIN?"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "tickets": "Tickets",
+    "scanReceipt": "Scan receipt",
+    "playNow": "Play now",
+    "highscores": "Highscores",
+    "today": "Today",
+    "thisWeek": "This week",
+    "lastMonth": "Last month"
+  },
+  "games": {
+    "title": "Choose game",
+    "singlePlayer": "Single player",
+    "twoPlayers": "Two players",
+    "together": "Together",
+    "takeTurns": "Take turns",
+    "tournament": "Tournament",
+    "startGame": "Start game",
+    "needTickets": "You need at least 1 ticket to play"
+  },
+  "products": {
+    "title": "Products",
+    "search": "Search products...",
+    "allCategories": "All categories",
+    "noResults": "No products found"
+  },
+  "ideaBox": {
+    "title": "Idea Box",
+    "yourQuestion": "Your question",
+    "ourAnswer": "Our answer"
+  },
+  "myPage": {
+    "title": "My Page",
+    "tickets": "Your tickets",
+    "expiresAt": "Valid until",
+    "qrCode": "Your personal QR code",
+    "gameHistory": "Game history",
+    "faceId": "Face ID",
+    "enableFaceId": "Enable Face ID"
+  },
+  "admin": {
+    "title": "Admin",
+    "settings": "Settings",
+    "products": "Products",
+    "categories": "Categories",
+    "ideaResponses": "Idea responses",
+    "advertisements": "Advertisements",
+    "statistics": "Statistics",
+    "maintenance": "Maintenance",
+    "clearHighscores": "Clear highscores",
+    "enterCode": "Enter admin code"
+  },
+  "controller": {
+    "title": "Game Controller",
+    "connecting": "Connecting...",
+    "connected": "Connected!",
+    "waitingForGame": "Waiting for game..."
+  },
+  "errors": {
+    "invalidInitials": "Initials must be exactly 5 characters",
+    "invalidPin": "PIN must be exactly 4 digits",
+    "pinMismatch": "PIN codes do not match",
+    "inappropriateInitials": "Please choose appropriate initials",
+    "invalidCredentials": "Invalid credentials",
+    "noTickets": "You have no tickets",
+    "receiptUsed": "Receipt has already been used",
+    "receiptExpired": "Receipt has expired",
+    "networkError": "Network error - please try again"
+  }
+}

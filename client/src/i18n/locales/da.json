@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Indlaeser...",
+    "error": "Der opstod en fejl",
+    "save": "Gem",
+    "cancel": "Annuller",
+    "delete": "Slet",
+    "edit": "Rediger",
+    "back": "Tilbage",
+    "confirm": "Bekraeft",
+    "yes": "Ja",
+    "no": "Nej"
+  },
+  "nav": {
+    "home": "Hjem",
+    "games": "Spil",
+    "products": "Produkter",
+    "ideaBox": "Idekasse",
+    "myPage": "Min Side",
+    "admin": "Admin",
+    "logout": "Log ud"
+  },
+  "idle": {
+    "scanReceipt": "Scan kvittering for at spille!",
+    "touchToStart": "Tryk for at starte"
+  },
+  "start": {
+    "title": "Vaelg hvordan du vil spille",
+    "playAsGuest": "Spil som gaest",
+    "createAccount": "Opret konto",
+    "login": "Log ind",
+    "loginWithQR": "Log ind med QR-kode"
+  },
+  "guest": {
+    "title": "Spil som gaest",
+    "initialsLabel": "Dine initialer (5 tegn)",
+    "initialsPlaceholder": "ABCDE",
+    "submit": "Begynd at spille",
+    "note": "Som gaest gemmes dine tickets ikke mellem besoeg"
+  },
+  "register": {
+    "title": "Opret konto",
+    "initialsLabel": "Dine initialer (5 tegn)",
+    "pinLabel": "PIN-kode (4 cifre)",
+    "pinConfirmLabel": "Bekraeft PIN-kode",
+    "submit": "Opret konto",
+    "benefits": [
+      "Gem tickets mellem besoeg",
+      "Personlig QR-kode til hurtig login",
+      "Se din spilhistorik"
+    ]
+  },
+  "login": {
+    "title": "Log ind",
+    "initialsLabel": "Dine initialer",
+    "pinLabel": "PIN-kode",
+    "submit": "Log ind",
+    "forgotPin": "Glemt PIN?"
+  },
+  "dashboard": {
+    "welcome": "Velkommen",
+    "tickets": "Tickets",
+    "scanReceipt": "Scan kvittering",
+    "playNow": "Spil nu",
+    "highscores": "Topscorer",
+    "today": "I dag",
+    "thisWeek": "Denne uge",
+    "lastMonth": "Sidste maaned"
+  },
+  "games": {
+    "title": "Vaelg spil",
+    "singlePlayer": "En spiller",
+    "twoPlayers": "To spillere",
+    "together": "Sammen",
+    "takeTurns": "Skiftes",
+    "tournament": "Turnering",
+    "startGame": "Start spil",
+    "needTickets": "Du skal bruge mindst 1 ticket for at spille"
+  },
+  "products": {
+    "title": "Produkter",
+    "search": "Soeg produkter...",
+    "allCategories": "Alle kategorier",
+    "noResults": "Ingen produkter fundet"
+  },
+  "ideaBox": {
+    "title": "Idekasse",
+    "yourQuestion": "Jeres spoergsmaal",
+    "ourAnswer": "Vores svar"
+  },
+  "myPage": {
+    "title": "Min Side",
+    "tickets": "Dine tickets",
+    "expiresAt": "Gyldig til",
+    "qrCode": "Din personlige QR-kode",
+    "gameHistory": "Spilhistorik",
+    "faceId": "Face ID",
+    "enableFaceId": "Aktiver Face ID"
+  },
+  "admin": {
+    "title": "Admin",
+    "settings": "Indstillinger",
+    "products": "Produkter",
+    "categories": "Kategorier",
+    "ideaResponses": "Idekasse-svar",
+    "advertisements": "Reklamer",
+    "statistics": "Statistik",
+    "maintenance": "Vedligeholdelse",
+    "clearHighscores": "Ryd highscores",
+    "enterCode": "Indtast adminkode"
+  },
+  "controller": {
+    "title": "Spilcontroller",
+    "connecting": "Forbinder...",
+    "connected": "Forbundet!",
+    "waitingForGame": "Venter paa spil..."
+  },
+  "errors": {
+    "invalidInitials": "Initialer skal vaere praecis 5 tegn",
+    "invalidPin": "PIN skal vaere praecis 4 cifre",
+    "pinMismatch": "PIN-koderne matcher ikke",
+    "inappropriateInitials": "Vaelg venligst passende initialer",
+    "invalidCredentials": "Ugyldige legitimationsoplysninger",
+    "noTickets": "Du har ingen tickets",
+    "receiptUsed": "Kvitteringen er allerede brugt",
+    "receiptExpired": "Kvitteringen er udloebet",
+    "networkError": "Netvaerksfejl - proev igen"
+  }
+}
