@@ -38,7 +38,7 @@ router.get('/balance', requireAuth, (req, res) => {
 
 // Scan receipt (MVP: mock implementation)
 router.post('/scan', requireAuth, (req, res) => {
-  const { receipt_id, amount } = req.body;
+  const { receipt_id, amount, timestamp } = req.body;
 
   // Get settings
   const ticketPriceSetting = getOne("SELECT value FROM settings WHERE key = 'ticket_price_kronor'", []);
@@ -58,7 +58,22 @@ router.post('/scan', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'Receipt already used' });
   }
 
-  // In MVP, we don't validate receipt timestamp - just accept it
+  // Validate receipt timestamp - receipt must be within validity period
+  if (timestamp) {
+    const receiptTime = new Date(timestamp);
+    const now = new Date();
+    const ageInMinutes = (now - receiptTime) / (1000 * 60);
+
+    if (ageInMinutes > receiptValidityMinutes) {
+      return res.status(400).json({ error: 'Receipt expired' });
+    }
+
+    // Also reject receipts from the future (more than 1 minute ahead)
+    if (ageInMinutes < -1) {
+      return res.status(400).json({ error: 'Invalid receipt timestamp' });
+    }
+  }
+
   // Calculate tickets from amount
   const ticketsToAdd = Math.floor(amount / ticketPrice);
 
