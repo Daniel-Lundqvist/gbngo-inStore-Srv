@@ -18,6 +18,7 @@ import advertisementRoutes from './routes/advertisements.js';
 import adminRoutes from './routes/admin.js';
 import settingsRoutes from './routes/settings.js';
 import uploadRoutes from './routes/upload.js';
+import tournamentRoutes from './routes/tournaments.js';
 import { setupWebSocket } from './websocket/controller.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -80,6 +81,7 @@ async function startServer() {
     app.use('/api/admin', adminRoutes);
     app.use('/api/settings', settingsRoutes);
     app.use('/api/upload', uploadRoutes);
+    app.use('/api/tournaments', tournamentRoutes);
 
     // WebSocket setup
     setupWebSocket(io);

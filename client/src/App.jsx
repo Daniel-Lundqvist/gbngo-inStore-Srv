@@ -18,6 +18,7 @@ import HighscoresPage from './pages/HighscoresPage';
 import ControllerPage from './pages/ControllerPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import NotFoundPage from './pages/NotFoundPage';
+import TournamentPage from './pages/TournamentPage';
 
 // Admin pages
 import {
@@ -141,6 +142,25 @@ function App() {
           element={
             <ProtectedRoute>
               <HighscoresPage />
+            </ProtectedRoute>
+          }
+        />
+
+        
+        {/* Tournament routes */}
+        <Route
+          path="/tournament"
+          element={
+            <ProtectedRoute>
+              <TournamentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tournament/:tournamentId"
+          element={
+            <ProtectedRoute>
+              <TournamentPage />
             </ProtectedRoute>
           }
         />

@@ -276,7 +276,9 @@ export async function initDatabase() {
       status TEXT DEFAULT 'pending',
       current_round INTEGER DEFAULT 1,
       game_id INTEGER,
-      FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE SET NULL
+      winner_id INTEGER,
+      FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE SET NULL,
+      FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET NULL
     )
   `);
 
@@ -290,6 +292,28 @@ export async function initDatabase() {
       eliminated_at TEXT,
       FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE CASCADE,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  
+  // Tournament matches table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS tournament_matches (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      tournament_id INTEGER NOT NULL,
+      round INTEGER NOT NULL,
+      match_order INTEGER NOT NULL,
+      player1_id INTEGER,
+      player2_id INTEGER,
+      player1_score INTEGER,
+      player2_score INTEGER,
+      winner_id INTEGER,
+      status TEXT DEFAULT 'pending',
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE CASCADE,
+      FOREIGN KEY (player1_id) REFERENCES users(id) ON DELETE SET NULL,
+      FOREIGN KEY (player2_id) REFERENCES users(id) ON DELETE SET NULL,
+      FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET NULL
     )
   `);
 

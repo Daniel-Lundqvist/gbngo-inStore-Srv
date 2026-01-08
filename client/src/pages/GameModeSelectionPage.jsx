@@ -27,7 +27,12 @@ export default function GameModeSelectionPage() {
   }, [gameSlug, navigate]);
 
   const selectMode = (mode) => {
-    navigate(`/games/${gameSlug}/play?mode=${mode}`);
+    if (mode === 'tournament') {
+      // Navigate to tournament creation page with game pre-selected
+      navigate(`/tournament?game=${gameSlug}`);
+    } else {
+      navigate(`/games/${gameSlug}/play?mode=${mode}`);
+    }
   };
 
   if (loading) {
