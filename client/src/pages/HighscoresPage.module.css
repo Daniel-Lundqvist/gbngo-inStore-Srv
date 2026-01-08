@@ -1,0 +1,172 @@
+.container {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: var(--color-primary);
+  color: white;
+}
+
+.backLink {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: white;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: var(--color-background);
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: var(--color-border);
+}
+
+.tab.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.content {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  color: var(--color-text-light);
+  padding: 2rem;
+}
+
+.list {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th {
+  background: var(--color-background);
+  font-weight: 600;
+  color: var(--color-text-light);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.table tbody tr:hover {
+  background: var(--color-background);
+}
+
+.topThree td:first-child {
+  font-weight: bold;
+}
+
+.topThree:nth-child(1) td:first-child {
+  color: gold;
+}
+
+.topThree:nth-child(2) td:first-child {
+  color: silver;
+}
+
+.topThree:nth-child(3) td:first-child {
+  color: #cd7f32;
+}
+
+.winner {
+  text-align: center;
+  padding: 3rem;
+}
+
+.crown {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.winner h2 {
+  margin: 0 0 1rem 0;
+  color: var(--color-text-light);
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.winnerName {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.winnerScore {
+  font-size: 1.5rem;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.winnerGame {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab {
+    width: 100%;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+  }
+}
