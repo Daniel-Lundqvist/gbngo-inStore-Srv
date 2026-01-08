@@ -10,6 +10,7 @@ import ticketRoutes from './routes/tickets.js';
 import gameRoutes from './routes/games.js';
 import highscoreRoutes from './routes/highscores.js';
 import productRoutes from './routes/products.js';
+import categoryRoutes from './routes/categories.js';
 import ideaResponseRoutes from './routes/ideaResponses.js';
 import advertisementRoutes from './routes/advertisements.js';
 import adminRoutes from './routes/admin.js';
@@ -64,6 +65,7 @@ async function startServer() {
     app.use('/api/games', gameRoutes);
     app.use('/api/highscores', highscoreRoutes);
     app.use('/api/products', productRoutes);
+    app.use('/api/categories', categoryRoutes);
     app.use('/api/idea-responses', ideaResponseRoutes);
     app.use('/api/advertisements', advertisementRoutes);
     app.use('/api/admin', adminRoutes);

@@ -9,14 +9,26 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import GamesPage from './pages/GamesPage';
-import GamePlayPage from './pages/GamePlayPage';
+import ValidatedGamePlayPage from './pages/ValidatedGamePlayPage';
 import MyPage from './pages/MyPage';
 import ProductsPage from './pages/ProductsPage';
 import IdeaBoxPage from './pages/IdeaBoxPage';
 import ControllerPage from './pages/ControllerPage';
-import AdminPage from './pages/AdminPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import NotFoundPage from './pages/NotFoundPage';
+
+// Admin pages
+import {
+  AdminLayout,
+  AdminDashboard,
+  AdminSettings,
+  AdminProducts,
+  AdminCategories,
+  AdminIdeaResponses,
+  AdminAdvertisements,
+  AdminStatistics,
+  AdminMaintenance
+} from './pages/admin';
 
 // Protected route wrapper
 function ProtectedRoute({ children }) {
@@ -82,7 +94,7 @@ function App() {
           path="/games/:gameSlug"
           element={
             <ProtectedRoute>
-              <GamePlayPage />
+              <ValidatedGamePlayPage />
             </ProtectedRoute>
           }
         />
@@ -114,15 +126,25 @@ function App() {
         {/* Admin routes */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route
-          path="/admin/*"
+          path="/admin"
           element={
             <AdminRoute>
-              <AdminPage />
+              <AdminLayout />
             </AdminRoute>
           }
-        />
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="settings" element={<AdminSettings />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="idea-responses" element={<AdminIdeaResponses />} />
+          <Route path="advertisements" element={<AdminAdvertisements />} />
+          <Route path="statistics" element={<AdminStatistics />} />
+          <Route path="maintenance" element={<AdminMaintenance />} />
+        </Route>
 
         {/* 404 */}
+        <Route path="/404" element={<NotFoundPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
