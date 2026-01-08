@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
@@ -8,7 +8,11 @@ import styles from './AuthPage.module.css';
 export default function GuestPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { loginAsGuest } = useAuth();
+
+  // Get the redirect path from state (if coming from protected route)
+  const from = location.state?.from || '/dashboard';
 
   const [initials, setInitials] = useState('');
   const [error, setError] = useState('');
@@ -26,7 +30,7 @@ export default function GuestPage() {
     setLoading(true);
     try {
       await loginAsGuest(initials);
-      navigate('/dashboard');
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || t('errors.inappropriateInitials'));
     } finally {

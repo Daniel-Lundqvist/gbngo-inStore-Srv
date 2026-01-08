@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 
 // Pages
@@ -13,6 +13,7 @@ import ValidatedGamePlayPage from './pages/ValidatedGamePlayPage';
 import MyPage from './pages/MyPage';
 import ProductsPage from './pages/ProductsPage';
 import IdeaBoxPage from './pages/IdeaBoxPage';
+import HighscoresPage from './pages/HighscoresPage';
 import ControllerPage from './pages/ControllerPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -33,13 +34,15 @@ import {
 // Protected route wrapper
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/start" replace />;
+    // Save the attempted URL for redirect after login
+    return <Navigate to="/start" state={{ from: location.pathname }} replace />;
   }
 
   return children;
@@ -119,6 +122,14 @@ function App() {
           element={
             <ProtectedRoute>
               <IdeaBoxPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/highscores"
+          element={
+            <ProtectedRoute>
+              <HighscoresPage />
             </ProtectedRoute>
           }
         />

@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './AdminLayout.module.css';
@@ -26,7 +26,9 @@ export default function AdminLayout() {
   return (
     <div className={styles.adminLayout}>
       <header className={styles.header}>
-        <h1>{t('admin.title')}</h1>
+        <Link to="/admin" className={styles.logoLink}>
+          <h1>{t('admin.title')}</h1>
+        </Link>
         <button onClick={handleLogout} className={styles.logoutBtn}>
           {t('nav.logout')}
         </button>

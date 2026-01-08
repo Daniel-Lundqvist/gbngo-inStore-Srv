@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../../contexts/ThemeContext';
 import styles from './AdminSection.module.css';
 
 export default function AdminSettings() {
   const { t } = useTranslation();
+  const { changeTheme, theme: currentTheme } = useTheme();
   const [settings, setSettings] = useState({
     kroner_per_ticket: 20,
     ticket_validity_hours: 30,
@@ -14,7 +16,7 @@ export default function AdminSettings() {
     sound_enabled: true,
     sound_volume: 70,
     default_language: 'sv',
-    active_theme: 'default'
+    theme: 'default'
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -42,6 +44,10 @@ export default function AdminSettings() {
 
   const handleChange = (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }));
+    // Apply theme change immediately
+    if (key === 'theme') {
+      changeTheme(value);
+    }
   };
 
   const handleSave = async () => {
@@ -183,8 +189,8 @@ export default function AdminSettings() {
         <div className={styles.field}>
           <label>Aktivt tema</label>
           <select
-            value={settings.active_theme}
-            onChange={e => handleChange('active_theme', e.target.value)}
+            value={settings.theme}
+            onChange={e => handleChange('theme', e.target.value)}
           >
             <option value="default">Standard (Rod/Vit)</option>
             <option value="winter">Vinter</option>

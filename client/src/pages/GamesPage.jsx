@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function GamesPage() {
   const { t } = useTranslation();
@@ -27,11 +28,14 @@ export default function GamesPage() {
 
   return (
     <div className="page">
-      <header style={{ marginBottom: '2rem' }}>
-        <Link to="/dashboard" style={{ color: 'var(--color-primary)' }}>
-          &larr; {t('common.back')}
-        </Link>
-        <h1 style={{ marginTop: '1rem' }}>{t('games.title')}</h1>
+      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <Link to="/dashboard" style={{ color: 'var(--color-primary)' }}>
+            &larr; {t('common.back')}
+          </Link>
+          <h1 style={{ marginTop: '1rem' }}>{t('games.title')}</h1>
+        </div>
+        <LanguageSwitcher />
       </header>
 
       <div style={{ display: 'grid', gap: '1rem', maxWidth: '600px' }}>

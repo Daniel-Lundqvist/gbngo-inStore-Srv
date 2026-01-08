@@ -32,11 +32,59 @@ router.put('/settings', (req, res) => {
 // Get statistics
 router.get('/stats', (req, res) => {
   const today = new Date().toISOString().split('T')[0];
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgoStr = weekAgo.toISOString().split('T')[0];
+
+  // User stats
+  const totalUsers = getOne('SELECT COUNT(*) as count FROM users WHERE is_returning_guest = 1', []).count;
+  const usersToday = getOne('SELECT COUNT(*) as count FROM users WHERE date(last_active_at) = ?', [today]).count;
+  const usersThisWeek = getOne('SELECT COUNT(*) as count FROM users WHERE date(last_active_at) >= ?', [weekAgoStr]).count;
+
+  // Game session stats
+  const totalGamesPlayed = getOne('SELECT COUNT(*) as count FROM game_sessions', []).count;
+  const gamesPlayedToday = getOne('SELECT COUNT(*) as count FROM game_sessions WHERE date(started_at) = ?', [today]).count;
+  const gamesPlayedThisWeek = getOne('SELECT COUNT(*) as count FROM game_sessions WHERE date(started_at) >= ?', [weekAgoStr]).count;
+
+  // Ticket stats
+  const ticketsUsedToday = gamesPlayedToday;
+
+  // Receipt stats
+  const receiptsScannedToday = getOne('SELECT COUNT(*) as count FROM used_receipts WHERE date(used_at) = ?', [today]).count;
+
+  // Popular games
+  const popularGames = getAll(`
+    SELECT g.name, COUNT(gs.id) as count
+    FROM game_sessions gs
+    JOIN games g ON gs.game_id = g.id
+    GROUP BY gs.game_id
+    ORDER BY count DESC
+    LIMIT 5
+  `, []);
+
+  // Recent activity
+  const recentActivity = getAll(`
+    SELECT u.initials, 'spelade' as action, gs.started_at as timestamp
+    FROM game_sessions gs
+    JOIN users u ON gs.user_id = u.id
+    ORDER BY gs.started_at DESC
+    LIMIT 10
+  `, []);
 
   const stats = {
-    total_users: getOne('SELECT COUNT(*) as count FROM users WHERE is_returning_guest = 1', []).count,
-    total_games_played: getOne('SELECT COUNT(*) as count FROM game_sessions', []).count,
-    games_today: getOne('SELECT COUNT(*) as count FROM game_sessions WHERE date(started_at) = ?', [today]).count,
+    totalUsers,
+    usersToday,
+    usersThisWeek,
+    totalGamesPlayed,
+    gamesPlayedToday,
+    gamesPlayedThisWeek,
+    ticketsUsedToday,
+    receiptsScannedToday,
+    popularGames,
+    recentActivity,
+    total_users: totalUsers,
+    total_games_played: totalGamesPlayed,
+    games_today: gamesPlayedToday,
     total_highscores: getOne('SELECT COUNT(*) as count FROM highscores', []).count,
     active_products: getOne('SELECT COUNT(*) as count FROM products WHERE is_active = 1', []).count,
     active_ads: getOne('SELECT COUNT(*) as count FROM advertisements WHERE is_active = 1', []).count,

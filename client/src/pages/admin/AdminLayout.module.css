@@ -21,6 +21,15 @@
   font-weight: 600;
 }
 
+.logoLink {
+  text-decoration: none;
+  color: white;
+}
+
+.logoLink:hover {
+  opacity: 0.9;
+}
+
 .logoutBtn {
   background: rgba(255, 255, 255, 0.2);
   border: none;

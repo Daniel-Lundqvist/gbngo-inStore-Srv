@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
     params.push(searchPattern, searchPattern);
   }
 
-  query += ' ORDER BY p.name';
+  query += ' ORDER BY p.name COLLATE NOCASE';
 
   const products = getAll(query, params);
   res.json(products);
@@ -42,7 +42,7 @@ router.get('/search', (req, res) => {
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
       WHERE p.is_active = 1
-      ORDER BY p.name
+      ORDER BY p.name COLLATE NOCASE
     `, []);
     return res.json(products);
   }
@@ -54,7 +54,7 @@ router.get('/search', (req, res) => {
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.is_active = 1
       AND (p.name LIKE ? OR p.tags LIKE ?)
-    ORDER BY p.name
+    ORDER BY p.name COLLATE NOCASE
   `, [searchPattern, searchPattern]);
 
   res.json(products);
@@ -62,13 +62,13 @@ router.get('/search', (req, res) => {
 
 // Get all categories
 router.get('/categories', (req, res) => {
-  const categories = getAll('SELECT * FROM categories ORDER BY sort_order, name', []);
+  const categories = getAll('SELECT * FROM categories ORDER BY sort_order, name COLLATE NOCASE', []);
   res.json(categories);
 });
 
 // Alias for categories
 router.get('/../categories', (req, res) => {
-  const categories = getAll('SELECT * FROM categories ORDER BY sort_order, name', []);
+  const categories = getAll('SELECT * FROM categories ORDER BY sort_order, name COLLATE NOCASE', []);
   res.json(categories);
 });
 

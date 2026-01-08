@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import styles from './DashboardPage.module.css';
 
 export default function DashboardPage() {
@@ -25,10 +26,12 @@ export default function DashboardPage() {
         <nav className={styles.nav}>
           <Link to="/games">{t('nav.games')}</Link>
           <Link to="/products">{t('nav.products')}</Link>
+          <Link to="/highscores">{t('nav.highscores', 'Topplista')}</Link>
           <Link to="/idea-box">{t('nav.ideaBox')}</Link>
           {user?.is_returning_guest && (
             <Link to="/my-page">{t('nav.myPage')}</Link>
           )}
+          <LanguageSwitcher />
           <button onClick={handleLogout} className={styles.logoutBtn}>
             {t('nav.logout')}
           </button>

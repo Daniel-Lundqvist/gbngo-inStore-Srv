@@ -1,10 +1,14 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import styles from './StartPage.module.css';
 
 export default function StartPage() {
   const { t } = useTranslation();
+  const location = useLocation();
+
+  // Get redirect path from protected route redirect
+  const from = location.state?.from;
 
   return (
     <div className={`page center ${styles.startPage}`}>
@@ -26,7 +30,7 @@ export default function StartPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Link to="/guest" className={`btn btn-large ${styles.optionBtn}`}>
+            <Link to="/guest" state={{ from }} className={`btn btn-large ${styles.optionBtn}`}>
               {t('start.playAsGuest')}
             </Link>
           </motion.div>
@@ -35,7 +39,7 @@ export default function StartPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Link to="/register" className={`btn btn-large btn-secondary ${styles.optionBtn}`}>
+            <Link to="/register" state={{ from }} className={`btn btn-large btn-secondary ${styles.optionBtn}`}>
               {t('start.createAccount')}
             </Link>
           </motion.div>
@@ -44,7 +48,7 @@ export default function StartPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Link to="/login" className={`btn btn-large btn-secondary ${styles.optionBtn}`}>
+            <Link to="/login" state={{ from }} className={`btn btn-large btn-secondary ${styles.optionBtn}`}>
               {t('start.login')}
             </Link>
           </motion.div>
