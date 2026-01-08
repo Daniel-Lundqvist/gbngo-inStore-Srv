@@ -39,7 +39,7 @@ export default function StartPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Link to="/register" state={{ from }} className={`btn btn-large btn-secondary ${styles.optionBtn}`}>
+            <Link to="/register" state={{ from }} className={`btn btn-large ${styles.optionBtnSecondary}`}>
               {t('start.createAccount')}
             </Link>
           </motion.div>
@@ -48,7 +48,7 @@ export default function StartPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Link to="/login" state={{ from }} className={`btn btn-large btn-secondary ${styles.optionBtn}`}>
+            <Link to="/login" state={{ from }} className={`btn btn-large ${styles.optionBtnSecondary}`}>
               {t('start.login')}
             </Link>
           </motion.div>

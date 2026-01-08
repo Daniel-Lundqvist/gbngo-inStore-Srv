@@ -41,15 +41,24 @@
   width: 100%;
   padding: var(--spacing-lg) var(--spacing-xl);
   font-size: 1.25rem;
+  color: white !important;
+  background-color: var(--color-primary-dark) !important;
 }
 
-.optionBtn.btn-secondary {
-  background-color: white;
-  color: var(--color-primary);
+.optionBtn:hover {
+  background-color: var(--color-primary) !important;
+}
+
+.optionBtnSecondary {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  font-size: 1.25rem;
+  background-color: white !important;
+  color: var(--color-primary) !important;
   border-color: white;
 }
 
-.optionBtn.btn-secondary:hover {
-  background-color: var(--color-secondary);
-  color: var(--color-primary-dark);
+.optionBtnSecondary:hover {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-primary-dark) !important;
 }

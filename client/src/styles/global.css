@@ -98,6 +98,15 @@ a:hover {
   color: var(--color-primary-dark);
 }
 
+/* Links styled as buttons should use button colors */
+a.btn {
+  color: white;
+}
+
+a.btn:hover {
+  color: white;
+}
+
 /* Buttons */
 button, .btn {
   display: inline-flex;

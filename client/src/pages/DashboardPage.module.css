@@ -97,6 +97,12 @@
 
 .playBtn {
   min-width: 300px;
+  color: white !important;
+  background-color: var(--color-primary-dark) !important;
+}
+
+.playBtn:hover {
+  background-color: var(--color-primary) !important;
 }
 
 .scanSection {
