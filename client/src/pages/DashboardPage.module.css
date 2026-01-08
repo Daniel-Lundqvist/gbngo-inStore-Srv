@@ -131,3 +131,44 @@
 .mockBtn:hover {
   opacity: 0.9;
 }
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-sm);
+  }
+
+  .nav a {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.875rem;
+  }
+
+  .main {
+    padding: var(--spacing-md);
+  }
+
+  .welcome h2 {
+    font-size: 1.5rem;
+  }
+
+  .ticketCount {
+    font-size: 2rem;
+  }
+
+  .playBtn {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .mockButtons {
+    flex-wrap: wrap;
+  }
+}
