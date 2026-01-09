@@ -86,3 +86,12 @@ SQLite via sql.js (in-memory with file persistence). Schema initialized in `serv
 ## Full Documentation
 
 See `gbngo-inStore-Architecture.md` for complete architecture documentation including database schema, game flow, themes, and future plans.
+
+## Feature Specification (AutoCoder)
+
+This project was initially built by AutoCoder. The complete feature specification is preserved for reference:
+
+- **`prompts/app_spec.txt`** - Full XML specification with all 205+ features, user roles, game modes, API endpoints, and UI requirements
+- **`features.db`** - SQLite database tracking implementation status of each feature (209/209 completed)
+
+Use these files to understand what features exist and their original requirements.
