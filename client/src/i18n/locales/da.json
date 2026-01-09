@@ -100,6 +100,7 @@
   "admin": {
     "title": "Admin",
     "settings": "Indstillinger",
+    "games": "Spil",
     "products": "Produkter",
     "categories": "Kategorier",
     "ideaResponses": "Idékasse-svar",

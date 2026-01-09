@@ -20,6 +20,27 @@ Logg över ändringar och utveckling av projektet.
 - **Idle Mode-inställningar** - Admin-inställningar för viloläge respekteras nu korrekt
 - **sv.json encoding** - Alla svenska tecken (å, ä, ö) återställda i översättningsfilen
 - **AdminSettings i18n** - All hårdkodad svensk text ersatt med översättningsnycklar
+- **Admin-sidornas encoding** - Svenska tecken fixade i alla 7 admin-sidor:
+  - AdminDashboard: "Välkommen", "användningsstatistik", "Systemunderhåll"
+  - AdminProducts: "Lägg till", "Sök", "Första", "Föregående", "Nästa", "Välj"
+  - AdminCategories: "Lägg till", "ännu", "Lägre nummer visas först"
+  - AdminIdeaResponses: "idélåda", "fråga", "Vårt svar", "viloläge"
+  - AdminAdvertisements: "Lägg till", "ännu", "Välj", "viloläge"
+  - AdminStatistics: "Tickets använda", "Populära spel", "för extern analys"
+  - AdminMaintenance: "åtgärder", "ångras", "Är du säker", "utgångna", "äldre än"
+
+### Tillagt
+- `claude-architecture.md` - Arkitekturöversikt för snabbare navigering
+- **Admin → Spel** - Ny admin-sektion för spelhantering:
+  - Lista alla spel (aktiva + inaktiva)
+  - Aktivera/inaktivera spel (syns/syns ej i frontend)
+  - Redigera namn, beskrivning, max spelare
+  - Skapa nya spel
+  - Ta bort spel
+  - API: POST/PUT/DELETE `/api/admin/games`
+
+### Förbättrat
+- **GamesPage layout** - Snyggare spellistning: centrerade kort, titel på en rad, kompaktare design
 
 ### Ändrat
 - Konsekvent stränghantering för boolean-inställningar i IdlePage

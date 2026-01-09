@@ -13,8 +13,8 @@ export default function AdminMaintenance() {
   };
 
   const clearHighscores = async () => {
-    if (!confirm('Ar du saker pa att du vill rensa ALLA highscores? Denna atgard kan inte angras!')) return;
-    if (!confirm('VARNING: Detta tar bort alla topplistor permanent. Skriv "RENSA" for att bekrafta.')) return;
+    if (!confirm('Är du säker på att du vill rensa ALLA highscores? Denna åtgärd kan inte ångras!')) return;
+    if (!confirm('VARNING: Detta tar bort alla topplistor permanent. Skriv "RENSA" för att bekräfta.')) return;
 
     setLoading(true);
     try {
@@ -28,14 +28,14 @@ export default function AdminMaintenance() {
         showMessage('Kunde inte rensa highscores', true);
       }
     } catch (error) {
-      showMessage('Natverksfel - forsok igen', true);
+      showMessage('Nätverksfel - försök igen', true);
     } finally {
       setLoading(false);
     }
   };
 
   const clearInactiveAccounts = async () => {
-    if (!confirm('Ta bort konton som varit inaktiva i mer an 30 dagar?')) return;
+    if (!confirm('Ta bort konton som varit inaktiva i mer än 30 dagar?')) return;
 
     setLoading(true);
     try {
@@ -50,14 +50,14 @@ export default function AdminMaintenance() {
         showMessage('Kunde inte ta bort konton', true);
       }
     } catch (error) {
-      showMessage('Natverksfel - forsok igen', true);
+      showMessage('Nätverksfel - försök igen', true);
     } finally {
       setLoading(false);
     }
   };
 
   const clearExpiredTickets = async () => {
-    if (!confirm('Ta bort alla tickets som har gatt ut?')) return;
+    if (!confirm('Ta bort alla tickets som har gått ut?')) return;
 
     setLoading(true);
     try {
@@ -67,19 +67,19 @@ export default function AdminMaintenance() {
       });
       if (response.ok) {
         const data = await response.json();
-        showMessage(`Utgangna tickets har rensats!`);
+        showMessage(`Utgångna tickets har rensats!`);
       } else {
         showMessage('Kunde inte rensa tickets', true);
       }
     } catch (error) {
-      showMessage('Natverksfel - forsok igen', true);
+      showMessage('Nätverksfel - försök igen', true);
     } finally {
       setLoading(false);
     }
   };
 
   const clearOldReceipts = async () => {
-    if (!confirm('Ta bort anvanda kvitton aldre an 7 dagar?')) return;
+    if (!confirm('Ta bort använda kvitton äldre än 7 dagar?')) return;
 
     setLoading(true);
     try {
@@ -94,7 +94,7 @@ export default function AdminMaintenance() {
         showMessage('Kunde inte rensa kvitton', true);
       }
     } catch (error) {
-      showMessage('Natverksfel - forsok igen', true);
+      showMessage('Nätverksfel - försök igen', true);
     } finally {
       setLoading(false);
     }
@@ -117,7 +117,7 @@ export default function AdminMaintenance() {
       <div className={styles.settingsGroup}>
         <h3>Datarensning</h3>
         <p style={{ marginBottom: '1rem', color: 'var(--color-text-light)' }}>
-          Dessa atgarder rensar ut gammal data for att halla systemet snabbt.
+          Dessa åtgärder rensar ut gammal data för att hålla systemet snabbt.
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -126,7 +126,7 @@ export default function AdminMaintenance() {
             onClick={clearExpiredTickets}
             disabled={loading}
           >
-            Rensa utgangna tickets
+            Rensa utgångna tickets
           </button>
 
           <button
@@ -134,7 +134,7 @@ export default function AdminMaintenance() {
             onClick={clearOldReceipts}
             disabled={loading}
           >
-            Rensa gamla kvitton (aldre an 7 dagar)
+            Rensa gamla kvitton (äldre än 7 dagar)
           </button>
 
           <button
@@ -150,7 +150,7 @@ export default function AdminMaintenance() {
       <div className={styles.dangerZone}>
         <h3>Farozon</h3>
         <p style={{ marginBottom: '1rem' }}>
-          Dessa atgarder ar permanenta och kan inte angras!
+          Dessa åtgärder är permanenta och kan inte ångras!
         </p>
 
         <button

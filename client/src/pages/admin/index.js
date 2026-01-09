@@ -1,6 +1,7 @@
 export { default as AdminLayout } from './AdminLayout';
 export { default as AdminDashboard } from './AdminDashboard';
 export { default as AdminSettings } from './AdminSettings';
+export { default as AdminGames } from './AdminGames';
 export { default as AdminProducts } from './AdminProducts';
 export { default as AdminCategories } from './AdminCategories';
 export { default as AdminIdeaResponses } from './AdminIdeaResponses';

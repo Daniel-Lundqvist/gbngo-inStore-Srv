@@ -348,10 +348,43 @@ router.get('/games', (req, res) => {
   res.json(games);
 });
 
-// Update game (toggle active status)
+// Create game
+router.post('/games', (req, res) => {
+  try {
+    const { name, slug, description, max_players } = req.body;
+
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({ error: 'Game name is required' });
+    }
+
+    // Generate slug from name if not provided
+    const gameSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    // Check if slug already exists
+    const existingSlug = getOne('SELECT id FROM games WHERE slug = ?', [gameSlug]);
+    if (existingSlug) {
+      return res.status(400).json({ error: 'A game with this slug already exists' });
+    }
+
+    runQuery(
+      `INSERT INTO games (name, slug, description, max_players, is_active) VALUES (?, ?, ?, ?, 1)`,
+      [name.trim(), gameSlug, description || null, max_players || 1]
+    );
+
+    const lastId = getLastInsertRowId();
+    const game = getOne('SELECT * FROM games WHERE id = ?', [lastId]);
+    saveDatabase();
+    res.json(game);
+  } catch (err) {
+    console.error('Error creating game:', err);
+    res.status(500).json({ error: 'Failed to create game' });
+  }
+});
+
+// Update game
 router.put('/games/:id', (req, res) => {
   try {
-    const { is_active, name, description } = req.body;
+    const { is_active, name, description, max_players } = req.body;
 
     const existing = getOne('SELECT id FROM games WHERE id = ?', [req.params.id]);
     if (!existing) {
@@ -365,9 +398,10 @@ router.put('/games/:id', (req, res) => {
       UPDATE games
       SET name = COALESCE(?, name),
           description = COALESCE(?, description),
+          max_players = COALESCE(?, max_players),
           is_active = COALESCE(?, is_active)
       WHERE id = ?
-    `, [name || null, description || null, activeValue, req.params.id]);
+    `, [name || null, description || null, max_players || null, activeValue, req.params.id]);
 
     const game = getOne('SELECT * FROM games WHERE id = ?', [req.params.id]);
     saveDatabase();
@@ -375,6 +409,30 @@ router.put('/games/:id', (req, res) => {
   } catch (err) {
     console.error('Error updating game:', err);
     res.status(500).json({ error: 'Failed to update game' });
+  }
+});
+
+// Delete game
+router.delete('/games/:id', (req, res) => {
+  try {
+    const existing = getOne('SELECT id FROM games WHERE id = ?', [req.params.id]);
+    if (!existing) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+
+    // Check if game has highscores - warn but still allow delete
+    const highscoreCount = getOne('SELECT COUNT(*) as count FROM highscores WHERE game_id = ?', [req.params.id]);
+
+    runQuery('DELETE FROM games WHERE id = ?', [req.params.id]);
+    saveDatabase();
+
+    res.json({
+      success: true,
+      warning: highscoreCount.count > 0 ? `${highscoreCount.count} highscores were also removed` : null
+    });
+  } catch (err) {
+    console.error('Error deleting game:', err);
+    res.status(500).json({ error: 'Failed to delete game' });
   }
 });
 

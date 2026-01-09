@@ -15,6 +15,7 @@ export default function AdminLayout() {
 
   const sections = [
     { id: 'settings', label: t('admin.settings'), icon: '⚙️' },
+    { id: 'games', label: t('admin.games', 'Spel'), icon: '🎮' },
     { id: 'products', label: t('admin.products'), icon: '📦' },
     { id: 'categories', label: t('admin.categories'), icon: '📁' },
     { id: 'idea-responses', label: t('admin.ideaResponses'), icon: '💡' },

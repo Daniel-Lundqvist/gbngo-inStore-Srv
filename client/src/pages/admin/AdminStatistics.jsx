@@ -102,7 +102,7 @@ export default function AdminStatistics() {
         </div>
         <div className={styles.statCard}>
           <div className={styles.statValue}>{stats.ticketsUsedToday || 0}</div>
-          <div className={styles.statLabel}>Tickets anvanda idag</div>
+          <div className={styles.statLabel}>Tickets använda idag</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statValue}>{stats.receiptsScannedToday || 0}</div>
@@ -111,7 +111,7 @@ export default function AdminStatistics() {
       </div>
 
       <div className={styles.settingsGroup}>
-        <h3>Populara spel</h3>
+        <h3>Populära spel</h3>
         {stats.popularGames && stats.popularGames.length > 0 ? (
           <div className={styles.itemList}>
             {stats.popularGames.map((game, index) => (
@@ -128,7 +128,7 @@ export default function AdminStatistics() {
             ))}
           </div>
         ) : (
-          <p>Ingen speldata annu</p>
+          <p>Ingen speldata ännu</p>
         )}
       </div>
 
@@ -148,7 +148,7 @@ export default function AdminStatistics() {
             ))}
           </div>
         ) : (
-          <p>Ingen aktivitet registrerad annu</p>
+          <p>Ingen aktivitet registrerad ännu</p>
         )}
       </div>
 
@@ -161,7 +161,7 @@ export default function AdminStatistics() {
       <div className={styles.settingsGroup}>
         <h3>Exportera data</h3>
         <p style={{ marginBottom: '1rem', color: 'var(--color-text-light)' }}>
-          Ladda ner highscores som fil for extern analys.
+          Ladda ner highscores som fil för extern analys.
         </p>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <button

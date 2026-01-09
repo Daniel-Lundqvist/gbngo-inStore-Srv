@@ -102,6 +102,7 @@
   "admin": {
     "title": "Admin",
     "settings": "Settings",
+    "games": "Games",
     "products": "Products",
     "categories": "Categories",
     "ideaResponses": "Idea responses",

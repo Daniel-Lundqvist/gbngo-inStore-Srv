@@ -209,7 +209,7 @@ export default function AdminProducts() {
       }
     } catch (error) {
       console.error('Failed to delete:', error);
-      showMessage('Natverksfel - forsok igen', 'error');
+      showMessage('Nätverksfel - försök igen', 'error');
     } finally {
       // Remove from deleting set
       deletingIdsRef.current.delete(id);
@@ -250,7 +250,7 @@ export default function AdminProducts() {
       }
     } catch (error) {
       console.error('Failed to save:', error);
-      showMessage('Natverksfel - forsok igen', 'error');
+      showMessage('Nätverksfel - försök igen', 'error');
     } finally {
       setSaving(false);
     }
@@ -318,7 +318,7 @@ export default function AdminProducts() {
         <h2>{t('admin.products')}</h2>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button className={styles.addBtn} onClick={handleAdd}>
-            + Lagg till produkt
+            + Lägg till produkt
           </button>
           <button
             className={styles.saveBtn}
@@ -347,7 +347,7 @@ export default function AdminProducts() {
       }}>
         <input
           type="text"
-          placeholder="Sok produkt..."
+          placeholder="Sök produkt..."
           value={searchTerm}
           onChange={(e) => handleFilterChange('search', e.target.value)}
           className={styles.searchInput}
@@ -390,10 +390,10 @@ export default function AdminProducts() {
 
       {filteredProducts.length === 0 ? (
         <div className={styles.empty}>
-          <p>{products.length === 0 ? 'Inga produkter annu' : 'Inga produkter matchar filtret'}</p>
+          <p>{products.length === 0 ? 'Inga produkter ännu' : 'Inga produkter matchar filtret'}</p>
           {products.length === 0 && (
             <button className={styles.addBtn} onClick={handleAdd}>
-              Lagg till forsta produkten
+              Lägg till första produkten
             </button>
           )}
         </div>
@@ -451,7 +451,7 @@ export default function AdminProducts() {
                   cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
                 }}
               >
-                Forsta
+                Första
               </button>
               <button
                 onClick={goToPrevPage}
@@ -465,7 +465,7 @@ export default function AdminProducts() {
                   cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
                 }}
               >
-                Foregaende
+                Föregående
               </button>
 
               {getPageNumbers().map((page, index) => (
@@ -503,7 +503,7 @@ export default function AdminProducts() {
                   cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
                 }}
               >
-                Nasta
+                Nästa
               </button>
               <button
                 onClick={goToLastPage}
@@ -537,7 +537,7 @@ export default function AdminProducts() {
       {showModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h3>{editingProduct ? 'Redigera produkt' : 'Lagg till produkt'}</h3>
+            <h3>{editingProduct ? 'Redigera produkt' : 'Lägg till produkt'}</h3>
             <form onSubmit={handleSubmit}>
               <div className={styles.field}>
                 <label>Produktnamn</label>
@@ -555,7 +555,7 @@ export default function AdminProducts() {
                   onChange={e => setForm({ ...form, category_id: e.target.value })}
                   required
                 >
-                  <option value="">Valj kategori...</option>
+                  <option value="">Välj kategori...</option>
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}

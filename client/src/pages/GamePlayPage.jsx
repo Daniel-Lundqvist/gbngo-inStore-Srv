@@ -58,7 +58,7 @@ export default function GamePlayPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Failed to start game');
+        setError(data.error || t('errors.failedToStartGame', 'Kunde inte starta spelet'));
         isStartingRef.current = false;
         setStarting(false);
         return;
@@ -68,7 +68,7 @@ export default function GamePlayPage() {
       setGameStarted(true);
       refreshUser();
     } catch (err) {
-      setError('Failed to start game');
+      setError(t('errors.failedToStartGame', 'Kunde inte starta spelet'));
       isStartingRef.current = false;
       setStarting(false);
     }
@@ -91,13 +91,13 @@ export default function GamePlayPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Failed to submit score');
+        setError(data.error || t('errors.failedToSubmitScore', 'Kunde inte skicka poäng'));
         return;
       }
 
       setGameEnded(true);
     } catch (err) {
-      setError('Failed to submit score');
+      setError(t('errors.failedToSubmitScore', 'Kunde inte skicka poäng'));
     } finally {
       setSubmitting(false);
     }
@@ -144,12 +144,12 @@ export default function GamePlayPage() {
     return (
       <div className="page center">
         <div className="card" style={{ maxWidth: '500px', textAlign: 'center' }}>
-          <h1>🎮 {t('game.gameOver', 'Game Over!')}</h1>
+          <h1>🎮 {t('game.gameOver', 'Spelet slut!')}</h1>
           <p style={{ fontSize: '0.875rem', color: 'var(--color-text-light)', marginBottom: '0.5rem' }}>
             {getModeLabel()}
           </p>
           <p style={{ fontSize: '2rem', margin: '1rem 0' }}>
-            {t('game.yourScore', 'Your score')}: <strong>{score}</strong>
+            {t('game.yourScore', 'Din poäng')}: <strong>{score}</strong>
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
             <Link to="/highscores" className="btn btn-large">
@@ -204,14 +204,14 @@ export default function GamePlayPage() {
             </p>
           )}
           <p style={{ color: 'var(--color-text-light)', margin: '1rem 0' }}>
-            {t('game.readyToPlay', 'Ready to play?')}
+            {t('game.readyToPlay', 'Redo att spela?')}
             <br />
-            {t('game.ticketCost', 'This will use 1 ticket.')}
+            {t('game.ticketCost', 'Detta kostar 1 ticket.')}
           </p>
           {error && <p style={{ color: 'var(--color-error)', marginBottom: '1rem' }} role="alert">{error}</p>}
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
             <button onClick={startGame} className="btn btn-large" disabled={starting}>
-              {starting ? t('common.starting', 'Starting...') : t('game.startGame', 'Start Game')}
+              {starting ? t('common.starting', 'Startar...') : t('game.startGame', 'Starta spel')}
             </button>
             <Link to="/games" className="btn btn-secondary">
               {t('common.back')}
@@ -240,9 +240,9 @@ export default function GamePlayPage() {
           {getModeLabel()}
         </p>
         <p style={{ color: 'var(--color-text-light)', margin: '1rem 0' }}>
-          {t('game.dummyPlaceholder', 'This is a placeholder for the game.')}
+          {t('game.dummyPlaceholder', 'Detta är en platshållare för spelet.')}
           <br />
-          {t('game.testScore', 'Enter a test score below:')}
+          {t('game.testScore', 'Ange en testpoäng nedan:')}
         </p>
         <div style={{ margin: '2rem 0' }}>
           <input
@@ -267,7 +267,7 @@ export default function GamePlayPage() {
           className="btn btn-large"
           disabled={submitting}
         >
-          {submitting ? t('common.submitting', 'Submitting...') : t('game.endGame', 'End Game & Submit Score')}
+          {submitting ? t('common.submitting', 'Skickar...') : t('game.endGame', 'Avsluta spel och skicka poäng')}
         </button>
       </div>
     </div>

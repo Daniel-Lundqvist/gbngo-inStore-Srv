@@ -27,42 +27,55 @@ export default function GamesPage() {
   }
 
   return (
-    <div className="page">
-      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <Link to="/dashboard" style={{ color: 'var(--color-primary)' }}>
-            &larr; {t('common.back')}
-          </Link>
-          <h1 style={{ marginTop: '1rem' }}>{t('games.title')}</h1>
-        </div>
+    <div className="page" style={{ maxWidth: '500px', margin: '0 auto', padding: '1rem' }}>
+      <header style={{
+        marginBottom: '1.5rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <Link to="/dashboard" style={{ color: 'var(--color-primary)' }}>
+          &larr; {t('common.back')}
+        </Link>
         <LanguageSwitcher />
       </header>
 
-      <div style={{ display: 'grid', gap: '1rem', maxWidth: '600px' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', whiteSpace: 'nowrap' }}>
+        {t('games.title')}
+      </h1>
+
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        alignItems: 'center'
+      }}>
         {games.map((game) => (
           <motion.div
             key={game.id}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
+            style={{ width: '100%', maxWidth: '400px' }}
           >
             <Link
               to={`/games/${game.slug}`}
               style={{
                 display: 'block',
-                padding: '1.5rem',
+                padding: '1.25rem',
                 backgroundColor: 'var(--color-surface)',
                 borderRadius: 'var(--radius-lg)',
                 boxShadow: 'var(--shadow-md)',
                 textDecoration: 'none',
-                color: 'inherit'
+                color: 'inherit',
+                textAlign: 'center'
               }}
             >
               <h3 style={{ margin: 0, marginBottom: '0.5rem' }}>{game.name}</h3>
-              <p style={{ margin: 0, color: 'var(--color-text-light)' }}>
+              <p style={{ margin: 0, color: 'var(--color-text-light)', fontSize: '0.9rem' }}>
                 {game.description}
               </p>
-              <p style={{ margin: 0, marginTop: '0.5rem', fontSize: '0.875rem' }}>
-                Max {game.max_players} {game.max_players === 1 ? 'spelare' : 'spelare'}
+              <p style={{ margin: 0, marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--color-text-light)' }}>
+                {t('games.maxPlayers', 'Max {{count}} spelare', { count: game.max_players })}
               </p>
             </Link>
           </motion.div>

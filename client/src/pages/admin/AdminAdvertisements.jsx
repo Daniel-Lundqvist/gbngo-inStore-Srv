@@ -120,15 +120,15 @@ export default function AdminAdvertisements() {
       <div className={styles.listHeader}>
         <h2>{t('admin.advertisements')}</h2>
         <button className={styles.addBtn} onClick={handleAdd}>
-          + Lagg till annons
+          + Lägg till annons
         </button>
       </div>
 
       {advertisements.length === 0 ? (
         <div className={styles.empty}>
-          <p>Inga annonser annu</p>
+          <p>Inga annonser ännu</p>
           <button className={styles.addBtn} onClick={handleAdd}>
-            Lagg till forsta annonsen
+            Lägg till första annonsen
           </button>
         </div>
       ) : (
@@ -177,7 +177,7 @@ export default function AdminAdvertisements() {
       {showModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h3>{editingAd ? 'Redigera annons' : 'Lagg till annons'}</h3>
+            <h3>{editingAd ? 'Redigera annons' : 'Lägg till annons'}</h3>
             <form onSubmit={handleSubmit}>
               <div className={styles.field}>
                 <label>Bild (valfritt)</label>
@@ -198,7 +198,7 @@ export default function AdminAdvertisements() {
                   accept="image/*"
                   maxSize={5 * 1024 * 1024}
                   endpoint="/api/upload/advertisement"
-                  label="Valj bild att ladda upp"
+                  label="Välj bild att ladda upp"
                 />
               </div>
               <div className={styles.field}>
@@ -225,7 +225,7 @@ export default function AdminAdvertisements() {
                     checked={form.is_active}
                     onChange={e => setForm({ ...form, is_active: e.target.checked })}
                   />
-                  Aktiv (visas i vilolage)
+                  Aktiv (visas i viloläge)
                 </label>
               </div>
               <div className={styles.modalActions}>

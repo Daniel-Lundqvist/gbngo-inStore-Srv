@@ -345,9 +345,9 @@ export async function initDatabase() {
 
   // Insert default games if not exist
   const defaultGames = [
-    ['Future Snake', 'future-snake', 'Classic Snake game with a futuristic twist', 2],
-    ['Tic-Tac-Toe', 'tic-tac-toe', 'Classic three in a row game', 2],
-    ['Pong', 'pong', 'Classic Pong game', 2]
+    ['Future Snake', 'future-snake', 'Klassiskt ormspel med futuristisk twist', 2],
+    ['Tic-Tac-Toe', 'tic-tac-toe', 'Klassiskt tre-i-rad spel', 2],
+    ['Pong', 'pong', 'Klassiskt Pong-spel', 2]
   ];
 
   for (const [name, slug, description, maxPlayers] of defaultGames) {
@@ -360,7 +360,7 @@ export async function initDatabase() {
     ['Snacks', 2],
     ['Godis', 3],
     ['Mat', 4],
-    ['Ovrigt', 5]
+    ['Övrigt', 5]
   ];
 
   for (const [name, sortOrder] of defaultCategories) {

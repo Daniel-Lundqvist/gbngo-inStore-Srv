@@ -91,15 +91,15 @@ export default function AdminCategories() {
       <div className={styles.listHeader}>
         <h2>{t('admin.categories')}</h2>
         <button className={styles.addBtn} onClick={handleAdd}>
-          + Lagg till kategori
+          + Lägg till kategori
         </button>
       </div>
 
       {categories.length === 0 ? (
         <div className={styles.empty}>
-          <p>Inga kategorier annu</p>
+          <p>Inga kategorier ännu</p>
           <button className={styles.addBtn} onClick={handleAdd}>
-            Lagg till forsta kategorin
+            Lägg till första kategorin
           </button>
         </div>
       ) : (
@@ -128,7 +128,7 @@ export default function AdminCategories() {
       {showModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h3>{editingCategory ? 'Redigera kategori' : 'Lagg till kategori'}</h3>
+            <h3>{editingCategory ? 'Redigera kategori' : 'Lägg till kategori'}</h3>
             <form onSubmit={handleSubmit}>
               <div className={styles.field}>
                 <label>Kategorinamn</label>
@@ -147,7 +147,7 @@ export default function AdminCategories() {
                   onChange={e => setForm({ ...form, sort_order: parseInt(e.target.value) })}
                   min="0"
                 />
-                <span className={styles.hint}>Lagre nummer visas forst</span>
+                <span className={styles.hint}>Lägre nummer visas först</span>
               </div>
               <div className={styles.modalActions}>
                 <button type="button" className={styles.cancelBtn} onClick={() => setShowModal(false)}>

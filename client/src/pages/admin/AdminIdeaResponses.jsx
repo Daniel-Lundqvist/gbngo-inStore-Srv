@@ -104,7 +104,7 @@ export default function AdminIdeaResponses() {
   };
 
   if (loading) {
-    return <div className={styles.loading}>Laddar idelada-svar...</div>;
+    return <div className={styles.loading}>Laddar idélåda-svar...</div>;
   }
 
   return (
@@ -112,15 +112,15 @@ export default function AdminIdeaResponses() {
       <div className={styles.listHeader}>
         <h2>{t('admin.ideaResponses')}</h2>
         <button className={styles.addBtn} onClick={handleAdd}>
-          + Lagg till svar
+          + Lägg till svar
         </button>
       </div>
 
       {responses.length === 0 ? (
         <div className={styles.empty}>
-          <p>Inga idelada-svar annu</p>
+          <p>Inga idélåda-svar ännu</p>
           <button className={styles.addBtn} onClick={handleAdd}>
-            Lagg till forsta svaret
+            Lägg till första svaret
           </button>
         </div>
       ) : (
@@ -129,10 +129,10 @@ export default function AdminIdeaResponses() {
             <div key={response.id} className={styles.item}>
               <div className={styles.itemInfo}>
                 <div className={styles.itemName}>
-                  Er fraga: {response.question}
+                  Er fråga: {response.question}
                 </div>
                 <div className={styles.itemMeta}>
-                  Vart svar: {response.answer.substring(0, 100)}
+                  Vårt svar: {response.answer.substring(0, 100)}
                   {response.answer.length > 100 && '...'}
                 </div>
               </div>
@@ -163,24 +163,24 @@ export default function AdminIdeaResponses() {
       {showModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h3>{editingResponse ? 'Redigera svar' : 'Lagg till svar'}</h3>
+            <h3>{editingResponse ? 'Redigera svar' : 'Lägg till svar'}</h3>
             <form onSubmit={handleSubmit}>
               <div className={styles.field}>
-                <label>Kundens fraga</label>
+                <label>Kundens fråga</label>
                 <textarea
                   value={form.question}
                   onChange={e => setForm({ ...form, question: e.target.value })}
                   required
-                  placeholder="Ex: Varfor har ni inte ekologisk mjolk?"
+                  placeholder="Ex: Varför har ni inte ekologisk mjölk?"
                 />
               </div>
               <div className={styles.field}>
-                <label>Vart svar</label>
+                <label>Vårt svar</label>
                 <textarea
                   value={form.answer}
                   onChange={e => setForm({ ...form, answer: e.target.value })}
                   required
-                  placeholder="Ex: Vi har nu tagit in ekologisk mjolk i sortimentet!"
+                  placeholder="Ex: Vi har nu tagit in ekologisk mjölk i sortimentet!"
                 />
               </div>
               <div className={styles.field}>
@@ -190,7 +190,7 @@ export default function AdminIdeaResponses() {
                     checked={form.is_active}
                     onChange={e => setForm({ ...form, is_active: e.target.checked })}
                   />
-                  Aktiv (visas i vilolage)
+                  Aktiv (visas i viloläge)
                 </label>
               </div>
               <div className={styles.modalActions}>

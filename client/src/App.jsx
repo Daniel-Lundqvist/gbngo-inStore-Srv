@@ -27,6 +27,7 @@ import {
   AdminLayout,
   AdminDashboard,
   AdminSettings,
+  AdminGames,
   AdminProducts,
   AdminCategories,
   AdminIdeaResponses,
@@ -190,6 +191,7 @@ function App() {
         >
           <Route index element={<AdminDashboard />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="games" element={<AdminGames />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="idea-responses" element={<AdminIdeaResponses />} />

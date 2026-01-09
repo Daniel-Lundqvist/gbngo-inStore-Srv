@@ -65,7 +65,7 @@ export default function DashboardPage() {
 
           <div className={styles.scanSection}>
             <h3>{t('dashboard.scanReceipt')}</h3>
-            <p>MVP: Use mock buttons below</p>
+            <p className={styles.mockHint}>{t('dashboard.mockHint', 'Demo: Använd knapparna nedan för att simulera kvittoskanning')}</p>
             <div className={styles.mockButtons}>
               {[1, 2, 3, 4].map((num) => (
                 <MockReceiptButton key={num} amount={num * 20} />
@@ -95,13 +95,13 @@ function MockReceiptButton({ amount }) {
 
       const data = await response.json();
       if (response.ok) {
-        alert(`Added ${data.tickets_added} ticket(s)! Total: ${data.total_tickets}`);
+        alert(`${data.tickets_added} ticket(s) tillagda! Totalt: ${data.total_tickets}`);
         refreshUser();
       } else {
-        alert(data.error);
+        alert(data.error || 'Kunde inte skanna kvitto');
       }
     } catch (err) {
-      alert('Error scanning receipt');
+      alert('Fel vid skanning av kvitto');
     }
   };
 
