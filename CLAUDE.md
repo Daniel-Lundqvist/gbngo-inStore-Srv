@@ -87,6 +87,66 @@ SQLite via sql.js (in-memory with file persistence). Schema initialized in `serv
 
 See `gbngo-inStore-Architecture.md` for complete architecture documentation including database schema, game flow, themes, and future plans.
 
+## Visual Testing with Playwright MCP
+
+This project uses Playwright MCP for visual verification during development.
+
+### Testing Workflow
+When implementing features, ALWAYS verify with Playwright:
+1. **Navigate** to the relevant page (`mcp__playwright__browser_navigate`)
+2. **Take screenshot** for visual verification (`mcp__playwright__browser_take_screenshot`)
+3. **Interact** if needed (click, type, etc.)
+4. **Verify** the result matches expectations
+
+### Screenshot Organization
+All test screenshots go in `.tests/screenshots/<feature-or-task>/`:
+```
+.tests/
+  screenshots/
+    admin-theme-check/
+      01-admin-page.png
+      02-theme-dropdown.png
+    user-login/
+      01-login-form.png
+      02-success-state.png
+```
+
+### Cleanup Rules
+- Delete screenshots after feature is verified and committed
+- Keep only screenshots needed for bug reports or documentation
+- Run cleanup at end of each session: `rm -rf .tests/screenshots/*`
+
+### Available Playwright Tools
+| Tool | Purpose |
+|------|---------|
+| `browser_navigate` | Go to URL |
+| `browser_take_screenshot` | Capture current page |
+| `browser_snapshot` | Get accessibility tree (lightweight) |
+| `browser_click` | Click element |
+| `browser_type` | Type text |
+| `browser_fill_form` | Fill form fields |
+| `browser_evaluate` | Run JS in browser |
+
+### When to Verify
+- After any UI change
+- After styling/theme changes
+- After adding new pages/routes
+- When fixing visual bugs
+
+### Timing & Live Pages Warning
+**This project has games with timers!** Be careful when verifying:
+- Snake, Pong etc. start immediately and can cause game over before screenshot
+- Use `browser_wait_for` to wait for specific elements
+- Ask user to pause/confirm before taking screenshots of active games
+- Prefer verifying static pages (admin, settings) over live gameplay
+
+### Bug Hunting Checklist
+When verifying, actively look for:
+- **Spacing:** Text too close to checkboxes, buttons, inputs
+- **ÅÄÖ encoding:** Swedish characters showing as ? or mojibake
+- **Contrast:** Text hard to read against background
+- **Overflow:** Text clipping or unwanted scrollbars
+
 ## Feature Specification
 
 This project was initially built by AutoCoder. Reference documentation:

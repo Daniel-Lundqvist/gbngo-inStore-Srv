@@ -35,6 +35,9 @@ yarn-error.log*
 coverage/
 .nyc_output/
 
+# Playwright test screenshots (temporary verification files)
+.tests/screenshots/
+
 # Uploads (keep directory, ignore contents)
 server/uploads/*
 !server/uploads/.gitkeep
