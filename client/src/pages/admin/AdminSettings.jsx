@@ -120,14 +120,14 @@ export default function AdminSettings() {
         body: JSON.stringify(settings)
       });
       if (response.ok) {
-        setMessage('Installningar sparade!');
+        setMessage(t('admin.settingsSaved'));
         originalSettingsRef.current = JSON.stringify(settings);
         setIsDirty(false);
       } else {
-        setMessage('Kunde inte spara installningar');
+        setMessage(t('admin.settingsError'));
       }
     } catch (error) {
-      setMessage('Natverksfel - forsok igen');
+      setMessage(t('admin.networkError'));
     } finally {
       setSaving(false);
       setTimeout(() => setMessage(''), 3000);
@@ -164,7 +164,7 @@ export default function AdminSettings() {
   };
 
   if (loading) {
-    return <div className={styles.loading}>Laddar installningar...</div>;
+    return <div className={styles.loading}>{t('admin.loadingSettings')}</div>;
   }
 
   const totalPercent = getTotalIdlePercent();
@@ -177,20 +177,20 @@ export default function AdminSettings() {
       {showBlocker && (
         <div className={styles.blockerOverlay}>
           <div className={styles.blockerDialog}>
-            <h3>Osparade andringar</h3>
-            <p>Du har osparade andringar. Vill du lamna sidan anda?</p>
+            <h3>{t('admin.unsavedChanges')}</h3>
+            <p>{t('admin.unsavedChangesMessage')}</p>
             <div className={styles.blockerButtons}>
               <button
                 className={styles.btnSecondary}
                 onClick={handleStay}
               >
-                Stanna kvar
+                {t('admin.stay')}
               </button>
               <button
                 className={styles.btnDanger}
                 onClick={handleLeave}
               >
-                Lamna sidan
+                {t('admin.leave')}
               </button>
             </div>
           </div>
@@ -198,19 +198,19 @@ export default function AdminSettings() {
       )}
 
       <div className={styles.settingsGroup}>
-        <h3>Ticket-installningar</h3>
+        <h3>{t('admin.ticketSettings')}</h3>
         <div className={styles.field}>
-          <label>Kronor per ticket</label>
+          <label>{t('admin.kronerPerTicket')}</label>
           <input
             type="number"
             value={settings.kroner_per_ticket}
             onChange={e => handleChange('kroner_per_ticket', parseInt(e.target.value))}
             min="1"
           />
-          <span className={styles.hint}>Ex: 20 = 20 kr = 1 ticket</span>
+          <span className={styles.hint}>{t('admin.kronerPerTicketHint')}</span>
         </div>
         <div className={styles.field}>
-          <label>Ticket giltighetstid (timmar)</label>
+          <label>{t('admin.ticketValidityHours')}</label>
           <input
             type="number"
             value={settings.ticket_validity_hours}
@@ -219,7 +219,7 @@ export default function AdminSettings() {
           />
         </div>
         <div className={styles.field}>
-          <label>Max tickets per anvandare</label>
+          <label>{t('admin.maxTicketsPerUser')}</label>
           <input
             type="number"
             value={settings.max_tickets_per_user}
@@ -230,9 +230,9 @@ export default function AdminSettings() {
       </div>
 
       <div className={styles.settingsGroup}>
-        <h3>Kvitto-installningar</h3>
+        <h3>{t('admin.receiptSettings')}</h3>
         <div className={styles.field}>
-          <label>Kvitto giltighetstid (minuter)</label>
+          <label>{t('admin.receiptValidityMinutes')}</label>
           <input
             type="number"
             value={settings.receipt_validity_minutes}
@@ -243,9 +243,9 @@ export default function AdminSettings() {
       </div>
 
       <div className={styles.settingsGroup}>
-        <h3>Session-installningar</h3>
+        <h3>{t('admin.sessionSettings')}</h3>
         <div className={styles.field}>
-          <label>Session timeout (minuter till vilolage)</label>
+          <label>{t('admin.sessionTimeout')}</label>
           <input
             type="number"
             value={settings.session_timeout_minutes}
@@ -254,7 +254,7 @@ export default function AdminSettings() {
           />
         </div>
         <div className={styles.field}>
-          <label>Speltid per spel (minuter)</label>
+          <label>{t('admin.gameTimeMinutes')}</label>
           <input
             type="number"
             value={settings.game_time_minutes}
@@ -265,9 +265,9 @@ export default function AdminSettings() {
       </div>
 
       <div className={styles.settingsGroup}>
-        <h3>Vilolage (Idle Mode)</h3>
+        <h3>{t('admin.idleMode')}</h3>
         <p className={styles.hint} style={{ marginBottom: 'var(--spacing-md)' }}>
-          Valj vilka vyer som ska roteras i vilolaget. Procent anger hur mycket tid varje vy far.
+          {t('admin.idleModeHint')}
         </p>
 
         <div className={styles.field}>
@@ -277,11 +277,11 @@ export default function AdminSettings() {
               checked={settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true}
               onChange={e => handleChange('idle_view_cube_enabled', e.target.checked ? 'true' : 'false')}
             />
-            Spelkub (3D-animering)
+            {t('admin.gameCube')}
           </label>
           {(settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true) && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
-              <label>Tidsprocent: {settings.idle_view_cube_percent}%</label>
+              <label>{t('admin.timePercent')}: {settings.idle_view_cube_percent}%</label>
               <input
                 type="range"
                 value={settings.idle_view_cube_percent}
@@ -300,11 +300,11 @@ export default function AdminSettings() {
               checked={settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true}
               onChange={e => handleChange('idle_view_ideas_enabled', e.target.checked ? 'true' : 'false')}
             />
-            Idelada (fragor och svar)
+            {t('admin.ideaBoxView')}
           </label>
           {(settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true) && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
-              <label>Tidsprocent: {settings.idle_view_ideas_percent}%</label>
+              <label>{t('admin.timePercent')}: {settings.idle_view_ideas_percent}%</label>
               <input
                 type="range"
                 value={settings.idle_view_ideas_percent}
@@ -323,11 +323,11 @@ export default function AdminSettings() {
               checked={settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true}
               onChange={e => handleChange('idle_view_ads_enabled', e.target.checked ? 'true' : 'false')}
             />
-            Annonser
+            {t('admin.advertisementsView')}
           </label>
           {(settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true) && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
-              <label>Tidsprocent: {settings.idle_view_ads_percent}%</label>
+              <label>{t('admin.timePercent')}: {settings.idle_view_ads_percent}%</label>
               <input
                 type="range"
                 value={settings.idle_view_ads_percent}
@@ -341,13 +341,13 @@ export default function AdminSettings() {
 
         {totalPercent > 0 && (
           <p className={styles.hint}>
-            Totalt: {totalPercent}% (relativ fordelning)
+            {t('admin.totalPercent', { total: totalPercent })}
           </p>
         )}
       </div>
 
       <div className={styles.settingsGroup}>
-        <h3>Ljud-installningar</h3>
+        <h3>{t('admin.soundSettings')}</h3>
         <div className={styles.field}>
           <label className={styles.checkbox}>
             <input
@@ -355,11 +355,11 @@ export default function AdminSettings() {
               checked={settings.sound_enabled === true || settings.sound_enabled === 'true'}
               onChange={e => handleChange('sound_enabled', e.target.checked)}
             />
-            Ljud aktiverat
+            {t('admin.soundEnabled')}
           </label>
         </div>
         <div className={styles.field}>
-          <label>Volym ({settings.sound_volume}%)</label>
+          <label>{t('admin.volume', { value: settings.sound_volume })}</label>
           <input
             type="range"
             value={settings.sound_volume}
@@ -371,9 +371,9 @@ export default function AdminSettings() {
       </div>
 
       <div className={styles.settingsGroup}>
-        <h3>Sprak och tema</h3>
+        <h3>{t('admin.languageAndTheme')}</h3>
         <div className={styles.field}>
-          <label>Standardsprak</label>
+          <label>{t('admin.defaultLanguage')}</label>
           <select
             value={settings.default_language}
             onChange={e => handleChange('default_language', e.target.value)}
@@ -385,17 +385,17 @@ export default function AdminSettings() {
           </select>
         </div>
         <div className={styles.field}>
-          <label>Aktivt tema</label>
+          <label>{t('admin.activeTheme')}</label>
           <select
             value={settings.theme}
             onChange={e => handleChange('theme', e.target.value)}
           >
-            <option value="default">Standard (Rod/Vit)</option>
-            <option value="winter">Vinter</option>
-            <option value="easter">Pask</option>
-            <option value="western">Western</option>
-            <option value="summer">Sommar</option>
-            <option value="retro">Retro GameBoy</option>
+            <option value="default">{t('admin.themeDefault')}</option>
+            <option value="winter">{t('admin.themeWinter')}</option>
+            <option value="easter">{t('admin.themeEaster')}</option>
+            <option value="western">{t('admin.themeWestern')}</option>
+            <option value="summer">{t('admin.themeSummer')}</option>
+            <option value="retro">{t('admin.themeRetro')}</option>
           </select>
         </div>
       </div>
@@ -415,7 +415,7 @@ export default function AdminSettings() {
         onClick={handleSave}
         disabled={saving}
       >
-        {saving ? 'Sparar...' : 'Spara installningar'}
+        {saving ? t('admin.saving') : t('admin.saveSettings')}
         {isDirty && ' *'}
       </button>
     </div>

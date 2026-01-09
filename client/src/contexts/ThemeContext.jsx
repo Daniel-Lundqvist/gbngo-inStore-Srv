@@ -18,7 +18,8 @@ const themes = {
       '--color-accent': '#FFD700',
       '--color-success': '#28A745',
       '--color-error': '#DC3545',
-      '--color-warning': '#FFC107'
+      '--color-warning': '#FFC107',
+      '--color-border': '#CCCCCC'
     }
   },
   winter: {
@@ -35,7 +36,8 @@ const themes = {
       '--color-accent': '#00D4FF',
       '--color-success': '#28A745',
       '--color-error': '#DC3545',
-      '--color-warning': '#FFC107'
+      '--color-warning': '#FFC107',
+      '--color-border': '#A0C4E8'
     }
   },
   easter: {
@@ -52,7 +54,8 @@ const themes = {
       '--color-accent': '#FFB6C1',
       '--color-success': '#58D68D',
       '--color-error': '#E74C3C',
-      '--color-warning': '#F4D03F'
+      '--color-warning': '#F4D03F',
+      '--color-border': '#D8BFE6'
     }
   },
   western: {
@@ -69,7 +72,8 @@ const themes = {
       '--color-accent': '#DAA520',
       '--color-success': '#6B8E23',
       '--color-error': '#8B0000',
-      '--color-warning': '#FF8C00'
+      '--color-warning': '#FF8C00',
+      '--color-border': '#C4A77D'
     }
   },
   summer: {
@@ -86,7 +90,8 @@ const themes = {
       '--color-accent': '#00CEC9',
       '--color-success': '#00B894',
       '--color-error': '#D63031',
-      '--color-warning': '#FDCB6E'
+      '--color-warning': '#FDCB6E',
+      '--color-border': '#FFB088'
     }
   },
   retro: {
@@ -103,7 +108,8 @@ const themes = {
       '--color-accent': '#E0F8CF',
       '--color-success': '#306230',
       '--color-error': '#0F380F',
-      '--color-warning': '#0F380F'
+      '--color-warning': '#0F380F',
+      '--color-border': '#306230'
     }
   }
 };

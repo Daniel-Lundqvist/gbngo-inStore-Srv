@@ -54,7 +54,7 @@ export default function GuestPage() {
               type="text"
               id="initials"
               value={initials}
-              onChange={(e) => setInitials(e.target.value.toUpperCase().slice(0, 5))}
+              onChange={(e) => setInitials(e.target.value.toUpperCase().replace(/[^A-ZÅÄÖ]/g, '').slice(0, 5))}
               placeholder={t('guest.initialsPlaceholder')}
               maxLength={5}
               autoComplete="off"

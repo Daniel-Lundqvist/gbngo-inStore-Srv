@@ -12,6 +12,7 @@
   --color-success: #1a7431;
   --color-error: #DC3545;
   --color-warning: #FFC107;
+  --color-border: #CCCCCC;
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -147,12 +148,24 @@ button:focus-visible, .btn:focus-visible {
 
 .btn-secondary {
   background-color: var(--color-surface);
-  color: var(--color-text);
+  color: var(--color-primary);
   border: 2px solid var(--color-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .btn-secondary:hover {
   background-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Fix for Link elements with btn-secondary (higher specificity than a.btn) */
+a.btn-secondary,
+a.btn-secondary:visited {
+  color: var(--color-primary);
+}
+
+a.btn-secondary:hover {
   color: white;
 }
 
@@ -167,7 +180,7 @@ input, select, textarea {
   padding: var(--spacing-sm) var(--spacing-md);
   font-family: inherit;
   font-size: 1rem;
-  border: 2px solid #DDD;
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   background-color: var(--color-surface);
   color: var(--color-text);

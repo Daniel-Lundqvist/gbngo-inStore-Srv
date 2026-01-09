@@ -7,7 +7,7 @@
     "delete": "Ta bort",
     "edit": "Redigera",
     "back": "Tillbaka",
-    "confirm": "Bekrafta",
+    "confirm": "Bekräfta",
     "yes": "Ja",
     "no": "Nej"
   },
@@ -15,38 +15,38 @@
     "home": "Hem",
     "games": "Spel",
     "products": "Produkter",
-    "ideaBox": "Idelada",
+    "ideaBox": "Idélåda",
     "myPage": "Min Sida",
     "admin": "Admin",
     "logout": "Logga ut"
   },
   "idle": {
-    "scanReceipt": "Skanna kvitto for att spela!",
-    "touchToStart": "Tryck for att borja"
+    "scanReceipt": "Skanna kvitto för att spela!",
+    "touchToStart": "Tryck för att börja"
   },
   "start": {
-    "title": "Valj hur du vill spela",
-    "playAsGuest": "Spela som gast",
+    "title": "Välj hur du vill spela",
+    "playAsGuest": "Spela som gäst",
     "createAccount": "Skapa konto",
     "login": "Logga in",
     "loginWithQR": "Logga in med QR-kod"
   },
   "guest": {
-    "title": "Spela som gast",
+    "title": "Spela som gäst",
     "initialsLabel": "Dina initialer (5 tecken)",
     "initialsPlaceholder": "ABCDE",
-    "submit": "Borja spela",
-    "note": "Som gast sparas inte dina tickets mellan besok"
+    "submit": "Börja spela",
+    "note": "Som gäst sparas inte dina tickets mellan besök"
   },
   "register": {
     "title": "Skapa konto",
     "initialsLabel": "Dina initialer (5 tecken)",
     "pinLabel": "PIN-kod (4 siffror)",
-    "pinConfirmLabel": "Bekrafta PIN-kod",
+    "pinConfirmLabel": "Bekräfta PIN-kod",
     "submit": "Skapa konto",
     "benefits": [
-      "Spara tickets mellan besok",
-      "Personlig QR-kod for snabb inloggning",
+      "Spara tickets mellan besök",
+      "Personlig QR-kod för snabb inloggning",
       "Se din spelhistorik"
     ]
   },
@@ -55,39 +55,39 @@
     "initialsLabel": "Dina initialer",
     "pinLabel": "PIN-kod",
     "submit": "Logga in",
-    "forgotPin": "Glomt PIN-kod?"
+    "forgotPin": "Glömt PIN-kod?"
   },
   "dashboard": {
-    "welcome": "Valkommen",
+    "welcome": "Välkommen",
     "tickets": "Tickets",
     "scanReceipt": "Skanna kvitto",
     "playNow": "Spela nu",
     "highscores": "Topplistor",
     "today": "Idag",
     "thisWeek": "Denna vecka",
-    "lastMonth": "Forra manaden"
+    "lastMonth": "Förra månaden"
   },
   "games": {
-    "title": "Valj spel",
+    "title": "Välj spel",
     "singlePlayer": "En spelare",
-    "twoPlayers": "Tva spelare",
+    "twoPlayers": "Två spelare",
     "together": "Tillsammans",
     "takeTurns": "Turas om",
     "tournament": "Turnering",
     "startGame": "Starta spel",
-    "needTickets": "Du behover minst 1 ticket for att spela"
+    "needTickets": "Du behöver minst 1 ticket för att spela"
   },
   "products": {
     "title": "Produkter",
-    "search": "Sok produkter...",
+    "search": "Sök produkter...",
     "allCategories": "Alla kategorier",
     "noResults": "Inga produkter hittades",
     "clearFilters": "Rensa filter"
   },
   "ideaBox": {
-    "title": "Idelada",
-    "yourQuestion": "Er fraga",
-    "ourAnswer": "Vart svar"
+    "title": "Idélåda",
+    "yourQuestion": "Er fråga",
+    "ourAnswer": "Vårt svar"
   },
   "myPage": {
     "title": "Min Sida",
@@ -101,34 +101,73 @@
   },
   "admin": {
     "title": "Admin",
-    "settings": "Installningar",
+    "settings": "Inställningar",
     "products": "Produkter",
     "categories": "Kategorier",
-    "ideaResponses": "Idelada-svar",
+    "ideaResponses": "Idélåda-svar",
     "advertisements": "Reklam",
     "statistics": "Statistik",
-    "maintenance": "Underhall",
+    "maintenance": "Underhåll",
     "clearHighscores": "Rensa highscores",
-    "enterCode": "Ange adminkod"
+    "enterCode": "Ange adminkod",
+    "unsavedChanges": "Osparade ändringar",
+    "unsavedChangesMessage": "Du har osparade ändringar. Vill du lämna sidan ändå?",
+    "leave": "Lämna sidan",
+    "stay": "Stanna kvar",
+    "settingsSaved": "Inställningar sparade!",
+    "settingsError": "Kunde inte spara inställningar",
+    "networkError": "Nätverksfel - försök igen",
+    "loadingSettings": "Laddar inställningar...",
+    "ticketSettings": "Ticket-inställningar",
+    "kronerPerTicket": "Kronor per ticket",
+    "kronerPerTicketHint": "Ex: 20 = 20 kr = 1 ticket",
+    "ticketValidityHours": "Ticket giltighetstid (timmar)",
+    "maxTicketsPerUser": "Max tickets per användare",
+    "receiptSettings": "Kvitto-inställningar",
+    "receiptValidityMinutes": "Kvitto giltighetstid (minuter)",
+    "sessionSettings": "Session-inställningar",
+    "sessionTimeout": "Session timeout (minuter till viloläge)",
+    "gameTimeMinutes": "Speltid per spel (minuter)",
+    "idleMode": "Viloläge (Idle Mode)",
+    "idleModeHint": "Välj vilka vyer som ska roteras i viloläget. Procent anger hur mycket tid varje vy får.",
+    "gameCube": "Spelkub (3D-animering)",
+    "ideaBoxView": "Idélåda (frågor och svar)",
+    "advertisementsView": "Annonser",
+    "timePercent": "Tidsprocent",
+    "totalPercent": "Totalt: {{total}}% (relativ fördelning)",
+    "soundSettings": "Ljud-inställningar",
+    "soundEnabled": "Ljud aktiverat",
+    "volume": "Volym ({{value}}%)",
+    "languageAndTheme": "Språk och tema",
+    "defaultLanguage": "Standardspråk",
+    "activeTheme": "Aktivt tema",
+    "themeDefault": "Standard (Röd/Vit)",
+    "themeWinter": "Vinter",
+    "themeEaster": "Påsk",
+    "themeWestern": "Western",
+    "themeSummer": "Sommar",
+    "themeRetro": "Retro GameBoy",
+    "saving": "Sparar...",
+    "saveSettings": "Spara inställningar"
   },
   "controller": {
     "title": "Spelkontroll",
     "connecting": "Ansluter...",
     "connected": "Ansluten!",
-    "waitingForGame": "Vantar pa spel..."
+    "waitingForGame": "Väntar på spel..."
   },
   "errors": {
-    "invalidInitials": "Initialer maste vara exakt 5 tecken",
-    "invalidPin": "PIN-kod maste vara exakt 4 siffror",
+    "invalidInitials": "Initialer måste vara exakt 5 tecken",
+    "invalidPin": "PIN-kod måste vara exakt 4 siffror",
     "pinMismatch": "PIN-koderna matchar inte",
-    "inappropriateInitials": "Valj lamligare initialer",
+    "inappropriateInitials": "Välj lämpligare initialer",
     "invalidCredentials": "Felaktiga uppgifter",
     "noTickets": "Du har inga tickets",
-    "receiptUsed": "Kvittot har redan anvants",
-    "receiptExpired": "Kvittot har gatt ut",
-    "networkError": "Natverksfel - forsok igen",
-    "timeout": "Forfragan tog for lang tid. Kontrollera din anslutning.",
-    "generic": "Nagot gick fel.",
-    "retry": "Forsok igen"
+    "receiptUsed": "Kvittot har redan använts",
+    "receiptExpired": "Kvittot har gått ut",
+    "networkError": "Nätverksfel - försök igen",
+    "timeout": "Förfrågan tog för lång tid. Kontrollera din anslutning.",
+    "generic": "Något gick fel.",
+    "retry": "Försök igen"
   }
 }

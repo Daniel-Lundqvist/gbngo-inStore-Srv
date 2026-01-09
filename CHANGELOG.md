@@ -11,6 +11,24 @@ Logg över ändringar och utveckling av projektet.
 
 ---
 
+## [v26.2.5] - 2026-01-09
+
+### Fixat
+- **ÅÄÖ-stöd** - Svenska tecken fungerar nu i initialer-input (Guest, Login, Register)
+- **Tillbaka-knapp kontrast** - Sekundärknappar (`a.btn-secondary`) syns nu tydligt i alla teman
+- **Input-fält kontrast** - Ny `--color-border` CSS-variabel i alla 6 teman löser "vit på vit"-problemet
+- **Idle Mode-inställningar** - Admin-inställningar för viloläge respekteras nu korrekt
+- **sv.json encoding** - Alla svenska tecken (å, ä, ö) återställda i översättningsfilen
+- **AdminSettings i18n** - All hårdkodad svensk text ersatt med översättningsnycklar
+
+### Ändrat
+- Konsekvent stränghantering för boolean-inställningar i IdlePage
+- Temaspecifika border-färger för bättre synlighet
+- AdminSettings.jsx använder nu fullt i18n-stöd
+- Alla 4 språkfiler (sv, en, da, de) uppdaterade med nya admin-nycklar
+
+---
+
 ## [1.0.0] - 2025-01-09
 
 ### Projektets ursprung

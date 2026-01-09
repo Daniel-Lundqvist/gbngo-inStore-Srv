@@ -12,6 +12,9 @@ const VIEW_TYPES = {
   ADS: 'ads'
 };
 
+// Helper to check if a setting is enabled (handles both string and boolean)
+const isEnabled = (value) => value === true || value === 'true';
+
 export default function IdlePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -38,35 +41,36 @@ export default function IdlePage() {
   // Build list of enabled views with their weights
   const enabledViews = useMemo(() => {
     if (!idleSettings) {
-      // Default: only show cube
+      // Default: only show cube while settings load
       return [{ type: VIEW_TYPES.CUBE, weight: 100 }];
     }
 
     const views = [];
 
-    // Check each view type
-    if (idleSettings.idle_view_cube_enabled !== 'false') {
+    // Check each view type using consistent isEnabled helper
+    if (isEnabled(idleSettings.idle_view_cube_enabled)) {
       views.push({
         type: VIEW_TYPES.CUBE,
         weight: parseInt(idleSettings.idle_view_cube_percent) || 40
       });
     }
 
-    if (idleSettings.idle_view_ideas_enabled === 'true') {
+    if (isEnabled(idleSettings.idle_view_ideas_enabled)) {
       views.push({
         type: VIEW_TYPES.IDEAS,
         weight: parseInt(idleSettings.idle_view_ideas_percent) || 20
       });
     }
 
-    if (idleSettings.idle_view_ads_enabled === 'true') {
+    if (isEnabled(idleSettings.idle_view_ads_enabled)) {
       views.push({
         type: VIEW_TYPES.ADS,
         weight: parseInt(idleSettings.idle_view_ads_percent) || 20
       });
     }
 
-    // If no views enabled, default to cube
+    // If no views explicitly enabled, show cube as fallback
+    // This only happens if ALL settings are explicitly set to false
     if (views.length === 0) {
       views.push({ type: VIEW_TYPES.CUBE, weight: 100 });
     }
