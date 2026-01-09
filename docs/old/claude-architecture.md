@@ -1,3 +1,10 @@
+# DEPRECATED - Do not use
+
+Content extracted to: CODE-Architecture---gbngo-inStore.md
+Date: 2026-01-09
+
+---
+
 # Project Architecture Map
 
 Auto-genererad av Claude för snabbare navigering i GBNGO InStore Portal.

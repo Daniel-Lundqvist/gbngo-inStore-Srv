@@ -1,167 +1,71 @@
-# Grab'n GO QuickGames
+# GBNGO InStore Portal
 
-En interaktiv spelportal for kunder i den obemannade butiken Grab'n GO. Kunder skannar sitt kvitto efter kop for att fa "tickets" som ger tillgang till minispel.
+Interaktiv spelportal för kunder i den obemannade Grab'n GO-butiken. Kunder spelar minispel på en iPad/skärm i butiken med sin mobil som trådlös kontroller via WebSocket.
 
-## Oversikt
-
-- **Malgrupp**: Kunder i Grab'n GO-butiken
-- **Plattform**: iPad/skarm i butiken + kundens mobil som kontroller
-- **Syfte**: Ge kunderna en rolig upplevelse och oka engagemanget
-
-## Funktioner
-
-### For Kunder
-- Skanna kvitto for att fa tickets
-- Spela minispel (Future Snake, Tic-Tac-Toe, Pong)
-- Tavla pa highscore-listor
-- Delta i turneringar (3-4 spelare)
-- Anvand mobilen som spelkontroller via WebSocket
-
-### Spellagen
-- **Single Player**: Spela ensam, jaga highscore
-- **Together**: Tva spelare mot varandra
-- **Take Turns**: Turas om att spela
-- **Tournament**: 3-4 spelare i bracket-format
-
-### For Administratorer
-- Konfigurera ticket-priser och giltighetstider
-- Hantera produktkatalog med kategorier och taggar
-- Skapa idelada-svar (fraga/svar till kunder)
-- Hantera reklamannonser
-- Se statistik och rensa highscores
-
-## Teknisk Stack
-
-### Frontend
-- **React** med Vite
-- **CSS Modules** + CSS Variables (tema-system)
-- **React Context** for state management
-- **Framer Motion** for animationer
-- **Three.js** for 3D-roterande spelkub
-- **react-i18next** for flerspraksstod (sv, en, da, de)
-
-### Backend
-- **Node.js** med Express
-- **SQLite** databas
-- **Socket.io** for WebSocket (mobil-kontroller)
-
-## Installation
-
-### Forutsattningar
-- Node.js 18+
-- npm
-- Modern webblasare med kamerastod
-
-### Setup
+## Snabbstart
 
 ```bash
-# Klona projektet och navigera till mappen
-cd gbngo-gameMenu
+# Windows - starta båda server och klient
+"START GBNGO InStore Portal.bat"
 
-# Kor setup-skriptet
-./init.sh
-
-# Eller installera manuellt:
-cd server && npm install
-cd ../client && npm install
+# Eller manuellt:
+cd server && npm run dev    # Backend på port 5250
+cd client && npm run dev    # Frontend på port 5251
 ```
 
-## Starta Utvecklingsmiljo
-
-```bash
-# Backend (port 3001)
-cd server && npm run dev
-
-# Frontend (port 5173)
-cd client && npm run dev
-
-# Eller kör båda samtidigt från rotmappen:
-npm run dev
-```
-
-## Atkomst
+## Åtkomst
 
 | Vy | URL |
 |---|---|
-| Huvudapp (iPad/Skarm) | http://localhost:5251 |
+| Huvudapp (iPad/Skärm) | http://localhost:5251 |
 | Mobil-kontroller | http://localhost:5251/controller |
 | API Server | http://localhost:5250 |
 | Admin Panel | http://localhost:5251/admin (kod: 5250) |
 
-## Projektstruktur
+## Installation
 
-```
-gbngo-gameMenu/
-├── client/                 # React frontend
-│   ├── src/
-│   │   ├── components/     # React-komponenter
-│   │   ├── pages/          # Sidkomponenter
-│   │   ├── contexts/       # React Context
-│   │   ├── hooks/          # Custom hooks
-│   │   ├── styles/         # CSS Modules
-│   │   ├── themes/         # Tema-definitioner
-│   │   ├── i18n/           # Oversattningar
-│   │   └── utils/          # Hjalputiliteter
-│   └── public/
-├── server/                 # Node.js backend
-│   ├── src/
-│   │   ├── routes/         # API-endpoints
-│   │   ├── controllers/    # Request handlers
-│   │   ├── models/         # Database models
-│   │   ├── middleware/     # Express middleware
-│   │   ├── websocket/      # Socket.io handlers
-│   │   └── database/       # SQLite setup
-│   └── uploads/            # Uppladdade filer
-├── features.db             # Feature tracking database
-├── app_spec.txt            # Projektspecifikation
-├── init.sh                 # Setup-skript
-└── README.md
+### Förutsättningar
+- Node.js 18+
+- npm
+
+### Setup
+
+```bash
+# Installera dependencies
+cd server && npm install
+cd ../client && npm install
+
+# Initiera databasen (om ny installation)
+cd server && npm run db:init
 ```
 
-## Teman
+## Dokumentation
 
-Appen stodjer 6 teman:
-1. **Standard** - Grab'n GO rod/vit
-2. **Vinter** - Sno, is, bla toner
-3. **Pask** - Pasteller, varfarger
-4. **Western** - Oken, brunt, country-stil
-5. **Sommar** - Sol, strand, ljusa farger
-6. **Retro GameBoy** - Gront LCD, pixelkansla
+| Fil | Innehåll |
+|-----|----------|
+| [STRUCTURE-Architecture---gbngo-inStore.md](STRUCTURE-Architecture---gbngo-inStore.md) | Mappstruktur och filer |
+| [CODE-Architecture---gbngo-inStore.md](CODE-Architecture---gbngo-inStore.md) | Komponenter, contexts, hooks |
+| [DATABASE-Architecture---gbngo-inStore.md](DATABASE-Architecture---gbngo-inStore.md) | SQLite schema och tabeller |
+| [API-Architecture---gbngo-inStore.md](API-Architecture---gbngo-inStore.md) | REST API och WebSocket |
+| [TODO-Features---gbngo-inStore.md](TODO-Features---gbngo-inStore.md) | Framtida idéer |
+| [CHANGELOG.md](CHANGELOG.md) | Versionshistorik |
+| [CLAUDE.md](CLAUDE.md) | Claude Code-instruktioner |
 
-## Sprak
+## Teknisk Stack
 
-- Svenska (sv) - default
-- English (en)
-- Dansk (da)
-- Deutsch (de)
+- **Frontend:** React, Vite, CSS Modules, Framer Motion, Three.js, react-i18next
+- **Backend:** Node.js, Express, SQLite (sql.js), Socket.io
 
-## Anvandarsystem
+## Funktioner
 
-### Gastanvandare
-- Ange 5 initialer (filtreras for olamplga ord)
-- Tickets galler inom sessionen
-- Kan satta highscore med initialer
-
-### Aterkommande Gaster
-- 5 initialer + 4-siffrig PIN
-- Tickets sparas mellan besok
-- Personlig QR-kod for snabb inloggning
-- Personlig mini-dashboard
-
-### Administratorer
-- Atkomst via kod 5250
-- Full konfiguration av alla installningar
-
-## API-dokumentation
-
-Se `app_spec.txt` for fullstandig API-specifikation.
-
-## Utvecklingsstatus
-
-Se features.db for aktuell status pa alla funktioner.
-- Totalt: 209 features att implementera
-- Kategorier: Security, Navigation, Data, Workflow, Error Handling, etc.
+- 🎮 Minispel (Snake, Pong, Tic-Tac-Toe)
+- 📱 Mobil som trådlös kontroller via WebSocket
+- 🎫 Ticket-system (skanna kvitto → få tickets)
+- 🏆 Highscore-listor
+- 🎯 Turneringar (3-4 spelare)
+- 🎨 6 teman (Standard, Vinter, Påsk, Western, Sommar, Retro GameBoy)
+- 🌍 4 språk (Svenska, English, Dansk, Deutsch)
 
 ---
 
-Grab'n GO QuickGames - Byggt for en roligare shoppingupplevelse!
+*GBNGO InStore Portal - Byggt för en roligare shoppingupplevelse!*

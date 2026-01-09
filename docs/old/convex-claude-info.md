@@ -1,3 +1,10 @@
+# DEPRECATED - Do not use
+
+Content extracted to: (Kept as reference)
+Date: 2026-01-09
+
+---
+
 # Convex - Complete Guide for Claude Code
 
 **Last Updated:** 2025-12-17

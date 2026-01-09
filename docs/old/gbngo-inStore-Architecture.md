@@ -1,3 +1,10 @@
+# DEPRECATED - Do not use
+
+Content extracted to: STRUCTURE/CODE/DATABASE/API-Architecture---gbngo-inStore.md
+Date: 2026-01-09
+
+---
+
 # GBNGO InStore Portal - Arkitektur
 
 ## Projektöversikt

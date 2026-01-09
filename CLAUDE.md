@@ -83,7 +83,7 @@ SQLite via sql.js (in-memory with file persistence). Schema initialized in `serv
 
 4 languages via react-i18next: Swedish (default), English, Danish, German. Translations in `client/src/i18n/`.
 
-## Full Documentation
+## Architecture Documentation
 
 See `gbngo-inStore-Architecture.md` for complete architecture documentation including database schema, game flow, themes, and future plans.
 
@@ -152,7 +152,7 @@ When verifying, actively look for:
 This project was initially built by AutoCoder. Reference documentation:
 
 - **`features/original-spec.txt`** - Full XML specification with all 205+ features, user roles, game modes, API endpoints, and UI requirements
-- **`claude-todo-features.md`** - Future feature ideas and enhancements
-- **`convex-claude-info.md`** - Database migration reference (if cloud sync needed later)
+- **`TODO-Features---gbngo-inStore.md`** - Future feature ideas and enhancements
+- **`docs/old/convex-claude-info.md`** - Database migration reference (if cloud sync needed later)
 - **`CHANGELOG.md`** - Project history and changes (auto-updated by changelog-updater skill)
-- **`claude-architecture.md`** - Architecture mapping (auto-updated by architecture-mapper skill)
+- **`CODE-Architecture---gbngo-inStore.md`** - Architecture mapping (auto-updated by architecture-mapper skill)
