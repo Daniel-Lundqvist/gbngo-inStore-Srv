@@ -8,11 +8,10 @@ GBNGO InStore Portal is an interactive game portal for the unmanned Grab'n GO st
 
 ## Quick Start
 
-```bash
-# Start both server and client (Windows)
-"START GBNGO InStore Portal.bat"
+**Fastest:** Double-click `START GBNGO InStore Portal.bat` → starts both servers on ports 5250/5251.
 
-# Or manually:
+Or manually:
+```bash
 cd server && npm run dev    # Backend on port 5250
 cd client && npm run dev    # Frontend on port 5251
 ```
@@ -53,7 +52,7 @@ npm run db:init  # Initialize/reset SQLite database
 - **Admin**: Code 5250, access via `/admin`
 
 ### API Structure
-All routes under `/api/`:
+All routes under `/api/`. See `API-Architecture---gbngo-inStore.md` for full details.
 - `auth` - Guest/user/admin login, QR login, session
 - `users`, `tickets`, `games`, `highscores`
 - `products`, `categories` - Store product catalog
@@ -85,7 +84,12 @@ SQLite via sql.js (in-memory with file persistence). Schema initialized in `serv
 
 ## Architecture Documentation
 
-See `gbngo-inStore-Architecture.md` for complete architecture documentation including database schema, game flow, themes, and future plans.
+| File | Contents |
+|------|----------|
+| `STRUCTURE-Architecture---gbngo-inStore.md` | Folder structure and files |
+| `CODE-Architecture---gbngo-inStore.md` | Components, contexts, hooks |
+| `DATABASE-Architecture---gbngo-inStore.md` | SQLite schema and tables |
+| `API-Architecture---gbngo-inStore.md` | REST API and WebSocket endpoints |
 
 ## Visual Testing with Playwright MCP
 
@@ -147,12 +151,12 @@ When verifying, actively look for:
 - **Contrast:** Text hard to read against background
 - **Overflow:** Text clipping or unwanted scrollbars
 
-## Feature Specification
+## Reference Documentation
 
-This project was initially built by AutoCoder. Reference documentation:
+- **`features/original-spec.txt`** - Original AutoCoder spec with all 205+ features
+- **`TODO-Features---gbngo-inStore.md`** - Future feature ideas (auto-updated by idea-catcher skill)
+- **`CHANGELOG.md`** - Version history (auto-updated by changelog-updater skill)
 
-- **`features/original-spec.txt`** - Full XML specification with all 205+ features, user roles, game modes, API endpoints, and UI requirements
-- **`TODO-Features---gbngo-inStore.md`** - Future feature ideas and enhancements
-- **`docs/old/convex-claude-info.md`** - Database migration reference (if cloud sync needed later)
-- **`CHANGELOG.md`** - Project history and changes (auto-updated by changelog-updater skill)
-- **`CODE-Architecture---gbngo-inStore.md`** - Architecture mapping (auto-updated by architecture-mapper skill)
+### Database Migration (Optional)
+If cloud sync between stores is needed later, see Convex documentation:
+`C:/AI-Projekt/Daniels-Egna-AI-Toolbox/convex-claude-info.md`
