@@ -6,6 +6,13 @@ Logg över ändringar och utveckling av projektet.
 
 ## [Unreleased]
 
+### Tillagt
+- **Admin-meny konfiguration** - Ny sektion i Inställningar för att konfigurera admin-sidomenyn:
+  - Visa/dölj individuella menyer med checkboxar
+  - Ändra ordning med upp/ner-knappar
+  - Sparas persistent i databasen som JSON
+  - Översättningar i alla 4 språk (sv, en, da, de)
+
 ### Planerat
 - Se `claude-todo-features.md` för framtida idéer
 

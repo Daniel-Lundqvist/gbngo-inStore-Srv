@@ -133,6 +133,9 @@
     "ideaBoxView": "Ideenbox (Fragen & Antworten)",
     "advertisementsView": "Werbung",
     "timePercent": "Zeitprozent",
+    "weight": "Gewicht",
+    "noViewsEnabled": "Keine Ansicht aktiviert. Ruhezustand zeigt nur das Logo.",
+    "singleViewEnabled": "Nur eine Ansicht aktiv - sie wird 100% der Zeit angezeigt.",
     "totalPercent": "Gesamt: {{total}}% (relative Verteilung)",
     "soundSettings": "Ton-Einstellungen",
     "soundEnabled": "Ton aktiviert",
@@ -147,7 +150,11 @@
     "themeSummer": "Sommer",
     "themeRetro": "Retro GameBoy",
     "saving": "Speichern...",
-    "saveSettings": "Einstellungen speichern"
+    "saveSettings": "Einstellungen speichern",
+    "menuConfiguration": "Menü-Konfiguration",
+    "menuConfigHint": "Wähle welche Menüs angezeigt werden sollen und in welcher Reihenfolge.",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten"
   },
   "controller": {
     "title": "Spielcontroller",

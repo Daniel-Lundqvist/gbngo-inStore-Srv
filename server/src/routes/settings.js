@@ -16,6 +16,12 @@ router.get('/public', (req, res) => {
   res.json(settings);
 });
 
+// Get admin menu config (public endpoint for layout)
+router.get('/menu-config', (req, res) => {
+  const row = getOne('SELECT value FROM settings WHERE key = ?', ['admin_menu_config']);
+  res.json({ admin_menu_config: row?.value || null });
+});
+
 // Get idle mode settings
 router.get('/idle', (req, res) => {
   const idleKeys = [

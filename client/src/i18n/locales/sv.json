@@ -135,6 +135,9 @@
     "ideaBoxView": "Idélåda (frågor och svar)",
     "advertisementsView": "Annonser",
     "timePercent": "Tidsprocent",
+    "weight": "Vikt",
+    "noViewsEnabled": "Ingen vy är aktiverad. Viloläget visar endast logotypen.",
+    "singleViewEnabled": "Endast en vy aktiv - den visas 100% av tiden.",
     "totalPercent": "Totalt: {{total}}% (relativ fördelning)",
     "soundSettings": "Ljud-inställningar",
     "soundEnabled": "Ljud aktiverat",
@@ -149,7 +152,11 @@
     "themeSummer": "Sommar",
     "themeRetro": "Retro GameBoy",
     "saving": "Sparar...",
-    "saveSettings": "Spara inställningar"
+    "saveSettings": "Spara inställningar",
+    "menuConfiguration": "Meny-konfiguration",
+    "menuConfigHint": "Välj vilka menyer som ska visas och i vilken ordning.",
+    "moveUp": "Flytta upp",
+    "moveDown": "Flytta ner"
   },
   "controller": {
     "title": "Spelkontroll",

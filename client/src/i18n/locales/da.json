@@ -133,6 +133,9 @@
     "ideaBoxView": "Idékasse (spørgsmål og svar)",
     "advertisementsView": "Reklamer",
     "timePercent": "Tidsprocent",
+    "weight": "Vægt",
+    "noViewsEnabled": "Ingen visning aktiveret. Hviletilstand viser kun logoet.",
+    "singleViewEnabled": "Kun én visning aktiv - den vises 100% af tiden.",
     "totalPercent": "Total: {{total}}% (relativ fordeling)",
     "soundSettings": "Lyd-indstillinger",
     "soundEnabled": "Lyd aktiveret",
@@ -147,7 +150,11 @@
     "themeSummer": "Sommer",
     "themeRetro": "Retro GameBoy",
     "saving": "Gemmer...",
-    "saveSettings": "Gem indstillinger"
+    "saveSettings": "Gem indstillinger",
+    "menuConfiguration": "Menu-konfiguration",
+    "menuConfigHint": "Vælg hvilke menuer der skal vises og i hvilken rækkefølge.",
+    "moveUp": "Flyt op",
+    "moveDown": "Flyt ned"
   },
   "controller": {
     "title": "Spilcontroller",

@@ -41,8 +41,8 @@ export default function IdlePage() {
   // Build list of enabled views with their weights
   const enabledViews = useMemo(() => {
     if (!idleSettings) {
-      // Default: only show cube while settings load
-      return [{ type: VIEW_TYPES.CUBE, weight: 100 }];
+      // Settings still loading - return empty to show loading state
+      return [];
     }
 
     const views = [];
@@ -69,14 +69,22 @@ export default function IdlePage() {
       });
     }
 
-    // If no views explicitly enabled, show cube as fallback
-    // This only happens if ALL settings are explicitly set to false
-    if (views.length === 0) {
-      views.push({ type: VIEW_TYPES.CUBE, weight: 100 });
-    }
+    // No fallback! If no views are enabled, the array stays empty
+    // This respects the admin's choice to disable all views
 
     return views;
   }, [idleSettings]);
+
+  // Set initial view when enabledViews changes
+  useEffect(() => {
+    if (enabledViews.length > 0) {
+      // Set to first enabled view if current view is not in the enabled list
+      const isCurrentEnabled = enabledViews.some(v => v.type === currentView);
+      if (!isCurrentEnabled) {
+        setCurrentView(enabledViews[0].type);
+      }
+    }
+  }, [enabledViews, currentView]);
 
   // Select next view based on weights
   const selectNextView = useCallback(() => {
@@ -116,14 +124,34 @@ export default function IdlePage() {
 
   // Render current view component
   const renderCurrentView = () => {
+    // If no views are enabled, show nothing (just the logo and touch prompt)
+    if (enabledViews.length === 0) {
+      return null;
+    }
+
     switch (currentView) {
       case VIEW_TYPES.IDEAS:
         return <IdleIdeaBox />;
       case VIEW_TYPES.ADS:
         return <IdleAds />;
       case VIEW_TYPES.CUBE:
-      default:
         return <IdleGameCube />;
+      default:
+        // If currentView doesn't match any enabled view, show the first enabled one
+        const firstEnabled = enabledViews[0];
+        if (firstEnabled) {
+          switch (firstEnabled.type) {
+            case VIEW_TYPES.IDEAS:
+              return <IdleIdeaBox />;
+            case VIEW_TYPES.ADS:
+              return <IdleAds />;
+            case VIEW_TYPES.CUBE:
+              return <IdleGameCube />;
+            default:
+              return null;
+          }
+        }
+        return null;
     }
   };
 
