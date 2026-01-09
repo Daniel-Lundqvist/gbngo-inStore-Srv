@@ -83,10 +83,10 @@ npm run dev
 
 | Vy | URL |
 |---|---|
-| Huvudapp (iPad/Skarm) | http://localhost:5173 |
-| Mobil-kontroller | http://localhost:5173/controller |
-| API Server | http://localhost:3001 |
-| Admin Panel | http://localhost:5173/admin (kod: 5250) |
+| Huvudapp (iPad/Skarm) | http://localhost:5251 |
+| Mobil-kontroller | http://localhost:5251/controller |
+| API Server | http://localhost:5250 |
+| Admin Panel | http://localhost:5251/admin (kod: 5250) |
 
 ## Projektstruktur
 

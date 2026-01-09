@@ -1,24 +1,7 @@
 @echo off
-title GBNGO KundPortal - Launcher
-echo ========================================
-echo    GBNGO KundPortal - Starting...
-echo ========================================
-echo.
+title GBNGO KundPortal Launcher
 
-echo Starting Server...
-start "GBNGO Server" cmd /k "cd /d "%~dp0server" && npm run dev"
+:: Start Windows Terminal with two tabs: Server and Client
+wt -w 0 new-tab --title "GBNGO Server (5250)" -d "%~dp0server" cmd /k "npm run dev" ; new-tab --title "GBNGO Client (5251)" -d "%~dp0client" cmd /k "npm run dev"
 
-timeout /t 2 /nobreak >nul
-
-echo Starting Client...
-start "GBNGO Client" cmd /k "cd /d "%~dp0client" && npm run dev"
-
-echo.
-echo ========================================
-echo    Both services are starting!
-echo    Server: http://localhost:3001
-echo    Client: http://localhost:5173
-echo ========================================
-echo.
-echo You can close this window.
-pause
+exit

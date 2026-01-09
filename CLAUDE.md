@@ -13,8 +13,8 @@ GBNGO KundPortal is an interactive game portal for the unmanned Grab'n GO store.
 "START gbngo KundPortal.bat"
 
 # Or manually:
-cd server && npm run dev    # Backend on port 3001
-cd client && npm run dev    # Frontend on port 5173
+cd server && npm run dev    # Backend on port 5250
+cd client && npm run dev    # Frontend on port 5251
 ```
 
 ## Common Commands
