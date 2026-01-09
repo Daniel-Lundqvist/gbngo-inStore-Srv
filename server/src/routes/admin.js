@@ -378,6 +378,115 @@ router.put('/games/:id', (req, res) => {
   }
 });
 
+// === EXPORT ===
+
+// Export products as CSV/JSON (supports filtering)
+router.get('/export/products', (req, res) => {
+  const format = req.query.format || 'csv';
+  const categoryId = req.query.category_id;
+  const search = req.query.search;
+
+  // Build query with optional filters
+  let query = `
+    SELECT
+      p.id,
+      p.name,
+      c.name as category_name,
+      p.tags,
+      p.is_active,
+      p.created_at
+    FROM products p
+    LEFT JOIN categories c ON p.category_id = c.id
+  `;
+
+  const conditions = [];
+  const params = [];
+
+  // Filter by category if specified
+  if (categoryId) {
+    conditions.push('p.category_id = ?');
+    params.push(categoryId);
+  }
+
+  // Filter by search term if specified (searches name and tags)
+  if (search) {
+    conditions.push('(LOWER(p.name) LIKE ? OR LOWER(p.tags) LIKE ?)');
+    const searchTerm = `%${search.toLowerCase()}%`;
+    params.push(searchTerm, searchTerm);
+  }
+
+  if (conditions.length > 0) {
+    query += ' WHERE ' + conditions.join(' AND ');
+  }
+
+  query += ' ORDER BY p.name';
+
+  const products = getAll(query, params);
+
+  if (format === 'json') {
+    res.json(products);
+  } else {
+    // CSV format
+    const headers = ['ID', 'Name', 'Category', 'Tags', 'Active', 'Created At'];
+    const csvRows = [headers.join(',')];
+
+    for (const row of products) {
+      csvRows.push([
+        row.id,
+        `"${row.name || ''}"`,
+        `"${row.category_name || ''}"`,
+        `"${row.tags || ''}"`,
+        row.is_active ? 'Yes' : 'No',
+        `"${row.created_at || ''}"`
+      ].join(','));
+    }
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="products.csv"');
+    res.send(csvRows.join('\n'));
+  }
+});
+
+// Export highscores as CSV
+router.get('/export/highscores', (req, res) => {
+  const format = req.query.format || 'csv';
+
+  const highscores = getAll(`
+    SELECT
+      h.id,
+      u.initials,
+      g.name as game_name,
+      h.score,
+      h.achieved_at
+    FROM highscores h
+    JOIN users u ON h.user_id = u.id
+    JOIN games g ON h.game_id = g.id
+    ORDER BY h.achieved_at DESC
+  `, []);
+
+  if (format === 'json') {
+    res.json(highscores);
+  } else {
+    // CSV format
+    const headers = ['ID', 'Initials', 'Game', 'Score', 'Achieved At'];
+    const csvRows = [headers.join(',')];
+
+    for (const row of highscores) {
+      csvRows.push([
+        row.id,
+        `"${row.initials}"`,
+        `"${row.game_name}"`,
+        row.score,
+        `"${row.achieved_at}"`
+      ].join(','));
+    }
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="highscores.csv"');
+    res.send(csvRows.join('\n'));
+  }
+});
+
 // === MAINTENANCE ===
 
 // Clear all highscores
@@ -470,6 +579,28 @@ router.delete('/receipts/old', (req, res) => {
   res.json({
     success: true,
     deleted: countBefore.count
+  });
+});
+
+
+
+// Delete a specific user by ID
+router.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Check if user exists
+  const user = getOne('SELECT * FROM users WHERE id = ?', [id]);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  // Delete user (CASCADE/SET NULL will handle related records)
+  runQuery('DELETE FROM users WHERE id = ?', [id]);
+  saveDatabase();
+
+  res.json({
+    success: true,
+    deleted: user.initials
   });
 });
 

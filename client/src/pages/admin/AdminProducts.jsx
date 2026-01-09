@@ -264,7 +264,16 @@ export default function AdminProducts() {
   const exportProducts = async (format = 'csv') => {
     setExporting(true);
     try {
-      const response = await fetch(`/api/admin/export/products?format=${format}`, {
+      // Build URL with current filters to export only filtered data
+      const params = new URLSearchParams({ format });
+      if (filterCategory) {
+        params.append('category_id', filterCategory);
+      }
+      if (searchTerm) {
+        params.append('search', searchTerm);
+      }
+
+      const response = await fetch(`/api/admin/export/products?${params.toString()}`, {
         credentials: 'include'
       });
 
