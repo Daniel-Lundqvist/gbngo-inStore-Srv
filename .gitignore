@@ -54,6 +54,8 @@ server/data/*
 
 # Agent files
 .agent.lock
+assistant.db
+.claude_assistant_settings.json
 
 # OS files
 Thumbs.db

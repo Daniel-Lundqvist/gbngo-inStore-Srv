@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-GBNGO KundPortal is an interactive game portal for the unmanned Grab'n GO store. Customers use an iPad/screen in the store to play minigames, with their mobile phone as a wireless controller via WebSocket.
+GBNGO InStore Portal is an interactive game portal for the unmanned Grab'n GO store. Customers use an iPad/screen in the store to play minigames, with their mobile phone as a wireless controller via WebSocket.
 
 ## Quick Start
 
 ```bash
 # Start both server and client (Windows)
-"START gbngo KundPortal.bat"
+"START GBNGO InStore Portal.bat"
 
 # Or manually:
 cd server && npm run dev    # Backend on port 5250
@@ -82,3 +82,7 @@ SQLite via sql.js (in-memory with file persistence). Schema initialized in `serv
 ## Internationalization
 
 4 languages via react-i18next: Swedish (default), English, Danish, German. Translations in `client/src/i18n/`.
+
+## Full Documentation
+
+See `gbngo-inStore-Architecture.md` for complete architecture documentation including database schema, game flow, themes, and future plans.

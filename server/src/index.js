@@ -104,7 +104,7 @@ async function startServer() {
     httpServer.listen(PORT, () => {
       console.log(`
 ╔═══════════════════════════════════════════════╗
-║     Grab'n GO QuickGames Server               ║
+║     Grab'n GO InStore Portal Server           ║
 ╠═══════════════════════════════════════════════╣
 ║  Server running on http://localhost:${PORT}      ║
 ║  WebSocket ready for connections              ║
