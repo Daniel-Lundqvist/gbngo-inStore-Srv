@@ -39,11 +39,7 @@ coverage/
 server/uploads/*
 !server/uploads/.gitkeep
 
-# Database (keep features.db for tracking)
-server/data/*.db
-!features.db
-
-# Server data directory (database will be created here)
+# Server data directory
 server/data/*
 !server/data/.gitkeep
 
@@ -52,10 +48,11 @@ server/data/*
 *.temp
 .cache/
 
-# Agent files
+# Agent/Assistant files
 .agent.lock
 assistant.db
 .claude_assistant_settings.json
+.claude_settings.json
 
 # OS files
 Thumbs.db
@@ -64,24 +61,3 @@ Desktop.ini
 # Backup files
 *.bak
 *.new
-
-# Test/temp cookies and scripts
-*cookies*.txt
-exptest.txt
-copy-helper.js
-update-*.js
-server/add-*.cjs
-server/add-*.js
-
-# Playwright MCP
-.playwright-mcp/
-
-# Test assets
-test-assets/
-
-# Prompts
-prompts/
-
-# Root package files (monorepo leftovers)
-/package.json
-/package-lock.json
