@@ -8,6 +8,9 @@ export default function HighscoresPage() {
   const [activeTab, setActiveTab] = useState('today');
   const [highscores, setHighscores] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [playerProfile, setPlayerProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(false);
 
   const tabs = [
     { id: 'today', label: t('highscores.today', 'Idag') },
@@ -42,6 +45,42 @@ export default function HighscoresPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePlayerClick = async (score) => {
+    // Only fetch profile for registered users (non-guests)
+    if (score.is_guest) {
+      // Show simple info for guests
+      setSelectedPlayer(score);
+      setPlayerProfile({
+        initials: score.initials,
+        is_guest: true
+      });
+      return;
+    }
+
+    setSelectedPlayer(score);
+    setLoadingProfile(true);
+
+    try {
+      const response = await fetch(`/api/highscores/player/${score.user_id}`, {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const profile = await response.json();
+        setPlayerProfile(profile);
+      }
+    } catch (error) {
+      console.error('Failed to fetch player profile:', error);
+      setPlayerProfile({ initials: score.initials, is_guest: true });
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
+
+  const closeProfile = () => {
+    setSelectedPlayer(null);
+    setPlayerProfile(null);
   };
 
   return (
@@ -79,7 +118,13 @@ export default function HighscoresPage() {
               <div className={styles.winner}>
                 <div className={styles.crown}>👑</div>
                 <h2>{t('highscores.winner', 'Vinnare')}</h2>
-                <div className={styles.winnerName}>{highscores[0].initials}</div>
+                <button
+                  className={styles.winnerName}
+                  onClick={() => handlePlayerClick(highscores[0])}
+                  aria-label={`View profile for ${highscores[0].initials}`}
+                >
+                  {highscores[0].initials}
+                </button>
                 <div className={styles.winnerScore}>{highscores[0].score} {t('highscores.points', 'poäng')}</div>
                 <div className={styles.winnerGame}>{highscores[0].game_name}</div>
               </div>
@@ -98,7 +143,15 @@ export default function HighscoresPage() {
                   {highscores.map((score, index) => (
                     <tr key={score.id} className={index < 3 ? styles.topThree : ''}>
                       <td>{index + 1}</td>
-                      <td>{score.initials}</td>
+                      <td>
+                        <button
+                          className={styles.playerButton}
+                          onClick={() => handlePlayerClick(score)}
+                          aria-label={`View profile for ${score.initials}`}
+                        >
+                          {score.initials}
+                        </button>
+                      </td>
                       <td>{score.game_name}</td>
                       <td>{score.score}</td>
                     </tr>
@@ -109,6 +162,45 @@ export default function HighscoresPage() {
           </div>
         )}
       </div>
+
+      {/* Player Profile Popup */}
+      {selectedPlayer && (
+        <div className={styles.profileOverlay} onClick={closeProfile}>
+          <div className={styles.profilePopup} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeButton} onClick={closeProfile} aria-label="Close">×</button>
+            {loadingProfile ? (
+              <p>{t('common.loading', 'Laddar...')}</p>
+            ) : playerProfile ? (
+              <div className={styles.profileContent}>
+                <h3>{playerProfile.initials}</h3>
+                {playerProfile.is_guest ? (
+                  <p className={styles.guestLabel}>{t('highscores.guestPlayer', 'Gästspelare')}</p>
+                ) : (
+                  <>
+                    <div className={styles.profileStats}>
+                      <div className={styles.stat}>
+                        <span className={styles.statValue}>{playerProfile.total_games || 0}</span>
+                        <span className={styles.statLabel}>{t('highscores.gamesPlayed', 'Spel')}</span>
+                      </div>
+                      <div className={styles.stat}>
+                        <span className={styles.statValue}>{playerProfile.best_score || 0}</span>
+                        <span className={styles.statLabel}>{t('highscores.bestScore', 'Bästa')}</span>
+                      </div>
+                      <div className={styles.stat}>
+                        <span className={styles.statValue}>{playerProfile.total_score || 0}</span>
+                        <span className={styles.statLabel}>{t('highscores.totalScore', 'Totalt')}</span>
+                      </div>
+                    </div>
+                    <p className={styles.memberSince}>
+                      {t('highscores.memberSince', 'Medlem sedan')}: {new Date(playerProfile.member_since).toLocaleDateString()}
+                    </p>
+                  </>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -58,3 +58,28 @@ server/data/*
 # OS files
 Thumbs.db
 Desktop.ini
+
+# Backup files
+*.bak
+*.new
+
+# Test/temp cookies and scripts
+*cookies*.txt
+exptest.txt
+copy-helper.js
+update-*.js
+server/add-*.cjs
+server/add-*.js
+
+# Playwright MCP
+.playwright-mcp/
+
+# Test assets
+test-assets/
+
+# Prompts
+prompts/
+
+# Root package files (monorepo leftovers)
+/package.json
+/package-lock.json

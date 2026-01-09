@@ -6,6 +6,7 @@ export default function AdminStatistics() {
   const { t } = useTranslation();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -22,6 +23,44 @@ export default function AdminStatistics() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const exportHighscores = async (format = 'csv') => {
+    setExporting(true);
+    try {
+      const response = await fetch(`/api/admin/export/highscores?format=${format}`, {
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Export failed');
+      }
+
+      if (format === 'json') {
+        const data = await response.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        downloadBlob(blob, 'highscores.json');
+      } else {
+        const blob = await response.blob();
+        downloadBlob(blob, 'highscores.csv');
+      }
+    } catch (error) {
+      console.error('Failed to export:', error);
+      alert('Export misslyckades');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const downloadBlob = (blob, filename) => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   if (loading) {
@@ -113,9 +152,34 @@ export default function AdminStatistics() {
         )}
       </div>
 
-      <button className={styles.saveBtn} onClick={fetchStats} style={{ marginTop: '1rem' }}>
-        Uppdatera statistik
-      </button>
+      <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+        <button className={styles.saveBtn} onClick={fetchStats}>
+          Uppdatera statistik
+        </button>
+      </div>
+
+      <div className={styles.settingsGroup}>
+        <h3>Exportera data</h3>
+        <p style={{ marginBottom: '1rem', color: 'var(--color-text-light)' }}>
+          Ladda ner highscores som fil for extern analys.
+        </p>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <button
+            className={styles.saveBtn}
+            onClick={() => exportHighscores('csv')}
+            disabled={exporting}
+          >
+            {exporting ? 'Exporterar...' : 'Exportera CSV'}
+          </button>
+          <button
+            className={styles.saveBtn}
+            onClick={() => exportHighscores('json')}
+            disabled={exporting}
+          >
+            {exporting ? 'Exporterar...' : 'Exportera JSON'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

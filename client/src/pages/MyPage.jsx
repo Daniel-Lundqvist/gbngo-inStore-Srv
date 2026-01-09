@@ -2,10 +2,43 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { QRCodeSVG } from 'qrcode.react';
+import { useRef } from 'react';
 
 export default function MyPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const qrRef = useRef(null);
+
+  const saveQRCode = () => {
+    if (!qrRef.current) return;
+
+    const svg = qrRef.current.querySelector('svg');
+    if (!svg) return;
+
+    // Create canvas and draw SVG to it
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(svgUrl);
+
+      // Download as PNG
+      const link = document.createElement('a');
+      link.download = `qr-code-${user?.initials || 'user'}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+    img.src = svgUrl;
+  };
 
   return (
     <div className="page">
@@ -32,12 +65,22 @@ export default function MyPage() {
         {user?.personal_qr_code && (
           <div className="card" style={{ textAlign: 'center' }}>
             <h3>{t('myPage.qrCode')}</h3>
-            <div style={{ padding: '1rem', backgroundColor: 'white', display: 'inline-block', borderRadius: '8px' }}>
+            <div
+              ref={qrRef}
+              style={{ padding: '1rem', backgroundColor: 'white', display: 'inline-block', borderRadius: '8px' }}
+            >
               <QRCodeSVG value={user.personal_qr_code} size={200} />
             </div>
             <p style={{ marginTop: '1rem', fontSize: '0.875rem', color: 'var(--color-text-light)' }}>
               Scan this to log in quickly
             </p>
+            <button
+              className="btn"
+              onClick={saveQRCode}
+              style={{ marginTop: '1rem' }}
+            >
+              {t('myPage.saveQR', 'Spara QR-kod')}
+            </button>
           </div>
         )}
 

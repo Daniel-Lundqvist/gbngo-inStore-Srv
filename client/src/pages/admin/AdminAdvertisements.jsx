@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import FileUpload from '../../components/FileUpload';
 import styles from './AdminSection.module.css';
 
 export default function AdminAdvertisements() {
@@ -8,7 +9,7 @@ export default function AdminAdvertisements() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingAd, setEditingAd] = useState(null);
-  const [form, setForm] = useState({ message: '', price: '', is_active: true });
+  const [form, setForm] = useState({ message: '', price: '', is_active: true, image_path: '' });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function AdminAdvertisements() {
 
   const handleAdd = () => {
     setEditingAd(null);
-    setForm({ message: '', price: '', is_active: true });
+    setForm({ message: '', price: '', is_active: true, image_path: '' });
     setShowModal(true);
   };
 
@@ -39,7 +40,8 @@ export default function AdminAdvertisements() {
     setForm({
       message: ad.message || '',
       price: ad.price || '',
-      is_active: ad.is_active === 1 || ad.is_active === true
+      is_active: ad.is_active === 1 || ad.is_active === true,
+      image_path: ad.image_path || ''
     });
     setShowModal(true);
   };
@@ -103,6 +105,12 @@ export default function AdminAdvertisements() {
     }
   };
 
+  const handleUploadComplete = (response) => {
+    if (response.path) {
+      setForm(prev => ({ ...prev, image_path: response.path }));
+    }
+  };
+
   if (loading) {
     return <div className={styles.loading}>Laddar annonser...</div>;
   }
@@ -127,6 +135,13 @@ export default function AdminAdvertisements() {
         <div className={styles.itemList}>
           {advertisements.map(ad => (
             <div key={ad.id} className={styles.item}>
+              {ad.image_path && (
+                <img
+                  src={ad.image_path}
+                  alt={ad.message || 'Annons'}
+                  className={styles.itemImage}
+                />
+              )}
               <div className={styles.itemInfo}>
                 <div className={styles.itemName}>
                   {ad.message || '(Ingen text)'}
@@ -164,6 +179,28 @@ export default function AdminAdvertisements() {
           <div className={styles.modalContent}>
             <h3>{editingAd ? 'Redigera annons' : 'Lagg till annons'}</h3>
             <form onSubmit={handleSubmit}>
+              <div className={styles.field}>
+                <label>Bild (valfritt)</label>
+                {form.image_path && (
+                  <div className={styles.currentImage}>
+                    <img src={form.image_path} alt="Aktuell bild" />
+                    <button
+                      type="button"
+                      onClick={() => setForm(prev => ({ ...prev, image_path: '' }))}
+                      className={styles.removeImageBtn}
+                    >
+                      Ta bort bild
+                    </button>
+                  </div>
+                )}
+                <FileUpload
+                  onUploadComplete={handleUploadComplete}
+                  accept="image/*"
+                  maxSize={5 * 1024 * 1024}
+                  endpoint="/api/upload/advertisement"
+                  label="Valj bild att ladda upp"
+                />
+              </div>
               <div className={styles.field}>
                 <label>Budskap (valfritt)</label>
                 <textarea

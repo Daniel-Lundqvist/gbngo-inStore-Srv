@@ -5,7 +5,7 @@ const router = Router();
 
 // Get public settings (theme, language, etc.)
 router.get('/public', (req, res) => {
-  const publicKeys = ['theme', 'language', 'sound_enabled', 'sound_volume'];
+  const publicKeys = ['theme', 'language', 'sound_enabled', 'sound_volume', 'session_timeout_minutes'];
   const settings = {};
 
   for (const key of publicKeys) {
