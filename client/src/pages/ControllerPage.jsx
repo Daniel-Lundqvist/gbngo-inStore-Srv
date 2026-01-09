@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { io } from 'socket.io-client';
 import styles from './ControllerPage.module.css';
+
+// Storage key for reconnection data
+const RECONNECT_STORAGE_KEY = 'gbngo_controller_session';
 
 export default function ControllerPage() {
   const { sessionId } = useParams();
@@ -10,14 +13,42 @@ export default function ControllerPage() {
   const [socket, setSocket] = useState(null);
   const [connected, setConnected] = useState(false);
   const [playerNumber, setPlayerNumber] = useState(null);
+  const [reconnecting, setReconnecting] = useState(false);
+  const [gameState, setGameState] = useState(null);
+  const reconnectTokenRef = useRef(null);
 
   useEffect(() => {
     const newSocket = io('/controller', {
-      transports: ['websocket']
+      transports: ['websocket'],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
     });
 
     newSocket.on('connect', () => {
       console.log('Connected to server');
+
+      // Check if we have stored reconnection data for this session
+      const storedData = localStorage.getItem(RECONNECT_STORAGE_KEY);
+      if (storedData) {
+        try {
+          const { sessionId: storedSessionId, reconnectToken, playerNumber: storedPlayerNumber } = JSON.parse(storedData);
+
+          // If we have a token for the current session, try to reconnect
+          if (storedSessionId === sessionId && reconnectToken) {
+            console.log('Attempting to reconnect with token:', reconnectToken);
+            setReconnecting(true);
+            reconnectTokenRef.current = reconnectToken;
+            newSocket.emit('reconnect-session', { reconnectToken, sessionId });
+            return;
+          }
+        } catch (e) {
+          console.error('Failed to parse stored session data:', e);
+          localStorage.removeItem(RECONNECT_STORAGE_KEY);
+        }
+      }
+
+      // Normal join if no reconnection data
       if (sessionId) {
         newSocket.emit('join-session', { sessionId });
       }
@@ -26,10 +57,66 @@ export default function ControllerPage() {
     newSocket.on('joined', (data) => {
       setConnected(true);
       setPlayerNumber(data.playerNumber);
+      setReconnecting(false);
+      reconnectTokenRef.current = data.reconnectToken;
+
+      // Store reconnection data
+      if (data.reconnectToken) {
+        localStorage.setItem(RECONNECT_STORAGE_KEY, JSON.stringify({
+          sessionId,
+          reconnectToken: data.reconnectToken,
+          playerNumber: data.playerNumber
+        }));
+        console.log('Stored reconnection token:', data.reconnectToken);
+      }
+    });
+
+    newSocket.on('reconnected', (data) => {
+      console.log('Successfully reconnected!', data);
+      setConnected(true);
+      setPlayerNumber(data.playerNumber);
+      setReconnecting(false);
+      setGameState(data.gameState);
+
+      // Update stored token if provided
+      if (reconnectTokenRef.current) {
+        localStorage.setItem(RECONNECT_STORAGE_KEY, JSON.stringify({
+          sessionId,
+          reconnectToken: reconnectTokenRef.current,
+          playerNumber: data.playerNumber
+        }));
+      }
+    });
+
+    newSocket.on('reconnect-failed', ({ reason }) => {
+      console.log('Reconnection failed:', reason);
+      setReconnecting(false);
+      // Clear stored data and join as new player
+      localStorage.removeItem(RECONNECT_STORAGE_KEY);
+      if (sessionId) {
+        newSocket.emit('join-session', { sessionId });
+      }
+    });
+
+    newSocket.on('game-state-update', (state) => {
+      setGameState(prev => ({ ...prev, ...state }));
     });
 
     newSocket.on('disconnect', () => {
+      console.log('Disconnected from server');
       setConnected(false);
+    });
+
+    newSocket.on('game-disconnected', () => {
+      console.log('Game session ended');
+      // Clear stored reconnection data
+      localStorage.removeItem(RECONNECT_STORAGE_KEY);
+    });
+
+    newSocket.on('game-ended', () => {
+      console.log('Game ended');
+      // Clear stored reconnection data
+      localStorage.removeItem(RECONNECT_STORAGE_KEY);
     });
 
     setSocket(newSocket);
@@ -56,7 +143,11 @@ export default function ControllerPage() {
       <div className={styles.header}>
         <h1>Grab'n GO</h1>
         <p className={styles.status}>
-          {connected ? (
+          {reconnecting ? (
+            <span className={styles.reconnecting}>
+              {t('controller.reconnecting', 'Reconnecting...')}
+            </span>
+          ) : connected ? (
             <span className={styles.connected}>
               {t('controller.connected')} (Player {playerNumber})
             </span>
@@ -64,6 +155,11 @@ export default function ControllerPage() {
             <span className={styles.connecting}>{t('controller.connecting')}</span>
           )}
         </p>
+        {gameState && gameState.status === 'playing' && (
+          <p className={styles.gameStatus}>
+            {t('controller.gameInProgress', 'Game in progress')}
+          </p>
+        )}
       </div>
 
       <div className={styles.controls}>

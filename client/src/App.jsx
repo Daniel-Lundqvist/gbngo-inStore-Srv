@@ -16,6 +16,7 @@ import ProductsPage from './pages/ProductsPage';
 import IdeaBoxPage from './pages/IdeaBoxPage';
 import HighscoresPage from './pages/HighscoresPage';
 import ControllerPage from './pages/ControllerPage';
+import ControllerTestPage from './pages/ControllerTestPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TournamentPage from './pages/TournamentPage';
@@ -78,6 +79,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/controller" element={<ControllerPage />} />
         <Route path="/controller/:sessionId" element={<ControllerPage />} />
+        <Route path="/controller-test" element={<ControllerTestPage />} />
 
         {/* Protected routes (require authentication) */}
         <Route
@@ -147,7 +149,7 @@ function App() {
           }
         />
 
-        
+
         {/* Tournament routes */}
         <Route
           path="/tournament"

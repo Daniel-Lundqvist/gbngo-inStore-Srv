@@ -32,9 +32,20 @@ export default function ControllerTestPage() {
       addEvent(`Player ${playerNumber} joined (Total: ${totalPlayers})`);
     });
 
-    newSocket.on('player-disconnected', ({ playerNumber, totalPlayers }) => {
+    newSocket.on('player-disconnected', ({ playerNumber, totalPlayers, canReconnect }) => {
       setPlayers(prev => prev.filter(p => p.playerNumber !== playerNumber));
-      addEvent(`Player ${playerNumber} disconnected (Total: ${totalPlayers})`);
+      addEvent(`Player ${playerNumber} disconnected (Total: ${totalPlayers})${canReconnect ? ' - can reconnect within 30s' : ''}`);
+    });
+
+    newSocket.on('player-reconnected', ({ playerNumber, totalPlayers }) => {
+      setPlayers(prev => {
+        // Only add if not already in the list
+        if (prev.some(p => p.playerNumber === playerNumber)) {
+          return prev;
+        }
+        return [...prev, { playerNumber }];
+      });
+      addEvent(`Player ${playerNumber} RECONNECTED! (Total: ${totalPlayers})`);
     });
 
     newSocket.on('controller-dpad', ({ playerNumber, direction, pressed }) => {

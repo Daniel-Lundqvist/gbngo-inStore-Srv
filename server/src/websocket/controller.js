@@ -1,7 +1,27 @@
 // WebSocket handler for mobile controller connections
 
 const gameSessions = new Map(); // sessionId -> { players: [], gameState }
-const controllerSessions = new Map(); // socketId -> { sessionId, playerNumber }
+const controllerSessions = new Map(); // socketId -> { sessionId, playerNumber, reconnectToken }
+const disconnectedPlayers = new Map(); // reconnectToken -> { sessionId, playerNumber, disconnectedAt, gameState }
+
+// Grace period for reconnection (30 seconds)
+const RECONNECT_GRACE_PERIOD = 30000;
+
+// Generate a unique reconnection token
+function generateReconnectToken() {
+  return `rc_${Date.now()}_${Math.random().toString(36).substr(2, 12)}`;
+}
+
+// Clean up expired disconnected players periodically
+setInterval(() => {
+  const now = Date.now();
+  for (const [token, data] of disconnectedPlayers) {
+    if (now - data.disconnectedAt > RECONNECT_GRACE_PERIOD) {
+      disconnectedPlayers.delete(token);
+      console.log(`Expired reconnection token: ${token}`);
+    }
+  }
+}, 10000);
 
 export function setupWebSocket(io) {
   // Namespace for controller connections
@@ -10,6 +30,64 @@ export function setupWebSocket(io) {
   controllerNs.on('connection', (socket) => {
     console.log('Controller connected:', socket.id);
 
+    // Attempt to reconnect with existing token
+    socket.on('reconnect-session', ({ reconnectToken, sessionId }) => {
+      const disconnectedData = disconnectedPlayers.get(reconnectToken);
+
+      if (!disconnectedData) {
+        socket.emit('reconnect-failed', { reason: 'Token expired or invalid' });
+        return;
+      }
+
+      if (disconnectedData.sessionId !== sessionId) {
+        socket.emit('reconnect-failed', { reason: 'Session mismatch' });
+        return;
+      }
+
+      const session = gameSessions.get(sessionId);
+      if (!session) {
+        socket.emit('reconnect-failed', { reason: 'Session no longer exists' });
+        disconnectedPlayers.delete(reconnectToken);
+        return;
+      }
+
+      // Restore the player to the session
+      const { playerNumber, gameState } = disconnectedData;
+
+      session.players.push({
+        socketId: socket.id,
+        playerNumber,
+        reconnectToken
+      });
+
+      controllerSessions.set(socket.id, {
+        sessionId,
+        playerNumber,
+        reconnectToken
+      });
+
+      socket.join(sessionId);
+
+      // Remove from disconnected players
+      disconnectedPlayers.delete(reconnectToken);
+
+      // Notify the controller of successful reconnection with game state
+      socket.emit('reconnected', {
+        sessionId,
+        playerNumber,
+        totalPlayers: session.players.length,
+        gameState: session.gameState
+      });
+
+      // Notify the game screen
+      io.of('/game').to(sessionId).emit('player-reconnected', {
+        playerNumber,
+        totalPlayers: session.players.length
+      });
+
+      console.log(`Player ${playerNumber} reconnected to session ${sessionId}`);
+    });
+
     // Join a game session
     socket.on('join-session', ({ sessionId, playerNumber }) => {
       if (!gameSessions.has(sessionId)) {
@@ -17,30 +95,36 @@ export function setupWebSocket(io) {
       }
 
       const session = gameSessions.get(sessionId);
+      const assignedPlayerNumber = playerNumber || session.players.length + 1;
+      const reconnectToken = generateReconnectToken();
+
       session.players.push({
         socketId: socket.id,
-        playerNumber: playerNumber || session.players.length + 1
+        playerNumber: assignedPlayerNumber,
+        reconnectToken
       });
 
       controllerSessions.set(socket.id, {
         sessionId,
-        playerNumber: playerNumber || session.players.length
+        playerNumber: assignedPlayerNumber,
+        reconnectToken
       });
 
       socket.join(sessionId);
       socket.emit('joined', {
         sessionId,
-        playerNumber: controllerSessions.get(socket.id).playerNumber,
-        totalPlayers: session.players.length
+        playerNumber: assignedPlayerNumber,
+        totalPlayers: session.players.length,
+        reconnectToken // Send token to client for storage
       });
 
       // Notify the game screen
       io.of('/game').to(sessionId).emit('player-joined', {
-        playerNumber: controllerSessions.get(socket.id).playerNumber,
+        playerNumber: assignedPlayerNumber,
         totalPlayers: session.players.length
       });
 
-      console.log(`Player ${controllerSessions.get(socket.id).playerNumber} joined session ${sessionId}`);
+      console.log(`Player ${assignedPlayerNumber} joined session ${sessionId}`);
     });
 
     // Controller input events
@@ -88,19 +172,42 @@ export function setupWebSocket(io) {
     socket.on('disconnect', () => {
       const controllerSession = controllerSessions.get(socket.id);
       if (controllerSession) {
-        const { sessionId, playerNumber } = controllerSession;
+        const { sessionId, playerNumber, reconnectToken } = controllerSession;
         const session = gameSessions.get(sessionId);
 
         if (session) {
+          // Store disconnected player data for potential reconnection
+          if (reconnectToken && session.gameState) {
+            disconnectedPlayers.set(reconnectToken, {
+              sessionId,
+              playerNumber,
+              disconnectedAt: Date.now(),
+              gameState: { ...session.gameState }
+            });
+            console.log(`Stored reconnection data for player ${playerNumber}, token: ${reconnectToken}`);
+          }
+
           session.players = session.players.filter(p => p.socketId !== socket.id);
 
           io.of('/game').to(sessionId).emit('player-disconnected', {
             playerNumber,
-            totalPlayers: session.players.length
+            totalPlayers: session.players.length,
+            canReconnect: !!reconnectToken
           });
 
+          // Only delete session if no players AND no pending reconnections
           if (session.players.length === 0) {
-            gameSessions.delete(sessionId);
+            // Check if any disconnected players belong to this session
+            let hasDisconnectedPlayers = false;
+            for (const [, data] of disconnectedPlayers) {
+              if (data.sessionId === sessionId) {
+                hasDisconnectedPlayers = true;
+                break;
+              }
+            }
+            if (!hasDisconnectedPlayers) {
+              gameSessions.delete(sessionId);
+            }
           }
         }
 
