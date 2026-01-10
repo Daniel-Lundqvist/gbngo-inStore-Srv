@@ -383,7 +383,7 @@ export default function AdminSettings() {
               checked={settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true}
               onChange={e => handleChange('idle_view_cube_enabled', e.target.checked ? 'true' : 'false')}
             />
-            {t('admin.gameCube')}
+            <span>{t('admin.gameCube')}</span>
           </label>
           {(settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true) && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
@@ -413,7 +413,7 @@ export default function AdminSettings() {
               checked={settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true}
               onChange={e => handleChange('idle_view_ideas_enabled', e.target.checked ? 'true' : 'false')}
             />
-            {t('admin.ideaBoxView')}
+            <span>{t('admin.ideaBoxView')}</span>
           </label>
           {(settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true) && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
@@ -443,7 +443,7 @@ export default function AdminSettings() {
               checked={settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true}
               onChange={e => handleChange('idle_view_ads_enabled', e.target.checked ? 'true' : 'false')}
             />
-            {t('admin.advertisementsView')}
+            <span>{t('admin.advertisementsView')}</span>
           </label>
           {(settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true) && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
@@ -487,7 +487,7 @@ export default function AdminSettings() {
               checked={settings.sound_enabled === true || settings.sound_enabled === 'true'}
               onChange={e => handleChange('sound_enabled', e.target.checked)}
             />
-            {t('admin.soundEnabled')}
+            <span>{t('admin.soundEnabled')}</span>
           </label>
         </div>
         <div className={styles.field}>
@@ -517,7 +517,7 @@ export default function AdminSettings() {
                   checked={item.visible}
                   onChange={() => handleMenuVisibilityToggle(item.id)}
                 />
-                {t(MENU_LABELS[item.id])}
+                <span>{t(MENU_LABELS[item.id])}</span>
               </label>
               <div className={styles.menuConfigButtons}>
                 <button
