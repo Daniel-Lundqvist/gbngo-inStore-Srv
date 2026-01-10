@@ -51,11 +51,7 @@ server/data/*
 *.temp
 .cache/
 
-# Agent/Assistant files
-.agent.lock
-assistant.db
-.claude_assistant_settings.json
-.claude_settings.json
+# Agent/Assistant files (none currently)
 
 # OS files
 Thumbs.db

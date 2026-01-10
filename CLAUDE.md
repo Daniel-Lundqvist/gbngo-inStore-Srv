@@ -93,7 +93,7 @@ SQLite via sql.js (in-memory with file persistence). Schema initialized in `serv
 
 ## Visual Testing with Playwright MCP
 
-This project uses Playwright MCP for visual verification during development.
+This project uses Playwright MCP for visual verification during development. Config: `.mcp.json`
 
 ### Testing Workflow
 When implementing features, ALWAYS verify with Playwright:
@@ -160,3 +160,19 @@ When verifying, actively look for:
 ### Database Migration (Optional)
 If cloud sync between stores is needed later, see Convex documentation:
 `C:/AI-Projekt/Daniels-Egna-AI-Toolbox/convex-claude-info.md`
+
+## Known Issues (Kanda problem)
+
+### Edit tool + ~/.claude/CLAUDE.md
+
+Edit tool often gives "File has been unexpectedly modified" when editing global CLAUDE.md.
+
+**Cause:** Claude Code reads the file continuously, creating conflicts.
+
+**Solution:** Use Bash instead of Edit:
+- Backup: cp fil fil.backup
+- Extract clean lines: head -N fil > fil.clean  
+- Append new content to .clean
+- Replace original: mv fil.clean fil
+
+**Do NOT** retry Edit multiple times - go directly to Bash workaround.

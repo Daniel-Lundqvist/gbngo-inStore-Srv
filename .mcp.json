@@ -1,4 +1,5 @@
 {
+  "_comment": "MCP config for Claude Code - enables Playwright browser automation for visual testing. See CLAUDE.md 'Visual Testing with Playwright MCP' section.",
   "mcpServers": {
     "playwright": {
       "command": "cmd",
