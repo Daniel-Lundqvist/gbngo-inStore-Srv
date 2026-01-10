@@ -11,6 +11,12 @@ gbngo-inStore-Srv/
 │   │   ├── components/      # Reusable components
 │   │   │   ├── GameCube.jsx         # 3D rotating game cube (Three.js)
 │   │   │   ├── IdleViews/           # Idle mode views
+│   │   │   │   ├── IdleGameCube.jsx # 3D cube animation
+│   │   │   │   ├── IdleIdeaBox.jsx  # Q&A display
+│   │   │   │   ├── IdleAds.jsx      # Advertisements
+│   │   │   │   ├── IdleLogo.jsx     # Store logo + product search
+│   │   │   │   ├── IdleViews.module.css # Shared styles
+│   │   │   │   └── index.js         # Exports
 │   │   │   └── FileUpload.jsx       # Image upload component
 │   │   ├── contexts/        # React Context
 │   │   │   ├── AuthContext.jsx      # Authentication & sessions
@@ -37,6 +43,7 @@ gbngo-inStore-Srv/
 │   │   │   ├── auth.js, users.js, tickets.js
 │   │   │   ├── games.js, highscores.js
 │   │   │   ├── settings.js, tournaments.js
+│   │   │   ├── upload.js     # File uploads (ads, logo)
 │   │   │   └── ...
 │   │   ├── websocket/
 │   │   │   └── controller.js  # Socket.io for mobile controller
@@ -44,6 +51,8 @@ gbngo-inStore-Srv/
 │   ├── data/
 │   │   └── gbngo.db         # SQLite database
 │   └── uploads/             # Uploaded images
+│       ├── advertisements/  # Ad images
+│       └── logo/            # Store logo
 │
 ├── scripts/                 # Startup scripts for Windows Terminal
 │   ├── start-server.cmd     # Backend with info box
@@ -67,7 +76,7 @@ gbngo-inStore-Srv/
 | server/src/routes | API endpoint handlers |
 | server/src/database | SQLite initialization |
 | server/data | Database file storage |
-| server/uploads | User-uploaded images |
+| server/uploads | User-uploaded images (ads, logos) |
 
 ## Configuration Files
 

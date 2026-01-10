@@ -336,7 +336,10 @@ export async function initDatabase() {
     ['idle_view_cube_percent', '25'],
     ['idle_view_demos_percent', '25'],
     ['idle_view_ideas_percent', '25'],
-    ['idle_view_ads_percent', '25']
+    ['idle_view_ads_percent', '25'],
+    ['idle_view_logo_enabled', 'true'],
+    ['idle_view_logo_percent', '20'],
+    ['store_logo_path', '']
   ];
 
   for (const [key, value] of defaultSettings) {

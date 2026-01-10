@@ -24,6 +24,7 @@ http://localhost:5250/api
 | Tournaments | server/src/routes/tournaments.js | Tournament management |
 | Advertisements | server/src/routes/advertisements.js | Ad management |
 | Idea Responses | server/src/routes/idea-responses.js | Idea box Q&A |
+| Upload | server/src/routes/upload.js | File uploads (ads, logo) |
 
 ## Authentication Endpoints
 
@@ -60,7 +61,15 @@ http://localhost:5250/api
 |--------|------|-------------|
 | GET | /settings | Get all settings |
 | GET | /settings/:key | Get specific setting |
+| GET | /settings/idle | Get idle mode settings (cube/ideas/ads/logo enabled + percent) |
 | PUT | /settings/:key | Update setting (admin) |
+
+## Upload Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /upload/advertisement | Upload advertisement image (admin) |
+| POST | /upload/logo | Upload store logo (admin) |
 
 ## WebSocket (Socket.io)
 

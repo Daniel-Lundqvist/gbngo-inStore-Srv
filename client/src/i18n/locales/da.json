@@ -22,7 +22,8 @@
   },
   "idle": {
     "scanReceipt": "Scan kvittering for at spille!",
-    "touchToStart": "Tryk for at starte"
+    "touchToStart": "Tryk for at starte",
+    "noQuestionsAnswers": "Ingen spørgsmål/svar lige nu"
   },
   "start": {
     "title": "Vaelg hvordan du vil spille",
@@ -154,7 +155,13 @@
     "menuConfiguration": "Menu-konfiguration",
     "menuConfigHint": "Vælg hvilke menuer der skal vises og i hvilken rækkefølge.",
     "moveUp": "Flyt op",
-    "moveDown": "Flyt ned"
+    "moveDown": "Flyt ned",
+    "logoView": "Butikslogo",
+    "storeLogo": "Butikslogo",
+    "uploadLogo": "Upload logo",
+    "logoHint": "Logoet vises i dvaletilstand. Anbefalet størrelse: 400x200px. Max 2MB.",
+    "logoUploaded": "Logo uploadet!",
+    "logoUploadError": "Kunne ikke uploade logo"
   },
   "controller": {
     "title": "Spilcontroller",

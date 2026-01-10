@@ -2,14 +2,15 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IdleGameCube, IdleIdeaBox, IdleAds } from '../components/IdleViews';
+import { IdleGameCube, IdleIdeaBox, IdleAds, IdleLogo } from '../components/IdleViews';
 import styles from './IdlePage.module.css';
 
 // View types
 const VIEW_TYPES = {
   CUBE: 'cube',
   IDEAS: 'ideas',
-  ADS: 'ads'
+  ADS: 'ads',
+  LOGO: 'logo'
 };
 
 // Helper to check if a setting is enabled (handles both string and boolean)
@@ -69,8 +70,17 @@ export default function IdlePage() {
       });
     }
 
-    // No fallback! If no views are enabled, the array stays empty
-    // This respects the admin's choice to disable all views
+    if (isEnabled(idleSettings.idle_view_logo_enabled)) {
+      views.push({
+        type: VIEW_TYPES.LOGO,
+        weight: parseInt(idleSettings.idle_view_logo_percent) || 20
+      });
+    }
+
+    // If no views are enabled, default to LOGO view
+    if (views.length === 0) {
+      views.push({ type: VIEW_TYPES.LOGO, weight: 100 });
+    }
 
     return views;
   }, [idleSettings]);
@@ -122,13 +132,11 @@ export default function IdlePage() {
     navigate('/start');
   };
 
+  // Get logo path from settings
+  const logoPath = idleSettings?.store_logo_path || null;
+
   // Render current view component
   const renderCurrentView = () => {
-    // If no views are enabled, show nothing (just the logo and touch prompt)
-    if (enabledViews.length === 0) {
-      return null;
-    }
-
     switch (currentView) {
       case VIEW_TYPES.IDEAS:
         return <IdleIdeaBox />;
@@ -136,22 +144,11 @@ export default function IdlePage() {
         return <IdleAds />;
       case VIEW_TYPES.CUBE:
         return <IdleGameCube />;
+      case VIEW_TYPES.LOGO:
+        return <IdleLogo logoPath={logoPath} />;
       default:
-        // If currentView doesn't match any enabled view, show the first enabled one
-        const firstEnabled = enabledViews[0];
-        if (firstEnabled) {
-          switch (firstEnabled.type) {
-            case VIEW_TYPES.IDEAS:
-              return <IdleIdeaBox />;
-            case VIEW_TYPES.ADS:
-              return <IdleAds />;
-            case VIEW_TYPES.CUBE:
-              return <IdleGameCube />;
-            default:
-              return null;
-          }
-        }
-        return null;
+        // If currentView doesn't match any enabled view, show logo as fallback
+        return <IdleLogo logoPath={logoPath} />;
     }
   };
 

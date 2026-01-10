@@ -47,9 +47,12 @@ export default function AdminSettings() {
     idle_view_cube_enabled: 'true',
     idle_view_ideas_enabled: 'false',
     idle_view_ads_enabled: 'false',
+    idle_view_logo_enabled: 'true',
     idle_view_cube_percent: '40',
     idle_view_ideas_percent: '30',
     idle_view_ads_percent: '30',
+    idle_view_logo_percent: '20',
+    store_logo_path: '',
     // Admin menu config (stored as JSON string)
     admin_menu_config: JSON.stringify(DEFAULT_MENU_CONFIG)
   });
@@ -186,35 +189,137 @@ export default function AdminSettings() {
     setPendingNavigation(null);
   };
 
-  // Calculate total weight for idle views (used for relative distribution)
-  const getTotalIdleWeight = () => {
-    let total = 0;
-    if (settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true) {
-      total += parseInt(settings.idle_view_cube_percent) || 0;
-    }
-    if (settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true) {
-      total += parseInt(settings.idle_view_ideas_percent) || 0;
-    }
-    if (settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true) {
-      total += parseInt(settings.idle_view_ads_percent) || 0;
-    }
-    return total;
+  // Helper to check if a view is enabled
+  const isViewEnabled = (key) => {
+    return settings[key] === 'true' || settings[key] === true;
   };
 
-  // Calculate actual relative percentage for a view
-  const getRelativePercent = (viewPercent) => {
-    const totalWeight = getTotalIdleWeight();
-    if (totalWeight === 0) return 0;
-    return Math.round((parseInt(viewPercent) / totalWeight) * 100);
+  // Get list of enabled idle views with their keys and current percentages
+  const getEnabledIdleViews = () => {
+    const views = [];
+    if (isViewEnabled('idle_view_cube_enabled')) {
+      views.push({ key: 'idle_view_cube_percent', percent: parseInt(settings.idle_view_cube_percent) || 0 });
+    }
+    if (isViewEnabled('idle_view_ideas_enabled')) {
+      views.push({ key: 'idle_view_ideas_percent', percent: parseInt(settings.idle_view_ideas_percent) || 0 });
+    }
+    if (isViewEnabled('idle_view_ads_enabled')) {
+      views.push({ key: 'idle_view_ads_percent', percent: parseInt(settings.idle_view_ads_percent) || 0 });
+    }
+    if (isViewEnabled('idle_view_logo_enabled')) {
+      views.push({ key: 'idle_view_logo_percent', percent: parseInt(settings.idle_view_logo_percent) || 0 });
+    }
+    return views;
   };
 
   // Count enabled views
   const getEnabledViewCount = () => {
-    let count = 0;
-    if (settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true) count++;
-    if (settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true) count++;
-    if (settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true) count++;
-    return count;
+    return getEnabledIdleViews().length;
+  };
+
+  // Handle idle view percentage change with auto-adjustment
+  // When one slider changes, redistribute remaining percentage among other enabled views
+  const handleIdlePercentChange = (changedKey, newValue) => {
+    const enabledViews = getEnabledIdleViews();
+    const otherViews = enabledViews.filter(v => v.key !== changedKey);
+
+    // Clamp value between 0 and 100
+    const clampedValue = Math.max(0, Math.min(100, parseInt(newValue) || 0));
+
+    const updates = { [changedKey]: String(clampedValue) };
+
+    if (otherViews.length === 0) {
+      // Only one view enabled - it must be 100%
+      updates[changedKey] = '100';
+    } else if (otherViews.length === 1) {
+      // Two views - the other one gets the remainder
+      updates[otherViews[0].key] = String(100 - clampedValue);
+    } else {
+      // Multiple views - distribute remainder proportionally
+      const remaining = 100 - clampedValue;
+      const otherTotal = otherViews.reduce((sum, v) => sum + v.percent, 0);
+
+      if (otherTotal === 0) {
+        // All others are 0 - distribute equally
+        const equalShare = Math.floor(remaining / otherViews.length);
+        let assigned = 0;
+        otherViews.forEach((v, i) => {
+          if (i === otherViews.length - 1) {
+            updates[v.key] = String(remaining - assigned);
+          } else {
+            updates[v.key] = String(equalShare);
+            assigned += equalShare;
+          }
+        });
+      } else {
+        // Distribute proportionally based on current values
+        let assigned = 0;
+        otherViews.forEach((v, i) => {
+          if (i === otherViews.length - 1) {
+            // Last one gets remainder to avoid rounding issues
+            updates[v.key] = String(remaining - assigned);
+          } else {
+            const share = Math.round((v.percent / otherTotal) * remaining);
+            updates[v.key] = String(share);
+            assigned += share;
+          }
+        });
+      }
+    }
+
+    // Apply all updates
+    const newSettings = { ...settings, ...updates };
+    setSettings(newSettings);
+
+    // Check if form is dirty
+    if (originalSettingsRef.current) {
+      setIsDirty(JSON.stringify(newSettings) !== originalSettingsRef.current);
+    }
+  };
+
+  // Handle enabling/disabling an idle view - redistribute percentages
+  const handleIdleViewToggle = (enableKey, percentKey, isEnabling) => {
+    const newSettings = { ...settings };
+    newSettings[enableKey] = isEnabling ? 'true' : 'false';
+
+    // Get views that will be enabled after this change
+    const willBeEnabled = [];
+    const viewConfigs = [
+      { enableKey: 'idle_view_cube_enabled', percentKey: 'idle_view_cube_percent' },
+      { enableKey: 'idle_view_ideas_enabled', percentKey: 'idle_view_ideas_percent' },
+      { enableKey: 'idle_view_ads_enabled', percentKey: 'idle_view_ads_percent' },
+      { enableKey: 'idle_view_logo_enabled', percentKey: 'idle_view_logo_percent' }
+    ];
+
+    for (const cfg of viewConfigs) {
+      const willBeEnabledAfter = cfg.enableKey === enableKey
+        ? isEnabling
+        : (newSettings[cfg.enableKey] === 'true' || newSettings[cfg.enableKey] === true);
+      if (willBeEnabledAfter) {
+        willBeEnabled.push(cfg.percentKey);
+      }
+    }
+
+    if (willBeEnabled.length > 0) {
+      // Distribute 100% equally among enabled views
+      const equalShare = Math.floor(100 / willBeEnabled.length);
+      let assigned = 0;
+      willBeEnabled.forEach((key, i) => {
+        if (i === willBeEnabled.length - 1) {
+          newSettings[key] = String(100 - assigned);
+        } else {
+          newSettings[key] = String(equalShare);
+          assigned += equalShare;
+        }
+      });
+    }
+
+    setSettings(newSettings);
+
+    // Check if form is dirty
+    if (originalSettingsRef.current) {
+      setIsDirty(JSON.stringify(newSettings) !== originalSettingsRef.current);
+    }
   };
 
   // Get sorted menu items
@@ -380,26 +485,21 @@ export default function AdminSettings() {
           <label className={styles.checkbox}>
             <input
               type="checkbox"
-              checked={settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true}
-              onChange={e => handleChange('idle_view_cube_enabled', e.target.checked ? 'true' : 'false')}
+              checked={isViewEnabled('idle_view_cube_enabled')}
+              onChange={e => handleIdleViewToggle('idle_view_cube_enabled', 'idle_view_cube_percent', e.target.checked)}
             />
             <span>{t('admin.gameCube')}</span>
           </label>
-          {(settings.idle_view_cube_enabled === 'true' || settings.idle_view_cube_enabled === true) && (
+          {isViewEnabled('idle_view_cube_enabled') && enabledViewCount > 1 && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
               <label>
-                {t('admin.weight')}: {settings.idle_view_cube_percent}
-                {enabledViewCount > 1 && (
-                  <span style={{ color: 'var(--color-text-light)', marginLeft: '0.5rem' }}>
-                    (≈ {getRelativePercent(settings.idle_view_cube_percent)}% av visningstiden)
-                  </span>
-                )}
+                {settings.idle_view_cube_percent}% {t('admin.timePercent')}
               </label>
               <input
                 type="range"
                 value={settings.idle_view_cube_percent}
-                onChange={e => handleChange('idle_view_cube_percent', e.target.value)}
-                min="10"
+                onChange={e => handleIdlePercentChange('idle_view_cube_percent', e.target.value)}
+                min="0"
                 max="100"
               />
             </div>
@@ -410,26 +510,21 @@ export default function AdminSettings() {
           <label className={styles.checkbox}>
             <input
               type="checkbox"
-              checked={settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true}
-              onChange={e => handleChange('idle_view_ideas_enabled', e.target.checked ? 'true' : 'false')}
+              checked={isViewEnabled('idle_view_ideas_enabled')}
+              onChange={e => handleIdleViewToggle('idle_view_ideas_enabled', 'idle_view_ideas_percent', e.target.checked)}
             />
             <span>{t('admin.ideaBoxView')}</span>
           </label>
-          {(settings.idle_view_ideas_enabled === 'true' || settings.idle_view_ideas_enabled === true) && (
+          {isViewEnabled('idle_view_ideas_enabled') && enabledViewCount > 1 && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
               <label>
-                {t('admin.weight')}: {settings.idle_view_ideas_percent}
-                {enabledViewCount > 1 && (
-                  <span style={{ color: 'var(--color-text-light)', marginLeft: '0.5rem' }}>
-                    (≈ {getRelativePercent(settings.idle_view_ideas_percent)}% av visningstiden)
-                  </span>
-                )}
+                {settings.idle_view_ideas_percent}% {t('admin.timePercent')}
               </label>
               <input
                 type="range"
                 value={settings.idle_view_ideas_percent}
-                onChange={e => handleChange('idle_view_ideas_percent', e.target.value)}
-                min="10"
+                onChange={e => handleIdlePercentChange('idle_view_ideas_percent', e.target.value)}
+                min="0"
                 max="100"
               />
             </div>
@@ -440,26 +535,46 @@ export default function AdminSettings() {
           <label className={styles.checkbox}>
             <input
               type="checkbox"
-              checked={settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true}
-              onChange={e => handleChange('idle_view_ads_enabled', e.target.checked ? 'true' : 'false')}
+              checked={isViewEnabled('idle_view_ads_enabled')}
+              onChange={e => handleIdleViewToggle('idle_view_ads_enabled', 'idle_view_ads_percent', e.target.checked)}
             />
             <span>{t('admin.advertisementsView')}</span>
           </label>
-          {(settings.idle_view_ads_enabled === 'true' || settings.idle_view_ads_enabled === true) && (
+          {isViewEnabled('idle_view_ads_enabled') && enabledViewCount > 1 && (
             <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
               <label>
-                {t('admin.weight')}: {settings.idle_view_ads_percent}
-                {enabledViewCount > 1 && (
-                  <span style={{ color: 'var(--color-text-light)', marginLeft: '0.5rem' }}>
-                    (≈ {getRelativePercent(settings.idle_view_ads_percent)}% av visningstiden)
-                  </span>
-                )}
+                {settings.idle_view_ads_percent}% {t('admin.timePercent')}
               </label>
               <input
                 type="range"
                 value={settings.idle_view_ads_percent}
-                onChange={e => handleChange('idle_view_ads_percent', e.target.value)}
-                min="10"
+                onChange={e => handleIdlePercentChange('idle_view_ads_percent', e.target.value)}
+                min="0"
+                max="100"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.checkbox}>
+            <input
+              type="checkbox"
+              checked={isViewEnabled('idle_view_logo_enabled')}
+              onChange={e => handleIdleViewToggle('idle_view_logo_enabled', 'idle_view_logo_percent', e.target.checked)}
+            />
+            <span>{t('admin.logoView')}</span>
+          </label>
+          {isViewEnabled('idle_view_logo_enabled') && enabledViewCount > 1 && (
+            <div style={{ marginTop: 'var(--spacing-xs)', marginLeft: 'var(--spacing-lg)' }}>
+              <label>
+                {settings.idle_view_logo_percent}% {t('admin.timePercent')}
+              </label>
+              <input
+                type="range"
+                value={settings.idle_view_logo_percent}
+                onChange={e => handleIdlePercentChange('idle_view_logo_percent', e.target.value)}
+                min="0"
                 max="100"
               />
             </div>
@@ -476,6 +591,57 @@ export default function AdminSettings() {
             {t('admin.singleViewEnabled')}
           </p>
         )}
+      </div>
+
+      <div className={styles.settingsGroup}>
+        <h3>{t('admin.storeLogo')}</h3>
+        <p className={styles.hint} style={{ marginBottom: 'var(--spacing-md)' }}>
+          {t('admin.logoHint')}
+        </p>
+        <div className={styles.field}>
+          {settings.store_logo_path && (
+            <div style={{ marginBottom: 'var(--spacing-md)' }}>
+              <img
+                src={settings.store_logo_path}
+                alt="Store logo"
+                style={{ maxWidth: '200px', maxHeight: '100px', objectFit: 'contain', borderRadius: 'var(--radius-md)' }}
+              />
+            </div>
+          )}
+          <label>{t('admin.uploadLogo')}</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              const formData = new FormData();
+              formData.append('logo', file);
+
+              try {
+                const response = await fetch('/api/upload/logo', {
+                  method: 'POST',
+                  credentials: 'include',
+                  body: formData
+                });
+
+                if (response.ok) {
+                  const data = await response.json();
+                  handleChange('store_logo_path', data.path);
+                  setMessage(t('admin.logoUploaded'));
+                } else {
+                  setMessage(t('admin.logoUploadError'));
+                }
+              } catch (error) {
+                console.error('Failed to upload logo:', error);
+                setMessage(t('admin.networkError'));
+              }
+
+              setTimeout(() => setMessage(''), 3000);
+            }}
+          />
+        </div>
       </div>
 
       <div className={styles.settingsGroup}>

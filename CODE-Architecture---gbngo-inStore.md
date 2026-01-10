@@ -44,6 +44,15 @@ Components, pages, contexts and key functions in the GBNGO InStore Portal.
 | FileUpload | client/src/components/FileUpload.jsx | Image upload (used by AdminAdvertisements) |
 | IdleViews/* | client/src/components/IdleViews/ | Idle mode view components |
 
+### Idle View Components
+
+| Component | File | Description |
+|-----------|------|-------------|
+| IdleGameCube | client/src/components/IdleViews/IdleGameCube.jsx | 3D rotating cube in idle mode |
+| IdleIdeaBox | client/src/components/IdleViews/IdleIdeaBox.jsx | Q&A display in idle mode |
+| IdleAds | client/src/components/IdleViews/IdleAds.jsx | Advertisements in idle mode |
+| IdleLogo | client/src/components/IdleViews/IdleLogo.jsx | Store logo + product search in idle mode |
+
 ## Styles
 
 | File | Description |

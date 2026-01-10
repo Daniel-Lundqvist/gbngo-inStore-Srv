@@ -29,6 +29,36 @@
 ## Verified
 *(Arkiv - helt klara och verifierade)*
 
+### TASK-004: Viloläge-förbättringar (Q&A, Logo, Procent-slider)
+| Fält | Värde |
+|------|-------|
+| Prioritet | high |
+| Skapad | 2026-01-10 |
+| Klar | 2026-01-10 |
+| Branch | master |
+
+**Buggar fixade:**
+1. ✅ Q&A visas inte i idélådan - API returnerade data utan `is_active`, klient filtrerade på det
+2. ✅ ÅÄÖ-encoding i IdleIdeaBox - ersatte hårdkodade strängar med i18n
+
+**Features tillagda:**
+1. ✅ IdleLogo-komponent - visar butikslogotyp med produktsök
+2. ✅ Logo-upload i admin - endpoint + UI
+3. ✅ Refaktorerat admin-reglage från "vikt" till direkt procent med 100%-logik
+
+**Ändringar:**
+- `client/src/components/IdleViews/IdleIdeaBox.jsx`: Fixade filter + i18n
+- `client/src/components/IdleViews/IdleLogo.jsx`: **NY FIL**
+- `client/src/components/IdleViews/index.js`: Exporterar IdleLogo
+- `client/src/pages/IdlePage.jsx`: LOGO view type
+- `client/src/pages/admin/AdminSettings.jsx`: 100%-logik + logo-upload UI
+- `server/src/routes/upload.js`: Logo upload endpoint
+- `server/src/routes/settings.js`: Logo settings
+- `server/src/database/init.js`: Default logo settings
+- `client/src/i18n/locales/*.json`: Nya översättningar
+
+**Verifierad:** ✅ (Playwright screenshots verifierade 100%-logik fungerar)
+
 ### TASK-003: Admin-meny konfiguration
 | Fält | Värde |
 |------|-------|

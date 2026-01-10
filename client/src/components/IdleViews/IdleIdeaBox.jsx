@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import styles from './IdleViews.module.css';
 
 export default function IdleIdeaBox() {
+  const { t } = useTranslation();
   const [responses, setResponses] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -24,7 +26,8 @@ export default function IdleIdeaBox() {
       const response = await fetch('/api/idea-responses');
       if (response.ok) {
         const data = await response.json();
-        setResponses(data.filter(r => r.is_active));
+        // API already filters for is_active = 1, no need to filter again
+        setResponses(data);
       }
     } catch (error) {
       console.error('Failed to fetch idea responses:', error);
@@ -34,7 +37,7 @@ export default function IdleIdeaBox() {
   if (responses.length === 0) {
     return (
       <div className={styles.container}>
-        <div className={styles.empty}>Inga fragor/svar just nu</div>
+        <div className={styles.empty}>{t('idle.noQuestionsAnswers')}</div>
       </div>
     );
   }
@@ -49,7 +52,7 @@ export default function IdleIdeaBox() {
       exit={{ opacity: 0 }}
     >
       <div className={styles.ideaBox}>
-        <h2 className={styles.ideaTitle}>Idelada</h2>
+        <h2 className={styles.ideaTitle}>{t('ideaBox.title')}</h2>
 
         <motion.div
           key={currentIndex}
@@ -59,12 +62,12 @@ export default function IdleIdeaBox() {
           exit={{ opacity: 0, y: -20 }}
         >
           <div className={styles.question}>
-            <span className={styles.label}>Er Fraga:</span>
+            <span className={styles.label}>{t('ideaBox.yourQuestion')}:</span>
             <p>{current.question}</p>
           </div>
 
           <div className={styles.answer}>
-            <span className={styles.label}>Vart Svar:</span>
+            <span className={styles.label}>{t('ideaBox.ourAnswer')}:</span>
             <p>{current.answer}</p>
           </div>
         </motion.div>

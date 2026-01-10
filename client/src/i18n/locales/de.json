@@ -22,7 +22,8 @@
   },
   "idle": {
     "scanReceipt": "Quittung scannen zum Spielen!",
-    "touchToStart": "Beruhren zum Starten"
+    "touchToStart": "Berühren zum Starten",
+    "noQuestionsAnswers": "Keine Fragen/Antworten im Moment"
   },
   "start": {
     "title": "Wahle wie du spielen mochtest",
@@ -154,7 +155,13 @@
     "menuConfiguration": "Menü-Konfiguration",
     "menuConfigHint": "Wähle welche Menüs angezeigt werden sollen und in welcher Reihenfolge.",
     "moveUp": "Nach oben",
-    "moveDown": "Nach unten"
+    "moveDown": "Nach unten",
+    "logoView": "Geschäftslogo",
+    "storeLogo": "Geschäftslogo",
+    "uploadLogo": "Logo hochladen",
+    "logoHint": "Das Logo wird im Ruhemodus angezeigt. Empfohlene Größe: 400x200px. Max 2MB.",
+    "logoUploaded": "Logo hochgeladen!",
+    "logoUploadError": "Logo konnte nicht hochgeladen werden"
   },
   "controller": {
     "title": "Spielcontroller",

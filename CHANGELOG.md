@@ -7,14 +7,37 @@ Logg över ändringar och utveckling av projektet.
 ## [Unreleased]
 
 ### Tillagt
+- **IdleLogo-komponent** - Ny idle-vy som visar butikslogotyp
+  - Visas som default om inga andra vyer är aktiverade
+  - Stödjer produktsök direkt från viloläget (om produkter finns)
+  - Navigerar till produktsidan med sökterm
+- **Logotyp-uppladdning i admin** - Ladda upp butikens egen logotyp
+  - Ny endpoint: `POST /api/upload/logo`
+  - Sparas till `server/uploads/logo/`
+  - Checkbox + reglage i Admin → Inställningar
 - **Admin-meny konfiguration** - Ny sektion i Inställningar för att konfigurera admin-sidomenyn:
   - Visa/dölj individuella menyer med checkboxar
   - Ändra ordning med upp/ner-knappar
   - Sparas persistent i databasen som JSON
   - Översättningar i alla 4 språk (sv, en, da, de)
 
+### Förbättrat
+- **Admin idle-reglage** - Refaktorerat från "vikt" till direkt procent
+  - Alla aktiva vyer summerar alltid till 100%
+  - Smart auto-justering: drar du en slider justeras övriga proportionellt
+  - Toggle av/på en vy omfördelar automatiskt procenten
+
+### Fixat
+- **Q&A visas inte i idélådan** - API:et returnerade data utan `is_active`-fältet, klienten filtrerade på det (allt försvann)
+  - Root cause: `SELECT id, question, answer...` inkluderade inte `is_active`
+  - Fix: Tog bort onödigt klient-filter (API:et filtrerar redan på `is_active = 1`)
+- **ÅÄÖ i IdleIdeaBox** - Ersatt hårdkodade svenska strängar med i18n
+  - "Inga fragor/svar" → `t('idle.noQuestionsAnswers')`
+  - "Idelada" → `t('ideaBox.title')`
+  - "Er Fraga" / "Vart Svar" → `t('ideaBox.yourQuestion/ourAnswer')`
+
 ### Planerat
-- Se `claude-todo-features.md` för framtida idéer
+- Se `TODO-Features---gbngo-inStore.md` för framtida idéer
 
 ---
 

@@ -29,10 +29,13 @@ router.get('/idle', (req, res) => {
     'idle_view_demos_enabled',
     'idle_view_ideas_enabled',
     'idle_view_ads_enabled',
+    'idle_view_logo_enabled',
     'idle_view_cube_percent',
     'idle_view_demos_percent',
     'idle_view_ideas_percent',
-    'idle_view_ads_percent'
+    'idle_view_ads_percent',
+    'idle_view_logo_percent',
+    'store_logo_path'
   ];
 
   const settings = {};

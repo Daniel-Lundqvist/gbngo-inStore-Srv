@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { requireAdmin } from '../middleware/auth.js';
+import { runQuery, saveDatabase } from '../database/init.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,12 +14,16 @@ const router = Router();
 // Ensure upload directories exist
 const uploadsDir = path.join(__dirname, '../../uploads');
 const adsDir = path.join(uploadsDir, 'advertisements');
+const logoDir = path.join(uploadsDir, 'logo');
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 if (!fs.existsSync(adsDir)) {
   fs.mkdirSync(adsDir, { recursive: true });
+}
+if (!fs.existsSync(logoDir)) {
+  fs.mkdirSync(logoDir, { recursive: true });
 }
 
 // Configure multer for file storage
@@ -64,6 +69,47 @@ router.post('/advertisement', requireAdmin, upload.single('image'), (req, res) =
   res.json({
     success: true,
     path: imagePath,
+    filename: req.file.filename,
+    size: req.file.size
+  });
+});
+
+// Configure multer for logo storage
+const logoStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, logoDir);
+  },
+  filename: (req, file, cb) => {
+    // Always use same filename to overwrite previous logo
+    const ext = path.extname(file.originalname);
+    cb(null, `store-logo${ext}`);
+  }
+});
+
+const logoUpload = multer({
+  storage: logoStorage,
+  fileFilter,
+  limits: {
+    fileSize: 2 * 1024 * 1024 // 2MB limit for logo
+  }
+});
+
+// Upload store logo (admin only)
+router.post('/logo', requireAdmin, logoUpload.single('logo'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  // Return the path that can be used to access the logo
+  const logoPath = `/uploads/logo/${req.file.filename}`;
+
+  // Save logo path to settings
+  runQuery('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', ['store_logo_path', logoPath]);
+  saveDatabase();
+
+  res.json({
+    success: true,
+    path: logoPath,
     filename: req.file.filename,
     size: req.file.size
   });

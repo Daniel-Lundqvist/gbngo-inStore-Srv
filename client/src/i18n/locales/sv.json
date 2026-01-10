@@ -22,7 +22,8 @@
   },
   "idle": {
     "scanReceipt": "Skanna kvitto för att spela!",
-    "touchToStart": "Tryck för att börja"
+    "touchToStart": "Tryck för att börja",
+    "noQuestionsAnswers": "Inga frågor/svar just nu"
   },
   "start": {
     "title": "Välj hur du vill spela",
@@ -156,7 +157,13 @@
     "menuConfiguration": "Meny-konfiguration",
     "menuConfigHint": "Välj vilka menyer som ska visas och i vilken ordning.",
     "moveUp": "Flytta upp",
-    "moveDown": "Flytta ner"
+    "moveDown": "Flytta ner",
+    "logoView": "Butikslogotyp",
+    "storeLogo": "Butikslogotyp",
+    "uploadLogo": "Ladda upp logotyp",
+    "logoHint": "Logotypen visas i viloläget. Rekommenderad storlek: 400x200px. Max 2MB.",
+    "logoUploaded": "Logotyp uppladdad!",
+    "logoUploadError": "Kunde inte ladda upp logotyp"
   },
   "controller": {
     "title": "Spelkontroll",

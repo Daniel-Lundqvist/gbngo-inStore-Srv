@@ -22,7 +22,8 @@
   },
   "idle": {
     "scanReceipt": "Scan receipt to play!",
-    "touchToStart": "Touch to start"
+    "touchToStart": "Touch to start",
+    "noQuestionsAnswers": "No questions/answers right now"
   },
   "start": {
     "title": "Choose how to play",
@@ -156,7 +157,13 @@
     "menuConfiguration": "Menu configuration",
     "menuConfigHint": "Choose which menus to display and in what order.",
     "moveUp": "Move up",
-    "moveDown": "Move down"
+    "moveDown": "Move down",
+    "logoView": "Store Logo",
+    "storeLogo": "Store Logo",
+    "uploadLogo": "Upload logo",
+    "logoHint": "The logo is displayed in idle mode. Recommended size: 400x200px. Max 2MB.",
+    "logoUploaded": "Logo uploaded!",
+    "logoUploadError": "Could not upload logo"
   },
   "controller": {
     "title": "Game Controller",

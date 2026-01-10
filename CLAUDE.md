@@ -2,6 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
+## ⚠️ VIKTIGT: SKILL-AKTIVERING VID NYA UPPGIFTER ⚠️
+
+**NAR ANVANDAREN GER EN NY UPPGIFT** (fixa bugg, bygg feature, gör X, etc.):
+
+1. **LAS TASK-MANAGER SKILL** - `~/.claude/skills/task-manager/SKILL.md`
+2. **LAS PROJEKTETS TASKS** - `.claude/tasks.md`
+3. **SKAPA TASK** med TASK-XXX format och correct workflow
+4. **FOR UI-TASKS:** Las `~/.claude/skills/visual-verification/SKILL.md` - ta screenshots!
+5. **EFTER TASK AR KLAR:** Uppdatera CHANGELOG.md och arkitekturfiler
+
+**ANVAND INTE TodoWrite** - anvand task-manager skillen istallet!
+
+---
+
 ## Project Overview
 
 GBNGO InStore Portal is an interactive game portal for the unmanned Grab'n GO store. Customers use an iPad/screen in the store to play minigames, with their mobile phone as a wireless controller via WebSocket.
